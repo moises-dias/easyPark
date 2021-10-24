@@ -1,0 +1,213 @@
+    1  sudo shutdown
+    2  shutdown -c
+    3  sudo shutdown
+    4  sudo shutdown -h now
+    5  raspistill -o Desktop/image.jpg
+    6  raspvid -o Desktop/video.h264
+    7  raspivid -o Desktop/video.h264
+    8  ls
+    9  cd Desktop/
+   10  python3 camera.py 
+   11  sudo apt update
+   12  sudo apt install git
+   13  ls
+   14  mkdir easyPark
+   15  ls
+   16  cd ..
+   17  ls
+   18  cd pi
+   19  ls
+   20  rmdir easyPark/
+   21  ls
+   22  git clone -b raspberry git@github.com:moises-dias/easyPark.git
+   23  git config --global user.name "moises-dias"
+   24  git config --global user.email "moisesdepaulodias@gmail.com"
+   25  git config --list
+   26  git clone -b raspberry git@github.com:moises-dias/easyPark.git
+   27  cd ~/
+   28  ls
+   29  cd ~/.ssh && ssh-keygen
+   30  cat id_rsa.pub | xclip
+   31  cat id_rsa.pub
+   32  exit
+   33  git config --list
+   34  git clone -b raspberry git@github.com:moises-dias/easyPark.git
+   35  ls
+   36  cd easyPark/
+   37  ls
+   38  de deteccao_placas
+   39  cd deteccao_placas/
+   40  ls
+   41  cd raspberry_code/
+   42  ls
+   43  cd ..
+   44  git status
+   45  python -m venv rasp
+   46  python --v
+   47  python -v
+   48  python -version
+   49  python --version
+   50  python3 --version
+   51  ls
+   52  python3 -m venv rasp
+   53  ls
+   54  rm -r rasp
+   55  ls
+   56  cd ..
+   57  ls
+   58  mkdir oficinas
+   59  mv easyPark oficinas
+   60  ls
+   61  cd oficinas/
+   62  ls
+   63  python3 -m venv rasp
+   64  cd easyPark/
+   65  git status
+   66  cd ..
+   67  ls
+   68  cd rasp/
+   69  ls
+   70  cd ..
+   71  ls
+   72  cd oficinas/
+   73  ls
+   74  venv linux
+   75  cd rasp/
+   76  ls
+   77  cd bin/
+   78  ls
+   79  cd ..
+   80  source rasp/bin/activate
+   81  deactivate
+   82  source rasp/bin/activate
+   83  cd easyPark/
+   84  ls
+   85  cd deteccao_placas/
+   86  ls
+   87  cd raspberry_code/
+   88  ls
+   89  python3 main_code.py 
+   90  pip install opencv-python
+   91  deactivate
+   92  ls
+   93  cd ..
+   94  ls
+   95  cd ..
+   96  ls
+   97  rm -m rasp
+   98  rm -r rasp
+   99  ls
+  100  python3 -m venv rasp
+  101  ls
+  102  source rasp/bin/activate
+  103  cd easyPark/
+  104  cd deteccao_placas/raspberry_code
+  105  ls
+  106  pip3 --version
+  107  pip --version
+  108  where pip
+  109  uere? pip
+  110  pip3 install opencv-python
+  111  cd ..
+  112  ls
+  113  cd ..
+  114  ls
+  115  sudo apt-get update && sudo apt-get upgrade && sudo rpi-update
+  116  sudo reboot
+  117  pip3 install --upgrade setuptools pip
+  118  cd oficinas/
+  119  ls
+  120  rm -r rasp/
+  121  python3 -m venv rasp
+  122  source rasp/bin/activate
+  123  pip3 install --upgrade setuptools pip
+  124  pip3 install opencv-python
+  125  sudo apt-get install python-opencv
+  126  sudo reboot
+  127  sudo raspi-config
+  128  sudo reboot
+  129  df -h
+  130  sudo apt-get update && sudo apt-get upgrade
+  131  mkdir ~/src && cd ~/src
+  132  ls
+  133  cd ..
+  134  ls
+  135  cd src
+  136  wget https://bootstrap.pypa.io/get-pip.py
+  137  ls
+  138  sudo python3 get-pip.py
+  139  pip --version
+  140  pip3 --version
+  141  ls
+  142  cd ..
+  143  cd oficinas/
+  144  ls
+  145  rm -r rasp/
+  146  python3 -m venv rasp
+  147  source rasp/bin/activate
+  148  ls
+  149  sudo pip install opencv-contrib-python
+  150  pip install opencv-python==4.4.0.42
+  151  ls
+  152  cd easyPark/
+  153  python3
+  154  sudo apt-get install libatlas-base-dev
+  155  python3
+  156  ls
+  157  cd deteccao_placas/
+  158  ls
+  159  cd raspberry_code/
+  160  python3 main_code.py 
+  161  sudo pip install keras
+  162  python3 main_code.py 
+  163  python main_code.py 
+  164  nano main_code.py 
+  165  python3 main_code.py 
+  166  which python
+  167  which python3
+  168  pip show keras
+  169  pip install keras
+  170  pip show keras
+  171  which python
+  172  which python3
+  173  which python3.7
+  174  python3 main_code.py 
+  175  pip install tensorflow
+  176  python3 main_code.py 
+  177  nano main_code.py 
+  178  cp main_code.py rasp_main_code.py
+  179  nano rasp_main_code.py 
+  180  ls
+  181  pip install --upgrade tensorflow
+  182  pip install --upgrade tensorflow-gpu
+  183  pip install keras==2.3.1
+  184  nano rasp_main_code.py 
+  185  python3 rasp_main_code.py 
+  186  pip install scikit-learn
+  187  python3 rasp_main_code.py 
+  188  pip install h5py
+  189  python3 rasp_main_code.py 
+  190  history
+  191  history > history1.txt
+  192  cat history1.txt
+  193  nano history1.txt
+  194  sudo reboot
+  195  cd oficinas/
+  196  source rasp/bin/activate
+  197  cd easyPark/
+  198  ls
+  199  cd deteccao_placas/
+  200  ls
+  201  cd raspberry_code/
+  202  ls
+  203  python3 rasp_main_code.py 
+  204  ls
+  205  rm -r __pycache__/
+  206  python3 rasp_main_code.py 
+  207  sudo apt-get install python3-h5py
+  208  rm -r __pycache__/
+  209  python3 rasp_main_code.py 
+  210  pip install 'h5py<3.0.0'
+  211  python3 rasp_main_code.py 
+  212  ls
+  213  history > history2.txt
