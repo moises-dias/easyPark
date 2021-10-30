@@ -22,6 +22,7 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 camera = PiCamera()
+camera.resolution(640, 480)
 
 def load_model(path):
     try:
@@ -102,10 +103,12 @@ while True:
         print('iniciando detecção')
         # rawCapture = PiRGBArray(camera)
         # allow the camera to warmup
-        time.sleep(2)
+        camera.start_preview()
+        time.sleep(3)
         # grab an image from the camera
         numfiles = len([f for f in listdir('./Plate_examples')])
         camera.capture(f'./Plate_examples/img{numfiles}.jpg')
+        camera.stop_preview()
         # img = rawCapture.array
         # cv2.imwrite(f'./Plate_examples/img{numfiles}.jpg', img)
         # display the image on screen and wait for a keypress
