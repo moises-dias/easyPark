@@ -8,14 +8,14 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 camera = PiCamera()
-rawCapture = PiRGBArray(camera)
-# allow the camera to warmup
-time.sleep(2)
 
 while True:
     time.sleep(1)
     if not GPIO.input(11):
         print('Apertou Botão')
+        rawCapture = PiRGBArray(camera)
+        # allow the camera to warmup
+        time.sleep(2)
         # grab an image from the camera
         camera.capture(rawCapture, format="bgr")
         image = rawCapture.array
