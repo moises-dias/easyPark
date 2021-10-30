@@ -22,7 +22,7 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 camera = PiCamera()
-camera.resolution(640, 480)
+camera.resolution = (640, 480)
 
 def load_model(path):
     try:
