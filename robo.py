@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from time import sleep
+from time import sleep, time
 import math
 import json
 import pigpio
@@ -22,6 +22,7 @@ class Motor:
         self.input = [-1, IN1, IN2, IN3, IN4] # do not use self.input[0]
         self.rpi = rpi
         self.vel = 1    # it ranges from 0 to 1
+        self.stop() # garantir, vai q pino começa em high sei la
 
         # preciso setar o modo dos pwm como output???
         # boa pergunta, mas podemos testar, vai ser facil de achar
@@ -195,14 +196,67 @@ class ColorSensor:
             else:
                 return 'black'        
 
-class tcrt5000:
-    def __init__(self):
-        pass
+class Tcrt5000:
+    # https://thepihut.com/blogs/raspberry-pi-tutorials/how-to-use-the-tcrt5000-ir-line-follower-sensor-with-the-raspberry-pi
+    # código baseado no tutorial acima
+    def __init__(self, rpi, sensor_pins_list):
+        self.sensors = sensor_pins_list
+        self.rpi = rpi
+        for i in self.sensors:
+            self.rpi.set_mode(i, pigpio.INPUT)
+    
+    def read(self):
+        sensor_values = []
+        for s in self.sensors:
+            sensor_values.append(self.rpi.read(s))
+        return sensor_values
 
-class Ultrassom:
-    def __init__(self):
-        pass
 
+class Ultrasonic:
+    # https://tutorials-raspberrypi.com/raspberry-pi-ultrasonic-sensor-hc-sr04/
+    # código baseado no tutorial acima
+    def __init__(self, rpi, trig, echo):
+        self.trig = trig
+        self.echo = echo
+        self.rpi = rpi
+
+        self.rpi.set_mode(trig, pigpio.OUTPUT)
+        self.rpi.set_mode(echo, pigpio.INPUT)
+
+    def measure_distance(self):
+        # set Trigger to HIGH
+        self.rpi.write(self.trig, 1)
+    
+        # set Trigger after 0.01ms to LOW
+        sleep(0.00001)
+        self.rpi.write(self.trig, 0)
+    
+        StartTime = time()
+        StopTime = time()
+
+        # talvez se eu não apontar para uma parede não vai sair do while abaixo
+    
+        # save StartTime
+        while not self.rpi.read(self.echo):
+            StartTime = time()
+    
+        # save time of arrival
+        while self.rpi.read(self.echo):
+            StopTime = time()
+    
+        # time difference between start and arrival
+        TimeElapsed = StopTime - StartTime
+        # multiply with the sonic speed (34300 cm/s)
+        # and divide by 2, because there and back
+        distance = (TimeElapsed * 34300) / 2
+    
+        return distance
+
+class Acelerometer:
+    # https://www.youtube.com/watch?v=R0hjzhBlaHQ
+    def __init__(self, rpi, acel_pins_list):
+        self.rpi = rpi
+        self.pins = acel_pins_list
 
 class coneBot:
     def __init__(self):
@@ -216,27 +270,42 @@ class coneBot:
 
         self.ir = [5, 6, 13, 19, 26] # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
 
-        self.ultrassom_trig = 23
-        self.ultrassim_echo = 24
+        self.ultrasonic_trig = 23
+        self.ultrasonic_echo = 24
 
         self.led = 12
 
         self.buz = 12
 
-        self.gyro = [20, 21]
+        self.acel = [20, 21]
         
         self.rpi = pigpio.pi()
 
         #motor recebe rpi nos argumentos tbm
         self.motor = Motor(self.rpi, 2, 3, 4, 17)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
+
+        #tcrt
+        self.tcrt = Tcrt5000(self.rpi, self.ir)
+
+        # color sensor
+        self.colorSensor = ColorSensor(self.rpi, *self.cor_set, self.cor_out)
+
+        #ultrasonic
+        self.ultrasonic = Ultrasonic(self.rpi, self.ultrasonic_trig, self.ultrasonic_echo)
         
+        # acelerometer fazer dpois, focar primeiro no motor e IR
+        self.acelerometer = Acelerometer(self.rpi, self.acel)
 
         self.start()
 
 
     def start(self):
-
-        pass
+        sleep(0.3)
+        tcrt_values = self.tcrt.read()
+        self.motor.moveProportional(tcrt_values)
+        
+        # fazer um while ultrasonico detectou fica parado
+        # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
 
 
 c = coneBot()
