@@ -24,6 +24,43 @@ class Motor:
         self.vel = 1    # it ranges from 0 to 1
 
         # preciso setar o modo dos pwm como output???
+        # boa pergunta, mas podemos testar, vai ser facil de achar
+    
+    # podemos criar métodos para virar proporcionalmente dependendo do output do tcrt
+    # pelo que eu entendi:
+    # 1 = motor r frente
+    # 2 = motor r trás
+    # 3 = motor l frente
+    # 4 = motor l trás
+    def moveProportional(self, tcrt): 
+        # tcrt é uma lista de bool com 5 itens, referentes a leitura do tcrt
+        # indo da esquerda para a direita
+        vel_l = 0
+        vel_r = 0
+        if tcrt[2]: # se o IR central está vendo linha 
+            # seta a velocidade no maximo
+            vel_r = 1
+            vel_l = 1
+        if tcrt[1]: # se o primeiro sensor a esquerda do central está vendo linha
+            # diminui um pouco a velocidade do motor da esquerda, virar pra esquerda
+            vel_l = vel_l * 0.8
+        if tcrt[3]: # se o primeiro sensor a direita do central está vendo linha
+            # diminui um pouco a velocidade do motor da direta, virar para direita
+            vel_r = vel_r * 0.8
+        if tcrt[0]: # se o segundo sensor a esquerda do central esta vendo linha
+            # diminui mais ainda a velocidade do esquerdo
+            vel_l = vel_l * 0.4
+        if tcrt[4]: # se o segundo sensor a direita do central está vendo linha
+            # diminui mais ainda a velocidade do motor direito
+            vel_r = vel_r * 0.4
+        
+        # setando velocidades
+        self.rpi.set_PWM_dutycycle(self.input[1], 255 * vel_r)
+        self.rpi.set_PWM_dutycycle(self.input[2], 0)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255 * vel_l)
+        self.rpi.set_PWM_dutycycle(self.input[4], 0)
+
+        # podemos dar um break/stop se não identificar nada, podemos testar isso
 
     def go(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel)
@@ -62,8 +99,13 @@ class Motor:
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel)
 
     def setVel(self, vel):
-        if vel > 1 or vel < 0:
-            raise "Seting motor velocity outside 0.0 - 1.0 range!"
+        if vel > 1:
+            vel = 1
+        elif vel < 0:
+            vel = 0
+        # acho q levantar um raise pode travar o robo no meio do estacionamento
+        # if vel > 1 or vel < 0:
+        #     raise "Seting motor velocity outside 0.0 - 1.0 range!"
         self.vel = vel
 
 class ColorSensor:
@@ -81,10 +123,13 @@ class ColorSensor:
         --------------------------------
         OUT     Gives a value 0 - 255 of the color filter read
     """
+
+    # sensor de cor vai ser usado só para ver se identificamos uma interseção ou uma vaga (vide foto_1.jpg)
+    # vou utilizar as fotos da foto_1, vermelho pra rua e verde pra vaga
     def __init__(self, rpi, s1, s2, s3, s4, out):
         self.s = [-1, s1, s2, s3, s4]   # do not use self.s[0]
         self.out = out
-        self.rpi
+        self.rpi = rpi
 
         for i in self.s:
             self.rpi.set_mode(i, pigpio.OUTPUT)
@@ -159,7 +204,7 @@ class coneBot:
         # Acho que vou criar uma classe para cada componente
         # Assim fica mais fácil setar, contorlar e ler coisas dos componentes
 
-        self.motor = Motor(2, 3, 4, 17)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
+        # self.motor = Motor(2, 3, 4, 17)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
         
         self.cor_set = [27, 22, 10, 9] # RPi pins for [S1, S2, S3, S4]
         self.cor_out = 11 # RPi pins for OUT
@@ -176,6 +221,9 @@ class coneBot:
         self.gyro = [20, 21]
         
         self.rpi = pigpio.pi()
+
+        #motor recebe rpi nos argumentos tbm
+        self.motor = Motor(self.rpi, 2, 3, 4, 17)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
         
 
         self.start()
