@@ -43,16 +43,20 @@ class Motor:
             vel_l = 1
         if tcrt[1]: # se o primeiro sensor a esquerda do central está vendo linha
             # diminui um pouco a velocidade do motor da esquerda, virar pra esquerda
-            vel_l = vel_l * 0.8
+            vel_r = 1
+            vel_l = 0.8
         if tcrt[3]: # se o primeiro sensor a direita do central está vendo linha
             # diminui um pouco a velocidade do motor da direta, virar para direita
-            vel_r = vel_r * 0.8
+            vel_r = 0.8
+            vel_l = 1
         if tcrt[0]: # se o segundo sensor a esquerda do central esta vendo linha
             # diminui mais ainda a velocidade do esquerdo
-            vel_l = vel_l * 0.4
+            vel_r = 1
+            vel_l = 0.4
         if tcrt[4]: # se o segundo sensor a direita do central está vendo linha
             # diminui mais ainda a velocidade do motor direito
-            vel_r = vel_r * 0.4
+            vel_r = 0.4
+            vel_l = 1
         
         # setando velocidades
         self.rpi.set_PWM_dutycycle(self.input[1], 255 * vel_r)
@@ -131,25 +135,26 @@ class ColorSensor:
         self.out = out
         self.rpi = rpi
 
-        for i in self.s:
+        # for i in self.s:
+        for i in self.s[1:]: # desconsiderar o -1 na hr de setar os pinos
             self.rpi.set_mode(i, pigpio.OUTPUT)
 
-        self.rpi.set_mode(i, pigpio.INPUT)
+        self.rpi.set_mode(out, pigpio.INPUT)
 
     def readRed(self):
         self.rpi.write(self.s[2], 0)
         self.rpi.write(self.s[3], 0)
-        return self.read(self.out)
+        return self.rpi.read(self.out)
 
     def readGreen(self):
         self.rpi.write(self.s[2], 1)
         self.rpi.write(self.s[3], 1)
-        return self.read(self.out)
+        return self.rpi.read(self.out)
 
     def readBlue(self):
         self.rpi.write(self.s[2], 0)
         self.rpi.write(self.s[3], 1)
-        return self.read(self.out)
+        return self.rpi.read(self.out)
 
     def readAll(self):
         return self.readRed, self.readGreen, self.readBlue
@@ -157,7 +162,7 @@ class ColorSensor:
     def readWithoutFilter(self):
         self.rpi.write(self.s[2], 1)
         self.rpi.write(self.s[3], 0)
-        return self.read(self.out)
+        return self.rpi.read(self.out)
 
     def color(self):
         colors = [self.readAll()] # returns red, green, blue into a list
