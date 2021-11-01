@@ -142,7 +142,7 @@ class ColorSensor:
         self.rpi.write(self.s[0], 1)
         self.rpi.write(self.s[1], 1)
 
-        #self.rpi.set_mode(out, pigpio.INPUT)
+        self.rpi.set_mode(out, pigpio.INPUT)
 
     def readRed(self):
         self.rpi.write(self.s[2], 0)
