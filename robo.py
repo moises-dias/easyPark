@@ -74,16 +74,16 @@ class Motor:
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnLeft(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel * 0.6)
+        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel * 0.8)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
-        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel * 0.6)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel * 0.8)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnRight(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
-        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel * 0.6)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel * 0.8)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
-        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel * 0.6)
+        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel * 0.8)
 
     def stop(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
