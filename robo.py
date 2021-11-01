@@ -291,16 +291,22 @@ class coneBot:
 
     def test(self):
         while(1):
+            print('go')
             self.motor.go()
             sleep(2)
+            print('stop')
             self.motor.stop()
             sleep(2)
+            print('turnLeft')
             self.motor.turnLeft()
             sleep(2)
+            print('stop')
             self.motor.stop()
             sleep(2)
+            print('turnRight')
             self.motor.turnRight()
             sleep(2)
+            print('brake')
             self.motor.brake(6)
 
 
