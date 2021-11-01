@@ -5,6 +5,8 @@ import math
 import json
 import pigpio
 
+import TCS3200
+
 # pigpio documentation
 # http://abyz.me.uk/rpi/pigpio/python.html
 
@@ -136,66 +138,8 @@ class ColorSensor:
         self.out = out
         self.rpi = rpi
 
-        # for i in self.s:
-        for i in self.s: # desconsiderar o -1 na hr de setar os pinos
-            self.rpi.set_mode(i, pigpio.OUTPUT)
-        self.rpi.write(self.s[0], 1)
-        self.rpi.write(self.s[1], 1)
 
-        self.rpi.set_mode(out, pigpio.INPUT)
-
-    def readRed(self):
-        self.rpi.write(self.s[2], 0)
-        self.rpi.write(self.s[3], 0)
-        return self.rpi.get_PWM_dutycycle(self.out)
-
-    def readGreen(self):
-        self.rpi.write(self.s[2], 1)
-        self.rpi.write(self.s[3], 1)
-        return self.rpi.get_PWM_dutycycle(self.out)
-
-    def readBlue(self):
-        self.rpi.write(self.s[2], 0)
-        self.rpi.write(self.s[3], 1)
-        return self.rpi.get_PWM_dutycycle(self.out)
-
-    def readAll(self):
-        return self.readRed(), self.readGreen(), self.readBlue()
-
-    def readWithoutFilter(self):
-        self.rpi.write(self.s[2], 1)
-        self.rpi.write(self.s[3], 0)
-        return self.rpi.read(self.out)
-
-    def color(self):
-        colors = list(self.readAll()) # returns red, green, blue into a list
-        colors_backup = colors.copy()
-        
-        # Arredonda os valores para o numero mais próximo divisivel por 10
-        # e acha o greate common divisor pra achar a ratio de vermelho, verde e azul
-        colors = [20 * round(c/20) for c in colors]
-        div = math.gcd(math.gcd(colors[0], colors[1]), colors[2])
-        print(colors, div)
-        colors = [c / div for c in colors]
-        
-        red, green, blue = tuple(colors)
-        if   red > green and red > blue and green == blue:
-            return 'red'
-        elif green > red and green > blue and red == blue:
-            return 'green'
-        elif blue > red and blue > green and red == green:
-            return 'blue'
-        elif red > blue and green > blue and red == green:
-            return 'yellow'
-        elif blue > red and green > red and blue == green:
-            return 'cyan'
-        elif red > green and blue > green and red == blue:
-            return 'magenta'
-        elif red == green and green == blue and red == blue:
-            if colors_backup[0] > 125 and colors_backup[1] > 125 and colors_backup > 125:
-                return 'white'
-            else:
-                return 'black'        
+    
 
 class Tcrt5000:
     # https://thepihut.com/blogs/raspberry-pi-tutorials/how-to-use-the-tcrt5000-ir-line-follower-sensor-with-the-raspberry-pi
@@ -312,8 +256,21 @@ class coneBot:
             print(self.tcrt.read())
 
     def test_color(self):
+
+        wait_for_return("Calibrating black object, press RETURN to start")
+        hz = self.color.get_hertz()
+        self.color.set_black_level(hz)
+
+        wait_for_return("Calibrating white object, press RETURN to start")
+        hz = self.color.get_hertz()
+        self.color.set_white_level(hz)
+
         while(1):
-            print(self.color.readAll(), self.color.color())
+            print(self.color.get_rgb(), self.color.color())
+            sleep(0.5)
+
+        self.color.cancel()
+        self.pi.stop()
 
 
 c = coneBot()
