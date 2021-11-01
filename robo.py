@@ -166,16 +166,14 @@ class ColorSensor:
         return self.rpi.read(self.out)
 
     def color(self):
-        colors = [self.readAll()] # returns red, green, blue into a list
+        colors = list(self.readAll()) # returns red, green, blue into a list
         colors_backup = colors.copy()
         
         # Arredonda os valores para o numero mais próximo divisivel por 10
         # e acha o greate common divisor pra achar a ratio de vermelho, verde e azul
-        for c in colors:
-            c = 10 * round(c / 10)
+        colors = [20 * round(c/20) for c in colors]
         div = math.gcd(colors[0], colors[1], colors[2])
-        for c in colors:
-            c = c / div
+        colors = [c / div for c in colors]
         
         red, green, blue = tuple(colors)
         if   red > green and red > blue and green == blue:
