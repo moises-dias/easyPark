@@ -285,7 +285,8 @@ class ColorSensor(threading.Thread):
          # e acha o greate common divisor pra achar a ratio de vermelho, verde e azul
          colors = [20 * round(c/20) for c in colors]
          div = math.gcd(math.gcd(colors[0], colors[1]), colors[2])
-         print(colors, div)
+         if div == 0:
+            div = 1
          colors = [c / div for c in colors]
          
          red, green, blue = tuple(colors)
