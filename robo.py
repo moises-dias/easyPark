@@ -289,37 +289,25 @@ class coneBot:
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
 
-    def test(self):
-        sleep(10)
+    def test_motor(self):
+        sleep(5)
+        self.motor.setVel(0.4)
         while(1):
-            self.motor.setVel(0.4)
             print('go')
             self.motor.go()
             sleep(3)
             print('stop')
             self.motor.stop()
-            sleep(2)
-            print('turnLeft')
-            self.motor.turnLeft()
             sleep(3)
-            print('stop')
-            self.motor.stop()
-            sleep(2)
-            print('turnRight')
-            self.motor.turnRight()
-            sleep(3)
-            print('stop')
-            self.motor.stop()
-            sleep(2)
-            print('back')
+            print('goBack')
             self.motor.goBack()
             sleep(3)
-            print('brake')
-            self.motor.brake()
-            sleep(5)
+            print('stop')
+            self.motor.stop()
+            sleep(10)
 
 
 c = coneBot()
-c.test()
+c.test_motor()
 
 #c.start()
