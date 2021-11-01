@@ -171,6 +171,7 @@ class ColorSensor:
         
         # Arredonda os valores para o numero mais próximo divisivel por 10
         # e acha o greate common divisor pra achar a ratio de vermelho, verde e azul
+        print(colors)
         colors = [20 * round(c/20) for c in colors]
         div = math.gcd(colors[0], colors[1], colors[2])
         colors = [c / div for c in colors]
