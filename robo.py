@@ -307,7 +307,8 @@ class coneBot:
             sleep(10)
 
     def test_tcrt(self):
-        print(self.tcrt.read())
+        while(1):
+            print(self.tcrt.read())
 
 
 c = coneBot()
