@@ -245,7 +245,7 @@ class coneBot:
         self.color.set_white_level(hz)
 
         while(1):
-            print(self.color.get_rgb())
+            print(self.color.get_rgb(), self.color.color())
             sleep(0.5)
 
         self.color.cancel()
