@@ -5,7 +5,6 @@ import math
 import json
 import pigpio
 
-
 from ..TCS3200 import *
 
 # pigpio documentation
