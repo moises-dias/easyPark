@@ -139,6 +139,8 @@ class ColorSensor:
         # for i in self.s:
         for i in self.s[1:]: # desconsiderar o -1 na hr de setar os pinos
             self.rpi.set_mode(i, pigpio.OUTPUT)
+        self.rpi.write(self.s[0], 1)
+        self.rpi.write(self.s[1], 0)
 
         self.rpi.set_mode(out, pigpio.INPUT)
 
