@@ -389,7 +389,7 @@ if __name__ == "__main__":
 
    pi = pigpio.pi()
 
-   s = sensor(pi, 24, 22, 23, 4, 17, 18)
+   s = sensor(pi, 11, 10, 9, 27, 22)
 
    s.set_frequency(2) # 20%
 
