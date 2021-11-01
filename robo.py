@@ -307,7 +307,7 @@ class coneBot:
             self.motor.turnRight()
             sleep(2)
             print('brake')
-            self.motor.brake(6)
+            self.motor.brake()
 
 
 c = coneBot()
