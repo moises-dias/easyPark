@@ -10,6 +10,7 @@ from .TCS3200 import *
 # pigpio documentation
 # http://abyz.me.uk/rpi/pigpio/python.html
 
+
 class Motor:
     """ IN1     IN2 | Motor right (top view with front facing up)
         IN3     IN4 | Motor left
@@ -231,11 +232,11 @@ class coneBot:
 
     def test_color(self):
 
-        wait_for_return("Calibrating black object, press RETURN to start")
+        input("Calibrating black object, press RETURN to start")
         hz = self.color.get_hertz()
         self.color.set_black_level(hz)
 
-        wait_for_return("Calibrating white object, press RETURN to start")
+        input("Calibrating white object, press RETURN to start")
         hz = self.color.get_hertz()
         self.color.set_white_level(hz)
 
