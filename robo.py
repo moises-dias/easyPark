@@ -290,8 +290,8 @@ class coneBot:
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
 
     def test(self):
+        sleep(10)
         while(1):
-            sleep(10)
             self.motor.setVel(0.4)
             print('go')
             self.motor.go()
