@@ -5,7 +5,7 @@ import math
 import json
 import pigpio
 
-from .TCS3200 import ColorSensor
+from .TCS3200 import *
 
 # pigpio documentation
 # http://abyz.me.uk/rpi/pigpio/python.html
@@ -114,32 +114,6 @@ class Motor:
         # if vel > 1 or vel < 0:
         #     raise "Seting motor velocity outside 0.0 - 1.0 range!"
         self.vel = vel
-
-class ColorSensor:
-    """ S0  S1        OUT frequency
-        0   0   |          off
-        0   1   |           2%
-        1   0   |          20%
-        1   1   |         100%
-        --------------------------------
-        S2  S3         Fotodiodo   
-        0   0   |          Red
-        0   1   |         Blue
-        1   0   |      w/ Filter
-        1   1   |        Green
-        --------------------------------
-        OUT     Gives a value 0 - 255 of the color filter read
-    """
-
-    # sensor de cor vai ser usado só para ver se identificamos uma interseção ou uma vaga (vide foto_1.jpg)
-    # vou utilizar as fotos da foto_1, vermelho pra rua e verde pra vaga
-    def __init__(self, rpi, s0, s1, s2, s3, out):
-        self.s = [s0, s1, s2, s3]   # do not use self.s[0]
-        self.out = out
-        self.rpi = rpi
-
-
-    
 
 class Tcrt5000:
     # https://thepihut.com/blogs/raspberry-pi-tutorials/how-to-use-the-tcrt5000-ir-line-follower-sensor-with-the-raspberry-pi
