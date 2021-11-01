@@ -68,22 +68,22 @@ class Motor:
         # podemos dar um break/stop se não identificar nada, podemos testar isso
 
     def go(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel)
-        self.rpi.set_PWM_dutycycle(self.input[2], 0)
+        self.rpi.set_PWM_dutycycle(self.input[1], 0)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel)
         self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnLeft(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
-        self.rpi.set_PWM_dutycycle(self.input[3], 0)
-        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel)
+        self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnRight(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel)
-        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel)
-        self.rpi.set_PWM_dutycycle(self.input[4], 0)
+        self.rpi.set_PWM_dutycycle(self.input[3], )
+        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel)
 
     def stop(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
@@ -98,8 +98,8 @@ class Motor:
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel)
 
     def goBack(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 0)
-        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel)
+        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel)
+        self.rpi.set_PWM_dutycycle(self.input[2], 0)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel)
 
@@ -305,6 +305,9 @@ class coneBot:
             sleep(3)
             print('turnRight')
             self.motor.turnRight()
+            sleep(3)
+            print('back')
+            self.motor.goBack()
             sleep(3)
             print('brake')
             self.motor.brake()
