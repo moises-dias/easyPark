@@ -5,7 +5,7 @@ import math
 import json
 import pigpio
 
-from .TCS3200 import *
+from TCS3200 import *
 
 # pigpio documentation
 # http://abyz.me.uk/rpi/pigpio/python.html
@@ -234,10 +234,12 @@ class coneBot:
 
         input("Calibrating black object, press RETURN to start")
         hz = self.color.get_hertz()
+        print(hz)
         self.color.set_black_level(hz)
 
         input("Calibrating white object, press RETURN to start")
         hz = self.color.get_hertz()
+        print(hz)
         self.color.set_white_level(hz)
 
         while(1):
