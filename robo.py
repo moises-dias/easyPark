@@ -5,12 +5,8 @@ import math
 import json
 import pigpio
 
-from pathlib import Path
-import sys
-path_root = Path(__file__).parents[2]
-sys.path.append(str(path_root))
 
-from .TCS3200 import *
+from ..TCS3200 import *
 
 # pigpio documentation
 # http://abyz.me.uk/rpi/pigpio/python.html
