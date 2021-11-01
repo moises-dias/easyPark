@@ -389,7 +389,7 @@ if __name__ == "__main__":
 
    pi = pigpio.pi()
 
-   s = sensor(pi, 11, 10, 9, 27, 22)
+   s = sensor(pi, 24, 22, 23, 4, 17, 18)
 
    s.set_frequency(2) # 20%
 
@@ -416,10 +416,6 @@ if __name__ == "__main__":
    try:
       while True:
          rgb = s.get_rgb()
-
-         pi.set_PWM_dutycycle(RED, rgb[0])
-         pi.set_PWM_dutycycle(GREEN, rgb[1])
-         pi.set_PWM_dutycycle(BLUE, rgb[2])
 
          print(rgb, s.get_hertz(), s.tally)
 
