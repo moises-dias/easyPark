@@ -280,7 +280,6 @@ class ColorSensor(threading.Thread):
    def color(self):
          colors = list(self.get_rgb()) # returns red, green, blue into a list
          colors_backup = colors.copy()
-         print(colors_backup, colors_backup[0])
          
          # Arredonda os valores para o numero mais próximo divisivel por 10
          # e acha o greate common divisor pra achar a ratio de vermelho, verde e azul
@@ -303,7 +302,8 @@ class ColorSensor(threading.Thread):
          elif red > green and blue > green and red == blue:
                return 'magenta'
          elif red == green and green == blue and red == blue:
-               if (colors_backup[0] > 125) and (colors_backup[1] > 125) and (colors_backup > 125):
+                red, green, blue = tuple(colors_backup)
+               if (red > 125) and (green > 125) and (blue > 125):
                   return 'white'
                else:
                   return 'black'        
