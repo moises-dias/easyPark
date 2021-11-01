@@ -200,14 +200,14 @@ class Tcrt5000:
     # https://thepihut.com/blogs/raspberry-pi-tutorials/how-to-use-the-tcrt5000-ir-line-follower-sensor-with-the-raspberry-pi
     # código baseado no tutorial acima
     def __init__(self, rpi, s1, s2, s3, s4, s5):
-        self.sensors = []
+        self.sensors = [-1, s1, s2, s3, s4, s5]
         self.rpi = rpi
-        for i in self.sensors:
+        for i in self.sensors[1:]:
             self.rpi.set_mode(i, pigpio.INPUT)
     
     def read(self):
         sensor_values = []
-        for s in self.sensors:
+        for s in self.sensors[1:]:
             sensor_values.append(self.rpi.read(s))
         return sensor_values
 
