@@ -158,7 +158,7 @@ class ColorSensor:
         return self.rpi.read(self.out)
 
     def readAll(self):
-        return self.readRed, self.readGreen, self.readBlue
+        return self.readRed(), self.readGreen(), self.readBlue()
 
     def readWithoutFilter(self):
         self.rpi.write(self.s[2], 1)
