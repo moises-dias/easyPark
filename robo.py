@@ -199,8 +199,8 @@ class ColorSensor:
 class Tcrt5000:
     # https://thepihut.com/blogs/raspberry-pi-tutorials/how-to-use-the-tcrt5000-ir-line-follower-sensor-with-the-raspberry-pi
     # código baseado no tutorial acima
-    def __init__(self, rpi, sensor_pins_list):
-        self.sensors = sensor_pins_list
+    def __init__(self, rpi, s1, s2, s3, s4, s5):
+        self.sensors = []
         self.rpi = rpi
         for i in self.sensors:
             self.rpi.set_mode(i, pigpio.INPUT)
@@ -210,7 +210,6 @@ class Tcrt5000:
         for s in self.sensors:
             sensor_values.append(self.rpi.read(s))
         return sensor_values
-
 
 class Ultrasonic:
     # https://tutorials-raspberrypi.com/raspberry-pi-ultrasonic-sensor-hc-sr04/
@@ -263,16 +262,6 @@ class coneBot:
         # Acho que vou criar uma classe para cada componente
         # Assim fica mais fácil setar, contorlar e ler coisas dos componentes
 
-        # self.motor = Motor(2, 3, 4, 17)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
-        
-        self.cor_set = [27, 22, 10, 9] # RPi pins for [S1, S2, S3, S4]
-        self.cor_out = 11 # RPi pins for OUT
-
-        self.ir = [5, 6, 13, 19, 26] # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
-
-        self.ultrasonic_trig = 23
-        self.ultrasonic_echo = 24
-
         self.led = 12
 
         self.buz = 12
@@ -281,22 +270,15 @@ class coneBot:
         
         self.rpi = pigpio.pi()
 
-        #motor recebe rpi nos argumentos tbm
         self.motor = Motor(self.rpi, 2, 3, 4, 17)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
-
-        #tcrt
-        self.tcrt = Tcrt5000(self.rpi, self.ir)
-
-        # color sensor
-        self.colorSensor = ColorSensor(self.rpi, *self.cor_set, self.cor_out)
-
-        #ultrasonic
-        self.ultrasonic = Ultrasonic(self.rpi, self.ultrasonic_trig, self.ultrasonic_echo)
+        self.tcrt = Tcrt5000(self.rpi, 5, 6, 13, 19, 26) # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
+        self.colorSensor = ColorSensor(self.rpi, 27, 22, 10, 9, 11) # RPi pins for [S1, S2, S3, S4] and OUT
+        self.ultrasonic = Ultrasonic(self.rpi, 23, 24) # RPi pins for trig and echo
         
         # acelerometer fazer dpois, focar primeiro no motor e IR
-        self.acelerometer = Acelerometer(self.rpi, self.acel)
+        #self.acelerometer = Acelerometer(self.rpi, self.acel)
 
-        self.start()
+        #self.start()
 
 
     def start(self):
@@ -307,6 +289,22 @@ class coneBot:
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
 
+    def test(self):
+        while(1):
+            self.motor.go()
+            sleep(2)
+            self.motor.stop()
+            sleep(2)
+            self.motor.turnLeft()
+            sleep(2)
+            self.motor.stop()
+            sleep(2)
+            self.motor.turnRight()
+            sleep(2)
+            self.motor.brake(6)
+
 
 c = coneBot()
-c.start()
+c.test()
+
+#c.start()
