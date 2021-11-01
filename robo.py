@@ -131,13 +131,13 @@ class ColorSensor:
 
     # sensor de cor vai ser usado só para ver se identificamos uma interseção ou uma vaga (vide foto_1.jpg)
     # vou utilizar as fotos da foto_1, vermelho pra rua e verde pra vaga
-    def __init__(self, rpi, s1, s2, s3, s4, out):
-        self.s = [-1, s1, s2, s3, s4]   # do not use self.s[0]
+    def __init__(self, rpi, s0, s1, s2, s3, out):
+        self.s = [s0, s1, s2, s3]   # do not use self.s[0]
         self.out = out
         self.rpi = rpi
 
         # for i in self.s:
-        for i in self.s[1:]: # desconsiderar o -1 na hr de setar os pinos
+        for i in self.s: # desconsiderar o -1 na hr de setar os pinos
             self.rpi.set_mode(i, pigpio.OUTPUT)
         self.rpi.write(self.s[0], 1)
         self.rpi.write(self.s[1], 0)
@@ -273,7 +273,7 @@ class coneBot:
 
         self.motor = Motor(self.rpi, 2, 3, 4, 17)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
         self.tcrt = Tcrt5000(self.rpi, 5, 6, 13, 19, 26) # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
-        self.color = ColorSensor(self.rpi, 27, 22, 10, 9, 11) # RPi pins for [S1, S2, S3, S4] and OUT
+        self.color = ColorSensor(self.rpi, 27, 22, 10, 9, 11) # RPi pins for [S0, S1, S2, S3] and OUT
         self.ultra = Ultrasonic(self.rpi, 23, 24) # RPi pins for trig and echo
         
         # acelerometer fazer dpois, focar primeiro no motor e IR
