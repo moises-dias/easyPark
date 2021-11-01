@@ -292,7 +292,7 @@ class coneBot:
     def test(self):
         while(1):
             sleep(10)
-            self.motor.setVel(0.2)
+            self.motor.setVel(0.4)
             print('go')
             self.motor.go()
             sleep(3)
