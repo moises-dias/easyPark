@@ -272,8 +272,8 @@ class coneBot:
 
         self.motor = Motor(self.rpi, 2, 3, 4, 17)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
         self.tcrt = Tcrt5000(self.rpi, 5, 6, 13, 19, 26) # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
-        self.colorSensor = ColorSensor(self.rpi, 27, 22, 10, 9, 11) # RPi pins for [S1, S2, S3, S4] and OUT
-        self.ultrasonic = Ultrasonic(self.rpi, 23, 24) # RPi pins for trig and echo
+        self.color = ColorSensor(self.rpi, 27, 22, 10, 9, 11) # RPi pins for [S1, S2, S3, S4] and OUT
+        self.ultra = Ultrasonic(self.rpi, 23, 24) # RPi pins for trig and echo
         
         # acelerometer fazer dpois, focar primeiro no motor e IR
         #self.acelerometer = Acelerometer(self.rpi, self.acel)
@@ -309,6 +309,10 @@ class coneBot:
     def test_tcrt(self):
         while(1):
             print(self.tcrt.read())
+
+    def test_color(self):
+        while(1):
+            print(self.color.readAll(), self.color.color())
 
 
 c = coneBot()
