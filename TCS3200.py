@@ -302,7 +302,7 @@ class ColorSensor(threading.Thread):
          elif red > green and blue > green and red == blue:
                return 'magenta'
          elif red == green and green == blue and red == blue:
-                red, green, blue = tuple(colors_backup)
+               red, green, blue = tuple(colors_backup)
                if (red > 125) and (green > 125) and (blue > 125):
                   return 'white'
                else:
