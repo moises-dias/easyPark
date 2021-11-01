@@ -82,7 +82,7 @@ class Motor:
     def turnRight(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel)
-        self.rpi.set_PWM_dutycycle(self.input[3], )
+        self.rpi.set_PWM_dutycycle(self.input[3], 0)
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel)
 
     def stop(self):
