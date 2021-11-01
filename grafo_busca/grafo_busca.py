@@ -54,7 +54,7 @@ def turn(start, end):
     else:
         print('\tTurn 90 degrees left.')
 
-def walk_path(start, face, end):
+def walk_path(start, face, end, end_dir):
     path = bfs(graph, start, end)
     if len(path) < 2:
         print('No path found')
@@ -63,15 +63,21 @@ def walk_path(start, face, end):
             turn(face, directions[path[i]][path[i+1]])
             face = directions[path[i]][path[i+1]]
         print(f'Moving from spot {path[i]} to spot {path[i+1]}')
+    if face != end_dir:
+        turn(face, end_dir)
+        face = end_dir
     return face
 
 # start position
 face = 'U'
 spot = 6
 
+# esses valores virão do ultrasonico das vagas
 end = 0
-print(f"Initial spot = {spot}, destination = {end}")
-face = walk_path(spot, face, end)
+end_dir = 'R'
+
+print(f"Initial spot = {spot}, destination = {end}, direction = {end_dir}")
+face = walk_path(spot, face, end, end_dir)
 
 
 
