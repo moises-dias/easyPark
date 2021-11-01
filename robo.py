@@ -142,22 +142,22 @@ class ColorSensor:
         self.rpi.write(self.s[0], 1)
         self.rpi.write(self.s[1], 1)
 
-        self.rpi.set_mode(out, pigpio.INPUT)
+        #self.rpi.set_mode(out, pigpio.INPUT)
 
     def readRed(self):
         self.rpi.write(self.s[2], 0)
         self.rpi.write(self.s[3], 0)
-        return self.rpi.read(self.out)
+        return self.rpi.get_PWM_dutycycle(self.out)
 
     def readGreen(self):
         self.rpi.write(self.s[2], 1)
         self.rpi.write(self.s[3], 1)
-        return self.rpi.read(self.out)
+        return self.rpi.get_PWM_dutycycle(self.out)
 
     def readBlue(self):
         self.rpi.write(self.s[2], 0)
         self.rpi.write(self.s[3], 1)
-        return self.rpi.read(self.out)
+        return self.rpi.get_PWM_dutycycle(self.out)
 
     def readAll(self):
         return self.readRed(), self.readGreen(), self.readBlue()
