@@ -232,13 +232,13 @@ class coneBot:
 
     def test_color(self):
 
-        #input("Calibrating black object, press RETURN to start")
+        input("Calibrating black object, press RETURN to start")
         hz = self.color.get_hertz()
         #hz = [268.256, 247.957, 302.885]
         print(hz)
         self.color.set_black_level(hz)
 
-        #input("Calibrating white object, press RETURN to start")
+        input("Calibrating white object, press RETURN to start")
         hz = self.color.get_hertz()
         #hz = [652.742, 633.967, 789.036]
         print(hz)
