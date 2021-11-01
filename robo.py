@@ -5,7 +5,7 @@ import math
 import json
 import pigpio
 
-import TCS3200
+from .TCS3200 import ColorSensor
 
 # pigpio documentation
 # http://abyz.me.uk/rpi/pigpio/python.html
