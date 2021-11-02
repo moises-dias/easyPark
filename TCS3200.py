@@ -6,10 +6,11 @@
 
 import time
 import threading
+import math
 
 import pigpio
 
-class sensor(threading.Thread):
+class ColorSensor(threading.Thread):
    """
    This class reads RGB values from a TCS3200 colour sensor.
 
@@ -276,6 +277,39 @@ class sensor(threading.Thread):
 
       self._pi.write(self._S2, S2); self._pi.write(self._S3, S3)
 
+   def color(self):
+         colors = list(self.get_rgb()) # returns red, green, blue into a list
+         colors_backup = colors.copy()
+         
+         # Arredonda os valores para o numero mais próximo divisivel por 10
+         # e acha o greate common divisor pra achar a ratio de vermelho, verde e azul
+         colors = [35 * round(c/35) for c in colors]
+         div = math.gcd(math.gcd(colors[0], colors[1]), colors[2])
+         if div == 0:
+            div = 1
+         colors = [c / div for c in colors]
+         
+         red, green, blue = tuple(colors)
+         if   red > green and red > blue and green == blue:
+               return 'red'
+         elif green > red and green > blue and red == blue:
+               return 'green'
+         elif blue > red and blue > green and red == green:
+               return 'blue'
+         elif red > blue and green > blue and red == green:
+               return 'yellow'
+         elif blue > red and green > red and blue == green:
+               return 'cyan'
+         elif red > green and blue > green and red == blue:
+               return 'magenta'
+         elif red == green and green == blue and red == blue:
+               red, green, blue = tuple(colors_backup)
+               if (red > 125) and (green > 125) and (blue > 125):
+                  return 'white'
+               else:
+                  return 'black' 
+         return 'None'       
+
    def _cbf(self, g, l, t):
 
       if g == self._OUT: # Frequency counter.
@@ -371,59 +405,59 @@ class sensor(threading.Thread):
          else:
             time.sleep(0.1)
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-   import sys
+#    import sys
 
-   import pigpio
+#    import pigpio
 
-   RED=21
-   GREEN=20
-   BLUE=16
+#    RED=21
+#    GREEN=20
+#    BLUE=16
 
-   def wait_for_return(str):
-      if sys.hexversion < 0x03000000:
-         raw_input(str)
-      else:
-         input(str)
+#    def wait_for_return(str):
+#       if sys.hexversion < 0x03000000:
+#          raw_input(str)
+#       else:
+#          input(str)
 
-   pi = pigpio.pi()
+#    pi = pigpio.pi()
 
-   s = sensor(pi, 11, 10, 9, 27, 22)
+#    s = sensor(pi, 11, 10, 9, 27, 22)
 
-   s.set_frequency(2) # 20%
+#    s.set_frequency(2) # 20%
 
-   interval = 0.2
+#    interval = 0.2
 
-   s.set_update_interval(interval)
+#    s.set_update_interval(interval)
 
-   wait_for_return("Calibrating black object, press RETURN to start")
+#    wait_for_return("Calibrating black object, press RETURN to start")
 
-   for i in range(5):
-      time.sleep(interval)
-      hz = s.get_hertz()
-      print(hz)
-   s.set_black_level(hz)
+#    for i in range(5):
+#       time.sleep(interval)
+#       hz = s.get_hertz()
+#       print(hz)
+#    s.set_black_level(hz)
 
-   wait_for_return("Calibrating white object, press RETURN to start")
+#    wait_for_return("Calibrating white object, press RETURN to start")
 
-   for i in range(5):
-      time.sleep(interval)
-      hz = s.get_hertz()
-      print(hz)
-   s.set_white_level(hz)
+#    for i in range(5):
+#       time.sleep(interval)
+#       hz = s.get_hertz()
+#       print(hz)
+#    s.set_white_level(hz)
 
-   try:
-      while True:
-         rgb = s.get_rgb()
+#    try:
+#       while True:
+#          rgb = s.get_rgb()
 
-         print(rgb, s.get_hertz(), s.tally)
+#          print(rgb)
 
-         time.sleep(interval)
+#          time.sleep(interval)
 
-   except:
+#    except:
 
-      print("cancelling")
-      s.cancel()
-      pi.stop()
+#       print("cancelling")
+#       s.cancel()
+#       pi.stop()
 
