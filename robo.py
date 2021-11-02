@@ -240,24 +240,24 @@ class coneBot:
                 self.motor.setVelRight(1)
 
             if tcrt_read == [1, 0, 1, 1, 1]:
-                print('0.5, 1')
-                self.motor.setVelLeft(0.5)
+                print('0.7, 1')
+                self.motor.setVelLeft(0.7)
                 self.motor.setVelRight(1)
 
             if tcrt_read == [1, 1, 1, 0, 1]:
-                print('1, 0.5')
+                print('1, 0.7')
                 self.motor.setVelLeft(1)
-                self.motor.setVelRight(0.5)
+                self.motor.setVelRight(0.7)
 
             if tcrt_read == [0, 1, 1, 1, 1]:
-                print('0.3, 1')
-                self.motor.setVelLeft(0.3)
+                print('0.4, 1')
+                self.motor.setVelLeft(0.4)
                 self.motor.setVelRight(1)
 
             if tcrt_read == [1, 1, 1, 1, 0]:
-                print('1, 0.3')
+                print('1, 0.4')
                 self.motor.setVelLeft(1)
-                self.motor.setVelRight(0.3)
+                self.motor.setVelRight(0.4)
             
             self.motor.go()
 
