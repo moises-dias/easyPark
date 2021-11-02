@@ -233,7 +233,6 @@ class coneBot:
         sleep(13)
         while(1):
             tcrt_read = self.tcrt.read()
-            print(tcrt_read)
 
             if tcrt_read == [1, 1, 0, 1, 1]:
                 print('1, 1')
@@ -251,14 +250,14 @@ class coneBot:
                 self.motor.setVelRight(0.5)
 
             if tcrt_read == [0, 1, 1, 1, 1]:
-                print('0.2, 1')
-                self.motor.setVelLeft(0.2)
+                print('0.3, 1')
+                self.motor.setVelLeft(0.3)
                 self.motor.setVelRight(1)
 
             if tcrt_read == [1, 1, 1, 1, 0]:
-                print('1, 0.2')
+                print('1, 0.3')
                 self.motor.setVelLeft(1)
-                self.motor.setVelRight(0.2)
+                self.motor.setVelRight(0.3)
             
             self.motor.go()
 
