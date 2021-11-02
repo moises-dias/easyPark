@@ -24,69 +24,30 @@ class Motor:
     def __init__(self, rpi, IN1, IN2, IN3, IN4):
         self.input = [-1, IN1, IN2, IN3, IN4] # do not use self.input[0]
         self.rpi = rpi
-        self.vel = 1    # it ranges from 0 to 1
+        self.vel_r, self.vel_l = 1    # it ranges from 0 to 1
+        self.vel_max = 0.4
         self.stop() # garantir, vai q pino começa em high sei la
 
         # preciso setar o modo dos pwm como output???
         # boa pergunta, mas podemos testar, vai ser facil de achar
-    
-    # podemos criar métodos para virar proporcionalmente dependendo do output do tcrt
-    # pelo que eu entendi:
-    # 1 = motor r frente
-    # 2 = motor r trás
-    # 3 = motor l frente
-    # 4 = motor l trás
-    def moveProportional(self, tcrt): 
-        # tcrt é uma lista de bool com 5 itens, referentes a leitura do tcrt
-        # indo da esquerda para a direita
-        vel_l = 0
-        vel_r = 0
-        if tcrt[2]: # se o IR central está vendo linha 
-            # seta a velocidade no maximo
-            vel_r = 1
-            vel_l = 1
-        if tcrt[1]: # se o primeiro sensor a esquerda do central está vendo linha
-            # diminui um pouco a velocidade do motor da esquerda, virar pra esquerda
-            vel_r = 1
-            vel_l = 0.8
-        if tcrt[3]: # se o primeiro sensor a direita do central está vendo linha
-            # diminui um pouco a velocidade do motor da direta, virar para direita
-            vel_r = 0.8
-            vel_l = 1
-        if tcrt[0]: # se o segundo sensor a esquerda do central esta vendo linha
-            # diminui mais ainda a velocidade do esquerdo
-            vel_r = 1
-            vel_l = 0.4
-        if tcrt[4]: # se o segundo sensor a direita do central está vendo linha
-            # diminui mais ainda a velocidade do motor direito
-            vel_r = 0.4
-            vel_l = 1
-        
-        # setando velocidades
-        self.rpi.set_PWM_dutycycle(self.input[1], 255 * vel_r)
-        self.rpi.set_PWM_dutycycle(self.input[2], 0)
-        self.rpi.set_PWM_dutycycle(self.input[3], 255 * vel_l)
-        self.rpi.set_PWM_dutycycle(self.input[4], 0)
-
-        # podemos dar um break/stop se não identificar nada, podemos testar isso
 
     def go(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
-        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel)
-        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnLeft(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel * 0.74)
+        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel * 0.74 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
-        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel * 0.74)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel * 0.74 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnRight(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
-        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel * 0.74)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * 0.74 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
-        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel * 0.74)
+        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * 0.74 * self.vel_max)
 
     def stop(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
@@ -95,39 +56,50 @@ class Motor:
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def brake(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel)
-        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel)
-        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel)
-        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel)
+        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * self.vel_max)
 
     def goBack(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel)
+        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
-        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel)
+        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * self.vel_max)
 
-    def setVel(self, vel):
+    def setVelLeft(self, vel):
         if vel > 1:
             vel = 1
         elif vel < 0:
             vel = 0
-        # acho q levantar um raise pode travar o robo no meio do estacionamento
-        # if vel > 1 or vel < 0:
-        #     raise "Seting motor velocity outside 0.0 - 1.0 range!"
-        self.vel = vel
+        self.vel_l = vel
+
+    def setVelRight(self, vel):
+        if vel > 1:
+            vel = 1
+        elif vel < 0:
+            vel = 0
+        self.vel_r = vel
+
+    def setMaxVel(self, vel):
+        if vel > 1:
+            vel = 1
+        elif vel < 0:
+            vel = 0
+        self.vel_max = vel
 
 class Tcrt5000:
     # https://thepihut.com/blogs/raspberry-pi-tutorials/how-to-use-the-tcrt5000-ir-line-follower-sensor-with-the-raspberry-pi
     # código baseado no tutorial acima
     def __init__(self, rpi, s1, s2, s3, s4, s5):
-        self.sensors = [-1, s1, s2, s3, s4, s5]
+        self.sensors = [s1, s2, s3, s4, s5]
         self.rpi = rpi
-        for i in self.sensors[1:]:
+        for i in self.sensors[:]:
             self.rpi.set_mode(i, pigpio.INPUT)
     
     def read(self):
         sensor_values = []
-        for s in self.sensors[1:]:
+        for s in self.sensors[:]:
             sensor_values.append(self.rpi.read(s))
         return sensor_values
 
@@ -251,9 +223,51 @@ class coneBot:
         self.color.cancel()
         self.pi.stop()
 
+    def followLine(self):
+        # podemos criar métodos para virar proporcionalmente dependendo do output do tcrt
+        # pelo que eu entendi:
+        # 1 = motor r frente
+        # 2 = motor r trás
+        # 3 = motor l frente
+        # 4 = motor l trás
+        # tcrt é uma lista de bool com 5 itens, referentes a leitura do tcrt
+        # indo da esquerda para a direita
+
+        while(1):
+            tcrt_read = self.tcrt.read()
+
+            if tcrt_read == [1, 1, 0, 1, 1]:
+                print('1, 1')
+                self.motor.setVelLeft(1)
+                self.motor.setVelRight(1)
+
+            if tcrt_read == [1, 0, 1, 1, 1]:
+                print('0.8, 1')
+                self.motor.setVelLeft(0.8)
+                self.motor.setVelRight(1)
+
+            if tcrt_read == [1, 1, 1, 0, 1]:
+                print('1, 0.8')
+                self.motor.setVelLeft(1)
+                self.motor.setVelRight(0.8)
+
+            if tcrt_read == [0, 1, 1, 1, 1]:
+                print('0.4, 1')
+                self.motor.setVelLeft(0.4)
+                self.motor.setVelRight(1)
+
+            if tcrt_read == [1, 1, 1, 1, 0]:
+                print('1, 0.4')
+                self.motor.setVelLeft(1)
+                self.motor.setVelRight(0.4)
+            
+            self.motor.go()
+
+        # podemos dar um break/stop se não identificar nada, podemos testar isso
 
 c = coneBot()
 #c.test_motor()
 #c.test_tcrt()
-c.test_color()
+#c.test_color()
+c.followLine()
 #c.start()
