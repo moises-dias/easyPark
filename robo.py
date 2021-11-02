@@ -431,7 +431,6 @@ class coneBot:
 
 c = coneBot()
 
-c.test_color()
 # c.start()
 # c.test_motor()
 # c.test_tcrt()
