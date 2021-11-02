@@ -486,14 +486,26 @@ class coneBot:
 
         # podemos dar um break/stop se não identificar nada, podemos testar isso
 
+    def followLineDumb(self):
+        sleep(13)
+        while 1:
+            tcrt_read = self.tcrt.read()
+
+            if tcrt_read == [1,1,0,1,1]:
+                self.motor.go()
+            elif tcrt_read == [1,0,1,1,1] or tcrt_read == [0,0,1,1,1] or tcrt_read == [0,1,1,1,1]:
+                self.motor.turnRight()
+            elif tcrt_read == [1,1,1,0,1] or tcrt_read == [1,1,1,0,0] or tcrt_read == [1,1,1,1,0]:
+                self.motor.turnLeft()
+            else:
+                self.motor.go()
 
 c = coneBot()
-# c.test_motor()
-# c.test_tcrt()
+
 c.test_color()
 # c.start()
 # c.test_motor()
 # c.test_tcrt()
 # c.test_color()
-c.followLine()
+c.followLineDumb()
 # c.start()
