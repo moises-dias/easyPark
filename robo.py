@@ -230,7 +230,7 @@ class coneBot:
         # 4 = motor l trás
         # tcrt é uma lista de bool com 5 itens, referentes a leitura do tcrt
         # indo da esquerda para a direita
-
+        sleep(13)
         while(1):
             tcrt_read = self.tcrt.read()
             print(tcrt_read)
