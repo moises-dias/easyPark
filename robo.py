@@ -233,6 +233,7 @@ class coneBot:
 
         while(1):
             tcrt_read = self.tcrt.read()
+            print(tcrt_read)
 
             if tcrt_read == [1, 1, 0, 1, 1]:
                 print('1, 1')
