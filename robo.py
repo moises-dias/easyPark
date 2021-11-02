@@ -24,12 +24,10 @@ class Motor:
     def __init__(self, rpi, IN1, IN2, IN3, IN4):
         self.input = [-1, IN1, IN2, IN3, IN4] # do not use self.input[0]
         self.rpi = rpi
-        self.vel_r, self.vel_l = 1    # it ranges from 0 to 1
+        self.vel_r = 1    # it ranges from 0 to 1
+        self.vel_l = 1
         self.vel_max = 0.4
         self.stop() # garantir, vai q pino começa em high sei la
-
-        # preciso setar o modo dos pwm como output???
-        # boa pergunta, mas podemos testar, vai ser facil de achar
 
     def go(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
