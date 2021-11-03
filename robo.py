@@ -428,21 +428,24 @@ class coneBot:
 
             elif tcrt_read == [1,0,0,1,1] or tcrt_read == [1,0,1,1,1]:
                 self.motor.setVelLeft(1)
-                self.motor.setVelRight(0.7)
+                self.motor.setVelRight(0.5)
                 self.motor.go()
 
             elif tcrt_read == [0,0,1,1,1] or tcrt_read == [0,1,1,1,1]:
-                self.motor.turnLeft()
-
+                self.motor.setVelLeft(1)
+                self.motor.setVelRight(0)
+                self.motor.go()
 
 
             elif tcrt_read == [1,1,0,0,1] or tcrt_read == [1,1,1,0,1]:
-                self.motor.setVelLeft(0.7)
+                self.motor.setVelLeft(0.5)
                 self.motor.setVelRight(1)
                 self.motor.go()
 
             elif tcrt_read == [1,1,1,0,0] or tcrt_read == [1,1,1,1,0]:
-                self.motor.turnRight()
+                self.motor.setVelLeft(1)
+                self.motor.setVelRight(0)
+                self.motor.go()
 
 
 c = coneBot()
