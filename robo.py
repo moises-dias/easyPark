@@ -443,8 +443,8 @@ class coneBot:
                 self.motor.go()
 
             elif tcrt_read == [1,1,1,0,0] or tcrt_read == [1,1,1,1,0]:
-                self.motor.setVelLeft(1)
-                self.motor.setVelRight(0)
+                self.motor.setVelLeft(0)
+                self.motor.setVelRight(1)
                 self.motor.go()
 
 
