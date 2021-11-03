@@ -417,6 +417,7 @@ class coneBot:
 
     def followLineDumb(self):
         sleep(13)
+        self.motor.go()
         while 1:
             tcrt_read = self.tcrt.read()
 
@@ -443,7 +444,6 @@ class coneBot:
             elif tcrt_read == [1,1,1,0,0] or tcrt_read == [1,1,1,1,0]:
                 self.motor.turnRight()
 
-        
 
 c = coneBot()
 
