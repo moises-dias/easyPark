@@ -5,6 +5,8 @@ import math
 import json
 import pigpio
 
+from grafo_busca_v0 import get_path
+
 from grafo_busca.grafo_busca import RobotLocationSystem, graph, directions
 from robot_network.notification_listener import RobotNotificationListener
 
@@ -443,6 +445,104 @@ class coneBot:
             elif tcrt_read == [1,1,1,0,0] or tcrt_read == [1,1,1,1,0]:
                 self.motor.turnRight()
 
+    # as próximas funções (followLineDumbSemWhileTrue, turn, moveStraight e moveOnParkingLot) são referentes a movimentação no estacionamento
+
+    def followLineDumbSemWhileTrue(self):
+        tcrt_read = self.tcrt.read()
+
+        if tcrt_read == [1,1,0,1,1]:
+            self.motor.setVelLeft(1)
+            self.motor.setVelRight(1)
+            self.motor.go()
+
+        elif tcrt_read == [1,0,0,1,1] or tcrt_read == [1,0,1,1,1]:
+            self.motor.setVelLeft(1)
+            self.motor.setVelRight(0.8)
+            self.motor.go()
+
+        elif tcrt_read == [0,0,1,1,1] or tcrt_read == [0,1,1,1,1]:
+            self.motor.turnLeft()
+
+
+        elif tcrt_read == [1,1,0,0,1] or tcrt_read == [1,1,1,0,1]:
+            self.motor.setVelLeft(0.8)
+            self.motor.setVelRight(1)
+            self.motor.go()
+
+        elif tcrt_read == [1,1,1,0,0] or tcrt_read == [1,1,1,1,0]:
+            self.motor.turnRight()
+        
+        elif any(tcrt_read[0:2]) and any(tcrt_read[3:5]): # detectou sensor dos dois lados, tcrt deve ta em cima da interseção, manda reto
+            self.motor.setVelLeft(1)
+            self.motor.setVelRight(1)
+            self.motor.go()
+
+    def turn(self, direction):
+        read_samples = 5 # colocar isso la no começo, n fiz isso pq podemos mudar
+        threshold = 80 # limite para considerar uma cor como preto ou não
+
+        # manda o robo fazer a curva
+        if direction == 'L':
+            self.motor.turnLeft()
+        else:
+            self.motor.turnRight()
+    
+        readings = [1] * read_samples 
+        # readings são as leituras para saber se eu estou ou não na faixa, inicia em 1 pq o sensor de cor ta na faixa inicialmente
+        # podemos fazer com 5, 10, qnts leituras for melhor
+        
+        while(any(readings)): # enquanto eu estiver vendo a faixa
+            rgb_values = self.color.get_rgb() # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            readings.append(int(all(color < threshold for color in rgb_values))) # se o R, G e B for menor que threshold = preto
+            readings = readings[-read_samples:]
+        # se saiu do while é pq as ultimas 'samples' leituras NAO identificaram preto
+        # agr vamo tentar achar uma faixa dvolta
+        
+        while(not all(readings)): # enqnt as ultimas leituras nao acharam a faixa
+            rgb_values = self.color.get_rgb() # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            readings.append(int(all(color < threshold for color in rgb_values)))
+            readings = readings[-read_samples:]
+        # se saiu do while é pq as ultimas 'samples' leituras identificaram preto
+        
+        self.motor.stop() # ou brake?
+    
+    def moveStraight(self):
+        read_samples = 5
+        threshold = 80
+        readings = [1] * read_samples 
+        while(any(readings)):
+            self.followLineDumbSemWhileTrue() # follow line
+            rgb_values = self.color.get_rgb() # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            readings.append(int(all(color < threshold for color in rgb_values))) # se o R, G e B for menor que threshold = preto
+            readings = readings[-read_samples:]
+        while(not all(readings)):
+            self.followLineDumbSemWhileTrue() # follow line
+            rgb_values = self.color.get_rgb() # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            readings.append(int(all(color < threshold for color in rgb_values))) # se o R, G e B for menor que threshold = preto
+            readings = readings[-read_samples:]
+        self.motor.stop()
+    
+    def moveOnParkingLot(self):
+        sleep(13) # isso tava no follow line dumb, deve precisar por algum motivo
+        face = 'R'
+        spot = 6
+
+        end = 0
+        end_dir = "R"
+
+        face, operations = get_path(spot, face, end, end_dir)
+        # print(operations) # se quiser ver o trajeto retornado
+
+        # operations = ['R', 'go']
+
+        for action in operations:
+            if action in ['R', 'L']:
+                self.turn(action)
+            else:
+                self.moveStraight()
+        
+        # tira foto
+
 
 c = coneBot()
 
@@ -452,3 +552,5 @@ c = coneBot()
 # c.test_color()
 c.followLineDumb()
 # c.start()
+
+# c.moveOnParkingLot() # para testar o movimento no estacionamento
