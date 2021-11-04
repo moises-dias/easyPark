@@ -108,7 +108,7 @@ if __name__ == "__main__":
     # esses valores virão do ultrasonico das vagas
     end = 0
     end_dir = "R"
-    rls = RobotLocationSystem()
+    rls = RobotLocationSystem(graph, directions)
     print(f"Initial spot = {spot}, destination = {end}, direction = {end_dir}")
     face = rls.walk_path(spot, face, end, end_dir)
     for key, value in rls._get_all_paths(graph).items():
