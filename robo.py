@@ -12,6 +12,7 @@ from robot_network.notification_listener import RobotNotificationListener
 
 TESTING_NETWORK = False
 from TCS3200 import *
+from MPU6050 import *
 
 # pigpio documentation
 # http://abyz.me.uk/rpi/pigpio/python.html
@@ -151,13 +152,6 @@ class Ultrasonic:
         return distance
 
 
-class Acelerometer:
-    # https://www.youtube.com/watch?v=R0hjzhBlaHQ
-    def __init__(self, rpi, acel_pins_list):
-        self.rpi = rpi
-        self.pins = acel_pins_list
-
-
 class coneBot:
     def __init__(self):
         # Acho que vou criar uma classe para cada componente
@@ -177,7 +171,7 @@ class coneBot:
         self.ultra = Ultrasonic(self.rpi, 23, 24)  # RPi pins for trig and echo
 
         # acelerometer fazer dpois, focar primeiro no motor e IR
-        # self.acelerometer = Acelerometer(self.rpi, self.acel)
+        self.gyro = Gyroscope(self.rpi)
 
         self.location_system = RobotLocationSystem(graph, directions)
         if TESTING_NETWORK:
@@ -259,6 +253,11 @@ class coneBot:
         while(1):
             print(self.ultra.measure_distance())
             sleep(0.1)
+
+    def test_gyro(self):
+        while(1):
+            print(self.gyro.read_gyro(), self.gyro.read_acc())
+            sleep(0.05)
 
     def followLine(self):
         # podemos criar métodos para virar proporcionalmente dependendo do output do tcrt
@@ -491,7 +490,8 @@ c = coneBot()
 # c.test_tcrt()     # ok
 # c.test_color()    # ok
 # c.test_buzzer()   # ok
-c.test_ultrassom()
+# c.test_ultrassom() # ok
+c.test_gyro()
 # c.followLineDumb()
 # c.start()
 
