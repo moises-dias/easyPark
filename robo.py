@@ -510,8 +510,8 @@ c = coneBot()
 # c.test_tcrt()     # ok
 # c.test_color()    # ok
 # c.test_buzzer()   # ok
-c.test_ultrassom()
-# c.followLineDumb()
+# c.test_ultrassom()
+c.followLineDumb()
 # c.start()
 
 # c.moveOnParkingLot() # para testar o movimento no estacionamento
