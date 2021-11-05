@@ -65,6 +65,7 @@ class Gyroscope():
 
 		return Gx, Gy, Gz
 
+
 	def read_acc(self):
     		
 		#Read Accelerometer raw value

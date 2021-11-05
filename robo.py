@@ -165,7 +165,7 @@ class coneBot:
 
         self.rpi = pigpio.pi()
 
-        self.motor = Motor(self.rpi, 2, 3, 4, 17)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
+        #self.motor = Motor(self.rpi, 2, 3, 4, 17)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
         self.tcrt = Tcrt5000(self.rpi, 5, 6, 13, 19, 26)  # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
         self.color = ColorSensor(self.rpi, 27, 22, 10, 9, 11)  # RPi pins for [S0, S1, S2, S3] and OUT
         self.ultra = Ultrasonic(self.rpi, 23, 24)  # RPi pins for trig and echo
