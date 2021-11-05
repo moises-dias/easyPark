@@ -258,7 +258,7 @@ class coneBot:
     def test_ultrassom(self):
         while(1):
             print(self.ultra.measure_distance())
-            sleep(0.01)
+            sleep(0.1)
 
     def followLine(self):
         # podemos criar métodos para virar proporcionalmente dependendo do output do tcrt
