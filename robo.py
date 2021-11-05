@@ -117,28 +117,9 @@ class Ultrasonic:
         self.echo = echo
         self.rpi = rpi
 
-
-
         self.rpi.set_mode(trig, pigpio.OUTPUT)
         self.rpi.set_mode(echo, pigpio.INPUT)
-        self.rpi.callback(self.echo, pigpio.RISING_EDGE, rise)
-        self.rpi.callback(self.echo, pigpio.FALLING_EDGE, fall)
 
-    def rise(self, tick):
-        global high
-        high = tick
-
-    def fall(self, tick):
-        global low
-        low = tick - high
-        done.set()
-
-    def read_distance(self):
-        global low
-        done.clear()
-        pi.gpio_trigger(self.trig, 50, 1)
-        if done.wait(timeout=5):
-            return low / 58.0 / 100.0
 
     def measure_distance(self):
         # set Trigger to HIGH
