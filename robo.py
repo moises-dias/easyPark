@@ -254,6 +254,10 @@ class coneBot:
             self.rpi.set_PWM_frequency(self.buz, i)
             sleep(0.3)
 
+    def test_ultrassom(self):
+        while(1):
+            print(self.ultra.measure_distance())
+            sleep(0.01)
 
     def followLine(self):
         # podemos criar métodos para virar proporcionalmente dependendo do output do tcrt
@@ -482,10 +486,11 @@ class coneBot:
 c = coneBot()
 
 # c.start()
-# c.test_motor()
-# c.test_tcrt()
-# c.test_color()
-c.test_buzzer()
+# c.test_motor()    # ok
+# c.test_tcrt()     # ok
+# c.test_color()    # ok
+# c.test_buzzer()   # ok
+c.test_ultrassom()
 # c.followLineDumb()
 # c.start()
 
