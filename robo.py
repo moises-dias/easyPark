@@ -164,7 +164,7 @@ class coneBot:
 
         self.led = 12
 
-        self.buz = 12
+        self.buz = 16
 
         self.acel = [20, 21]
 
