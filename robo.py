@@ -128,18 +128,18 @@ class Ultrasonic:
         sleep(0.00001)
         self.rpi.write(self.trig, 0)
 
-        StartTime = time()
-        StopTime = time()
+        StartTime = time.time()
+        StopTime = time.time()
 
         # talvez se eu não apontar para uma parede não vai sair do while abaixo
 
         # save StartTime
         while not self.rpi.read(self.echo):
-            StartTime = time()
+            StartTime = time.time()
 
         # save time of arrival
         while self.rpi.read(self.echo):
-            StopTime = time()
+            StopTime = time.time()
 
         # time difference between start and arrival
         TimeElapsed = StopTime - StartTime
