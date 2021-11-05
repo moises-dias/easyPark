@@ -236,6 +236,13 @@ class coneBot:
         self.color.cancel()
         self.pi.stop()
 
+    def test_led(self):
+        flag = True
+        while(1):
+            self.rpi.write(self.led, flag)
+            flag = not flag
+            sleep(1)
+
     def followLine(self):
         # podemos criar métodos para virar proporcionalmente dependendo do output do tcrt
         # pelo que eu entendi:
@@ -466,7 +473,8 @@ c = coneBot()
 # c.test_motor()
 # c.test_tcrt()
 # c.test_color()
-c.followLineDumb()
+c.test_led()
+# c.followLineDumb()
 # c.start()
 
 # c.moveOnParkingLot() # para testar o movimento no estacionamento
