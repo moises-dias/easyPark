@@ -243,6 +243,14 @@ class coneBot:
             flag = not flag
             sleep(1)
 
+    def test_buzzer(self):
+        i = 0
+        self.rpi.set_PWM_dutycycle(self.buz, 128) #  50 %
+        while(1):
+            i += 1
+            self.rpi.set_PWM_frequency(self.buz, i % 10000)
+
+
     def followLine(self):
         # podemos criar métodos para virar proporcionalmente dependendo do output do tcrt
         # pelo que eu entendi:
@@ -473,7 +481,7 @@ c = coneBot()
 # c.test_motor()
 # c.test_tcrt()
 # c.test_color()
-c.test_led()
+c.test_buzzer()
 # c.followLineDumb()
 # c.start()
 
