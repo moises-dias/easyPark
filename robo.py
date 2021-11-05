@@ -247,10 +247,10 @@ class coneBot:
         i = 0
         self.rpi.set_PWM_dutycycle(self.buz, 128) #  50 %
         while(1):
-            i = 400
+            i = 800
             self.rpi.set_PWM_frequency(self.buz, i)
             sleep(0.3)
-            i = 1000
+            i = 1500
             self.rpi.set_PWM_frequency(self.buz, i)
             sleep(0.3)
 
