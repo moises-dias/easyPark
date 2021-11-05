@@ -247,9 +247,12 @@ class coneBot:
         i = 0
         self.rpi.set_PWM_dutycycle(self.buz, 128) #  50 %
         while(1):
-            i += 200
-            self.rpi.set_PWM_frequency(self.buz, i % 1000)
-            sleep(0.3)
+            i = 6000
+            self.rpi.set_PWM_frequency(self.buz, i % 6000)
+            sleep(0.4)
+            i = 3000
+            self.rpi.set_PWM_frequency(self.buz, i % 6000)
+            sleep(0.4)
 
 
     def followLine(self):
