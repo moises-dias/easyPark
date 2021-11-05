@@ -257,7 +257,7 @@ class coneBot:
 
     def test_ultrassom(self):
         while(1):
-            print(self.ultra.read_distance())
+            print(self.ultra.measure_distance())
             sleep(0.01)
 
     def followLine(self):
