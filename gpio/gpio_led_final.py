@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 
-leds = {'R': 5, 'G': 7, 'B': 11}
+leds = {'B': 5, 'R': 7, 'G': 11}
 entering_button = 22
 leaving_button = 31
 
@@ -26,7 +26,7 @@ print('starting')
 GPIO.output(leds['R'], False)
 while (GPIO.input(entering_button) or GPIO.input(leaving_button)):
     time.sleep(1)
-    if GPIO.input(entering_button):
+    if not GPIO.input(entering_button):
         GPIO.output(leds['R'], True)
         GPIO.output(leds['B'], False)
         print('lendo placa para entrada')
@@ -46,7 +46,7 @@ while (GPIO.input(entering_button) or GPIO.input(leaving_button)):
                 GPIO.output(leds['B'], True)
                 GPIO.output(leds['R'], False)
         entering_index = entering_index + 1
-    elif GPIO.input(leaving_button):
+    elif not GPIO.input(leaving_button):
         GPIO.output(leds['R'], True)
         GPIO.output(leds['B'], False)
         print('lendo placa para saida')
