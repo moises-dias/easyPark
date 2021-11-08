@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 
-leds = {'B': 5, 'R': 7, 'G': 11}
+leds = {'R': 5, 'G': 7, 'B': 11}
 entering_button = 22
 leaving_button = 31
 
