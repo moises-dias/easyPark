@@ -24,7 +24,7 @@ GPIO.output(leds['B'], True)
 
 print('starting')
 GPIO.output(leds['R'], False)
-while not (GPIO.input(entering_button) and GPIO.input(leaving_button)):
+while (GPIO.input(entering_button) or GPIO.input(leaving_button)):
     time.sleep(1)
     if GPIO.input(entering_button):
         GPIO.output(leds['R'], True)
