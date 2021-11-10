@@ -195,6 +195,7 @@ class coneBot:
             sleep(3)
             print("\n--- stop ---\n")
             self.motor.stop()
+            sleep(3)
 
             print("\nturn left")
             self.motor.turnLeft()
@@ -208,6 +209,7 @@ class coneBot:
             sleep(3)
             print("\n--- stop ---\n")
             self.motor.stop()
+            sleep(3)
 
             print("\nback")
             self.motor.goBack()
