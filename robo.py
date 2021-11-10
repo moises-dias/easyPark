@@ -188,7 +188,7 @@ class coneBot:
 
     def test_motor(self):
         sleep(5)
-        self.motor.setVel(0.4)
+        self.motor.setVelMax(0.4)
         while 1:
             print("\ngo")
             self.motor.go()
