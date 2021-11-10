@@ -252,7 +252,7 @@ class coneBot:
 
     def test_gyro(self):
         while(1):
-            print(self.gyro.read_gyro(), self.gyro.read_acc())
+            print(float(self.gyro.read_gyro(),4), float(self.gyro.read_acc(),4))
             sleep(0.05)
 
     def followLine(self):
