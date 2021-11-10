@@ -190,16 +190,29 @@ class coneBot:
         sleep(5)
         self.motor.setVel(0.4)
         while 1:
-            print("go")
+            print("\ngo")
+            self.motor.go()
+            sleep(3)
+            print("\n--- stop ---\n")
+            self.motor.stop()
+
+            print("\nturn left")
             self.motor.turnLeft()
             sleep(3)
-            print("stop")
+            print("\n--- stop ---\n")
             self.motor.stop()
             sleep(3)
-            print("goBack")
+
+            print("\nturn right")
             self.motor.turnRight()
             sleep(3)
-            print("stop")
+            print("\n--- stop ---\n")
+            self.motor.stop()
+
+            print("\nback")
+            self.motor.goBack()
+            sleep(3)
+            print("\n--- stop ---\n")
             self.motor.stop()
             sleep(10)
 
@@ -483,10 +496,10 @@ class coneBot:
 c = coneBot()
 
 # c.start()
-# c.test_motor()    # ok
+c.test_motor()    # ok
 # c.test_tcrt()     # ok
 # c.test_color()    # ok
-c.test_buzzer()   # ok
+# c.test_buzzer()   # ok
 # c.test_ultrassom() # ok
 # c.test_gyro()     # ok
 # c.followLineDumb()
