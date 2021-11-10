@@ -283,7 +283,7 @@ class ColorSensor(threading.Thread):
          
          # Arredonda os valores para o numero mais próximo divisivel por 10
          # e acha o greate common divisor pra achar a ratio de vermelho, verde e azul
-         colors = [20 * round(c/20) for c in colors]
+         colors = [50 * round(c/50) for c in colors]
          div = math.gcd(math.gcd(colors[0], colors[1]), colors[2])
          if div == 0:
             div = 1
