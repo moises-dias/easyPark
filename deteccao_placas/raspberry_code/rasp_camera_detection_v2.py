@@ -19,9 +19,10 @@ from picamera import PiCamera
 from os import listdir
 
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 camera = PiCamera()
+camera.rotation = 180
 camera.resolution = (640, 480)
 
 def load_model(path):
@@ -99,7 +100,7 @@ labels.classes_ = np.load('license_character_classes.npy')
 print('you can now identify plates!')
 while True:
     time.sleep(1)
-    if not GPIO.input(11):
+    if not GPIO.input(22):
         print('iniciando detecção')
         # rawCapture = PiRGBArray(camera)
         # allow the camera to warmup
