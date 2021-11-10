@@ -238,7 +238,6 @@ class coneBot:
 
         while 1:
             print(np.round(list(self.color.get_rgb()), 4), self.color.color())
-            sleep(0.1)
 
         self.color.cancel()
         self.pi.stop()
