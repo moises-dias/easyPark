@@ -222,7 +222,7 @@ class coneBot:
         self.color.set_white_level(hz)
 
         while 1:
-            print(self.color.get_rgb(), self.color.color())
+            print(np.round(list(self.color.get_rgb(), 4)), self.color.color())
             sleep(0.5)
 
         self.color.cancel()
@@ -485,9 +485,9 @@ c = coneBot()
 # c.start()
 # c.test_motor()    # ok
 # c.test_tcrt()     # ok
-# c.test_color()    # ok
+c.test_color()    # ok
 # c.test_buzzer()   # ok
-c.test_ultrassom() # ok
+# c.test_ultrassom() # ok
 # c.test_gyro()     # ok
 # c.followLineDumb()
 # c.start()
