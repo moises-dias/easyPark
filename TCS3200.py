@@ -308,7 +308,14 @@ class ColorSensor(threading.Thread):
                   return 'white'
                else:
                   return 'black' 
-         return 'None'       
+         return 'None'
+
+   def color_bw(self):
+      colors = list(self.get_rgb())[0]
+      if colors[0] > 85 and colors[1] > 85 and colors[2] > 85:
+         return 'black'
+      else
+         return 'white'
 
    def _cbf(self, g, l, t):
 
