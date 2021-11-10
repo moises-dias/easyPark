@@ -3,6 +3,7 @@
 from time import sleep, time
 import math
 import json
+import numpy as np
 import pigpio
 
 from grafo_busca_v0 import get_path
@@ -252,7 +253,7 @@ class coneBot:
 
     def test_gyro(self):
         while(1):
-            print(round(list(self.gyro.read_gyro()), 4), round(list(self.gyro.read_acc()), 4))
+            print(np.round(list(self.gyro.read_gyro()), 4), np.round(list(self.gyro.read_acc()), 4))
             sleep(0.05)
 
     def followLine(self):
