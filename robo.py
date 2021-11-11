@@ -5,13 +5,15 @@ import math
 import json
 import numpy as np
 import pigpio
+from threading import Thread
 
 from grafo_busca_v0 import get_path
 
 from grafo_busca.grafo_busca import RobotLocationSystem, graph, directions
-from robot_network.notification_listener import RobotNotificationListener
+from robot_network.notification_listener_v2 import RobotNotificationListener
 
 TESTING_NETWORK = False
+TESTING_LOCATION_SYSTEM = False
 from TCS3200 import *
 from MPU6050 import *
 
@@ -44,16 +46,24 @@ class Motor:
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnLeft(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(
+            self.input[1], 255 * self.vel_l * 0.74 * self.vel_max
+        )
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
-        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(
+            self.input[3], 255 * self.vel_r * 0.74 * self.vel_max
+        )
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnRight(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
-        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(
+            self.input[2], 255 * self.vel_l * 0.74 * self.vel_max
+        )
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
-        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(
+            self.input[4], 255 * self.vel_r * 0.74 * self.vel_max
+        )
 
     def stop(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
@@ -122,7 +132,6 @@ class Ultrasonic:
         self.rpi.set_mode(trig, pigpio.OUTPUT)
         self.rpi.set_mode(echo, pigpio.INPUT)
 
-
     def measure_distance(self):
         # set Trigger to HIGH
         self.rpi.write(self.trig, 1)
@@ -158,22 +167,35 @@ class coneBot:
         # Acho que vou criar uma classe para cada componente
         # Assim fica mais fácil setar, contorlar e ler coisas dos componentes
 
-        #self.led = 12
+        # self.led = 12
 
         self.buz = 9
 
         self.rpi = pigpio.pi()
 
-        self.motor = Motor(self.rpi, 13, 16, 20, 21)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
-        self.tcrt = Tcrt5000(self.rpi, 4, 18, 17, 27, 23)  # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
-        self.color = ColorSensor(self.rpi, 6, 12, 5, 11, 7,)  # RPi pins for OUT, S2, S3, S0, S1
+        self.motor = Motor(
+            self.rpi, 13, 16, 20, 21
+        )  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
+        self.tcrt = Tcrt5000(
+            self.rpi, 4, 18, 17, 27, 23
+        )  # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
+        self.color = ColorSensor(
+            self.rpi,
+            6,
+            12,
+            5,
+            11,
+            7,
+        )  # RPi pins for OUT, S2, S3, S0, S1
         self.ultra = Ultrasonic(self.rpi, 24, 10)  # RPi pins for trig and echo
         self.gyro = Gyroscope(self.rpi)
 
-        self.location_system = RobotLocationSystem(graph, directions)
+        if TESTING_LOCATION_SYSTEM:
+            self.location_system = RobotLocationSystem(graph, directions)
         if TESTING_NETWORK:
             self.notification_listener = RobotNotificationListener()
-            self.notification_listener.listen()
+            thread = Thread(target=self.notification_listener.listen)
+            thread.start()
 
         self.motor.stop()
         # self.start()
@@ -228,13 +250,13 @@ class coneBot:
 
         input("Calibrating black object, press RETURN to start")
         hz = self.color.get_hertz()
-        #hz = [268.256, 247.957, 302.885]
+        # hz = [268.256, 247.957, 302.885]
         print(hz)
         self.color.set_black_level(hz)
 
         input("Calibrating white object, press RETURN to start")
         hz = self.color.get_hertz()
-        #hz = [652.742, 633.967, 789.036]
+        # hz = [652.742, 633.967, 789.036]
         print(hz)
         self.color.set_white_level(hz)
 
@@ -246,15 +268,15 @@ class coneBot:
 
     def test_led(self):
         flag = True
-        while(1):
+        while 1:
             self.rpi.write(self.led, flag)
             flag = not flag
             sleep(1)
 
     def test_buzzer(self):
         i = 0
-        self.rpi.set_PWM_dutycycle(self.buz, 128) #  50 %
-        while(1):
+        self.rpi.set_PWM_dutycycle(self.buz, 128)  #  50 %
+        while 1:
             i = 800
             self.rpi.set_PWM_frequency(self.buz, i)
             sleep(0.3)
@@ -263,13 +285,16 @@ class coneBot:
             sleep(0.3)
 
     def test_ultrassom(self):
-        while(1):
+        while 1:
             print(self.ultra.measure_distance())
             sleep(0.1)
 
     def test_gyro(self):
-        while(1):
-            print(np.round(list(self.gyro.read_gyro()), 4), np.round(list(self.gyro.read_acc()), 4))
+        while 1:
+            print(
+                np.round(list(self.gyro.read_gyro()), 4),
+                np.round(list(self.gyro.read_acc()), 4),
+            )
             sleep(0.05)
 
     def followLine(self):
@@ -316,9 +341,9 @@ class coneBot:
 
     def followLineTest(self):
         sleep(13)
-        
+
         # precisamos guardar o estado pq se ele perdeu todos os sensores vamos recorrer a isso para saber o que ele estava fazendo antes
-        state = 'straight'
+        state = "straight"
 
         while 1:
             tcrt_read = self.tcrt.read()
@@ -329,42 +354,50 @@ class coneBot:
             # [1, 1, 0, 1, 1], [1, 0, 1, 1, 1], [1, 1, 1, 0, 1], [0, 1, 1, 1, 1], [1, 1, 1, 1, 0]
             # com esse código nós resolvemos os casos onde for detectado mais de um sensor
 
-            if tcrt_read[0] == 0: # se o mais a esquerda detectou linha
-                state = 'turning_left'
-            
-            elif tcrt_read[1] == 0: # ELIF, pq se eu ja peguei o sensor da extremidade posso ignorar esse pq tenho que virar bastante
-                state = 'soft_turning_left'
-            
-            elif tcrt_read[4] == 0: # se o mais a direita detectou linha
-                state = 'turning_right'
+            if tcrt_read[0] == 0:  # se o mais a esquerda detectou linha
+                state = "turning_left"
 
-            elif tcrt_read[3] == 0: # se o sensor entre o central e o extremo da direita (extrema direita bolsonaro kkk)
-                state = 'soft_turning_right'
+            elif (
+                tcrt_read[1] == 0
+            ):  # ELIF, pq se eu ja peguei o sensor da extremidade posso ignorar esse pq tenho que virar bastante
+                state = "soft_turning_left"
 
-            elif tcrt_read[2] == 0: # se pegou APENAS o sensor central pode pisar fundo 
-                state = 'straight'
-            
-            if state == 'straight':
+            elif tcrt_read[4] == 0:  # se o mais a direita detectou linha
+                state = "turning_right"
+
+            elif (
+                tcrt_read[3] == 0
+            ):  # se o sensor entre o central e o extremo da direita (extrema direita bolsonaro kkk)
+                state = "soft_turning_right"
+
+            elif tcrt_read[2] == 0:  # se pegou APENAS o sensor central pode pisar fundo
+                state = "straight"
+
+            if state == "straight":
                 print("1, 1")
                 self.motor.setVelLeft(1)
                 self.motor.setVelRight(1)
-            elif state == 'soft_turning_right':
+            elif state == "soft_turning_right":
                 print("0.8, 1")
                 self.motor.setVelLeft(0.8)
                 self.motor.setVelRight(1)
-            elif state == 'turning_right':
+            elif state == "turning_right":
                 print("0.9, 0.4")
-                self.motor.setVelLeft(0.9) # como a curva ta bem fechada acho interessante diminuir um pouco, pelo menos no primeiro teste
+                self.motor.setVelLeft(
+                    0.9
+                )  # como a curva ta bem fechada acho interessante diminuir um pouco, pelo menos no primeiro teste
                 self.motor.setVelRight(0.4)
-            elif state == 'soft_turning_left':
+            elif state == "soft_turning_left":
                 print("1, 0.8")
                 self.motor.setVelLeft(1)
                 self.motor.setVelRight(0.8)
-            elif state == 'turning_left':
+            elif state == "turning_left":
                 print("0.4, 0.9")
                 self.motor.setVelLeft(0.4)
-                self.motor.setVelRight(0.9) # como a curva ta bem fechada acho interessante diminuir um pouco, pelo menos no primeiro teste
-            
+                self.motor.setVelRight(
+                    0.9
+                )  # como a curva ta bem fechada acho interessante diminuir um pouco, pelo menos no primeiro teste
+
             self.motor.go()
 
         # podemos dar um break/stop se não identificar nada, podemos testar isso
@@ -375,26 +408,25 @@ class coneBot:
         while 1:
             tcrt_read = self.tcrt.read()
 
-            if tcrt_read == [1,1,0,1,1]:
+            if tcrt_read == [1, 1, 0, 1, 1]:
                 self.motor.setVelLeft(1)
                 self.motor.setVelRight(1)
                 self.motor.go()
 
-            elif tcrt_read == [1,0,0,1,1] or tcrt_read == [1,0,1,1,1]:
+            elif tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 0, 1, 1, 1]:
                 self.motor.setVelLeft(1)
                 self.motor.setVelRight(0.8)
                 self.motor.go()
 
-            elif tcrt_read == [0,0,1,1,1] or tcrt_read == [0,1,1,1,1]:
+            elif tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
                 self.motor.turnLeft()
 
-
-            elif tcrt_read == [1,1,0,0,1] or tcrt_read == [1,1,1,0,1]:
+            elif tcrt_read == [1, 1, 0, 0, 1] or tcrt_read == [1, 1, 1, 0, 1]:
                 self.motor.setVelLeft(0.8)
                 self.motor.setVelRight(1)
                 self.motor.go()
 
-            elif tcrt_read == [1,1,1,0,0] or tcrt_read == [1,1,1,1,0]:
+            elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
                 self.motor.turnRight()
 
     # as próximas funções (followLineDumbSemWhileTrue, turn, moveStraight e moveOnParkingLot) são referentes a movimentação no estacionamento
@@ -402,81 +434,88 @@ class coneBot:
     def followLineDumbSemWhileTrue(self):
         tcrt_read = self.tcrt.read()
 
-        if tcrt_read == [1,1,0,1,1]:
+        if tcrt_read == [1, 1, 0, 1, 1]:
             self.motor.setVelLeft(1)
             self.motor.setVelRight(1)
             self.motor.go()
 
-        elif tcrt_read == [1,0,0,1,1] or tcrt_read == [1,0,1,1,1]:
+        elif tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 0, 1, 1, 1]:
             self.motor.setVelLeft(1)
             self.motor.setVelRight(0.8)
             self.motor.go()
 
-        elif tcrt_read == [0,0,1,1,1] or tcrt_read == [0,1,1,1,1]:
+        elif tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
             self.motor.turnLeft()
 
-
-        elif tcrt_read == [1,1,0,0,1] or tcrt_read == [1,1,1,0,1]:
+        elif tcrt_read == [1, 1, 0, 0, 1] or tcrt_read == [1, 1, 1, 0, 1]:
             self.motor.setVelLeft(0.8)
             self.motor.setVelRight(1)
             self.motor.go()
 
-        elif tcrt_read == [1,1,1,0,0] or tcrt_read == [1,1,1,1,0]:
+        elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
             self.motor.turnRight()
-        
-        elif any(tcrt_read[0:2]) and any(tcrt_read[3:5]): # detectou sensor dos dois lados, tcrt deve ta em cima da interseção, manda reto
+
+        elif any(tcrt_read[0:2]) and any(
+            tcrt_read[3:5]
+        ):  # detectou sensor dos dois lados, tcrt deve ta em cima da interseção, manda reto
             self.motor.setVelLeft(1)
             self.motor.setVelRight(1)
             self.motor.go()
 
     def turn(self, direction):
-        read_samples = 5 # colocar isso la no começo, n fiz isso pq podemos mudar
-        threshold = 80 # limite para considerar uma cor como preto ou não
+        read_samples = 5  # colocar isso la no começo, n fiz isso pq podemos mudar
+        threshold = 80  # limite para considerar uma cor como preto ou não
 
         # manda o robo fazer a curva
-        if direction == 'L':
+        if direction == "L":
             self.motor.turnLeft()
         else:
             self.motor.turnRight()
-    
-        readings = [1] * read_samples 
+
+        readings = [1] * read_samples
         # readings são as leituras para saber se eu estou ou não na faixa, inicia em 1 pq o sensor de cor ta na faixa inicialmente
         # podemos fazer com 5, 10, qnts leituras for melhor
-        
-        while(any(readings)): # enquanto eu estiver vendo a faixa
-            rgb_values = self.color.get_rgb() # TEM Q INSTANCIAR A CLASSE DO TCS3200
-            readings.append(int(all(color < threshold for color in rgb_values))) # se o R, G e B for menor que threshold = preto
+
+        while any(readings):  # enquanto eu estiver vendo a faixa
+            rgb_values = self.color.get_rgb()  # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            readings.append(
+                int(all(color < threshold for color in rgb_values))
+            )  # se o R, G e B for menor que threshold = preto
             readings = readings[-read_samples:]
         # se saiu do while é pq as ultimas 'samples' leituras NAO identificaram preto
         # agr vamo tentar achar uma faixa dvolta
-        
-        while(not all(readings)): # enqnt as ultimas leituras nao acharam a faixa
-            rgb_values = self.color.get_rgb() # TEM Q INSTANCIAR A CLASSE DO TCS3200
+
+        while not all(readings):  # enqnt as ultimas leituras nao acharam a faixa
+            rgb_values = self.color.get_rgb()  # TEM Q INSTANCIAR A CLASSE DO TCS3200
             readings.append(int(all(color < threshold for color in rgb_values)))
             readings = readings[-read_samples:]
         # se saiu do while é pq as ultimas 'samples' leituras identificaram preto
-        
-        self.motor.stop() # ou brake?
-    
+
+        self.motor.stop()  # ou brake?
+
     def moveStraight(self):
         read_samples = 5
         threshold = 80
-        readings = [1] * read_samples 
-        while(any(readings)):
-            self.followLineDumbSemWhileTrue() # follow line
-            rgb_values = self.color.get_rgb() # TEM Q INSTANCIAR A CLASSE DO TCS3200
-            readings.append(int(all(color < threshold for color in rgb_values))) # se o R, G e B for menor que threshold = preto
+        readings = [1] * read_samples
+        while any(readings):
+            self.followLineDumbSemWhileTrue()  # follow line
+            rgb_values = self.color.get_rgb()  # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            readings.append(
+                int(all(color < threshold for color in rgb_values))
+            )  # se o R, G e B for menor que threshold = preto
             readings = readings[-read_samples:]
-        while(not all(readings)):
-            self.followLineDumbSemWhileTrue() # follow line
-            rgb_values = self.color.get_rgb() # TEM Q INSTANCIAR A CLASSE DO TCS3200
-            readings.append(int(all(color < threshold for color in rgb_values))) # se o R, G e B for menor que threshold = preto
+        while not all(readings):
+            self.followLineDumbSemWhileTrue()  # follow line
+            rgb_values = self.color.get_rgb()  # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            readings.append(
+                int(all(color < threshold for color in rgb_values))
+            )  # se o R, G e B for menor que threshold = preto
             readings = readings[-read_samples:]
         self.motor.stop()
-    
+
     def moveOnParkingLot(self):
-        sleep(13) # isso tava no follow line dumb, deve precisar por algum motivo
-        face = 'R'
+        sleep(13)  # isso tava no follow line dumb, deve precisar por algum motivo
+        face = "R"
         spot = 6
 
         end = 0
@@ -488,11 +527,11 @@ class coneBot:
         # operations = ['R', 'go']
 
         for action in operations:
-            if action in ['R', 'L']:
+            if action in ["R", "L"]:
                 self.turn(action)
             else:
                 self.moveStraight()
-        
+
         # tira foto
 
 
@@ -501,7 +540,7 @@ c = coneBot()
 # c.start()
 # c.test_motor()    # ok
 # c.test_tcrt()     # ok
-c.test_color()    # ok
+c.test_color()  # ok
 # c.test_buzzer()   # ok
 # c.test_ultrassom() # ok
 # c.test_gyro()     # ok

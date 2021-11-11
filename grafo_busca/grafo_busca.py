@@ -100,6 +100,9 @@ class RobotLocationSystem:
                 paths[(start_node, end_node)] = self._bfs(graph, start_node, end_node)
         return paths
 
+    def get_distance_between_nodes(self, start, end):
+        return len(self.paths[(start, end)])
+
 
 if __name__ == "__main__":
     # start position
@@ -108,7 +111,7 @@ if __name__ == "__main__":
     # esses valores virão do ultrasonico das vagas
     end = 0
     end_dir = "R"
-    rls = RobotLocationSystem()
+    rls = RobotLocationSystem(graph, directions)
     print(f"Initial spot = {spot}, destination = {end}, direction = {end_dir}")
     face = rls.walk_path(spot, face, end, end_dir)
     for key, value in rls._get_all_paths(graph).items():
