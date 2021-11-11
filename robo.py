@@ -194,7 +194,7 @@ class coneBot:
             self.location_system = RobotLocationSystem(graph, directions)
         if TESTING_NETWORK:
             self.notification_listener = RobotNotificationListener()
-            thread = Thread(target=self.notification_listener.listen)
+            thread = Thread(target=self.notification_listener.run)
             thread.start()
 
         self.motor.stop()
