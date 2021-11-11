@@ -540,8 +540,8 @@ c = coneBot()
 # c.start()
 # c.test_motor()    # ok
 # c.test_tcrt()     # ok
-c.test_color()  # ok
-# c.test_buzzer()   # ok
+# c.test_color()    # ok
+c.test_buzzer()  # ok
 # c.test_ultrassom() # ok
 # c.test_gyro()     # ok
 # c.followLineDumb()
