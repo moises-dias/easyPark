@@ -176,7 +176,7 @@ while True:
         print(req.text)
 
         if json.loads(req.text)['success']:
-            print('plate found on server, opening gate')
+            print('opening gate')
             GPIO.output(leds['B'], True)
             GPIO.output(leds['G'], False)
             time.sleep(5)
@@ -184,7 +184,7 @@ while True:
             GPIO.output(leds['G'], True)
             GPIO.output(leds['R'], False)
         else:
-            print('detected 7 digits but plate not found on server')
-            print('closing gate')
+            print(json.loads(req.text)['messages'])
+            # print('closing gate')
             GPIO.output(leds['B'], True)
             GPIO.output(leds['R'], False)
