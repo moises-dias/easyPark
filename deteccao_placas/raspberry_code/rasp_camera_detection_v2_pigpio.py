@@ -22,7 +22,7 @@ from os import listdir
 #GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 camera = PiCamera()
-camera.rotation = 180
+camera.rotation = 0
 camera.resolution = (640, 480)
 
 def load_model(path):
