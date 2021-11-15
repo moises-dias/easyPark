@@ -11,7 +11,7 @@ class RobotNotificationListener(Thread):
     def __init__(self, *args, **kwargs) -> None:
         super(RobotNotificationListener, self).__init__(*args, **kwargs)
         self.interested_threads = []
-        self.sent_messages = set()
+        self.last_message = ""
 
     def run(self):
         hub_connection = (
@@ -36,12 +36,10 @@ class RobotNotificationListener(Thread):
             try:
                 # hub_connection.on("CarHasParked", self.dispatch_message)
                 # sleep(0.1)
-                # Uncomment the lines below to test (and comment the above one).
+                # Uncomment the lines below to test (and comment the above ones).
                 hub_connection.on("Teste", self.dispatch_message)
-                # print("I'm here")
-                # if len(self.pspot_list) > 0:
-                #     print(f"\n{self.pspot_list=}\n")
-                #     break
+                sleep(0.1)  # EXTREMELY IMPORTANT:
+                #            this makes memory usage not blow up, and improves responsiveness
             except Exception as e:
                 print(
                     f"Exception ocurred in robot's notification listener. Exiting. Exception: {e}"
@@ -53,9 +51,9 @@ class RobotNotificationListener(Thread):
         self.interested_threads.append(thread)
 
     def dispatch_message(self, message):
-        for thread in self.interested_threads:
-            if message[0] not in self.sent_messages:
-                self.sent_messages.add(message[0])
+        if message[0] != self.last_message:
+            for thread in self.interested_threads:
+                self.last_message = message[0]
                 thread.put_message(message[0])
 
 
@@ -72,7 +70,6 @@ class WorkerThread(Thread):
             print(f"Here's our message: {message}")
 
     def put_message(self, message):
-        # if message not in self.pspot_queue:
         self.pspot_queue.put(message)
 
 
