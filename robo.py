@@ -500,7 +500,7 @@ class coneBot:
         self.motor.stop()  # ou brake?
 
     def moveStraight(self):
-        read_samples = 5
+        read_samples = 2
         threshold = 80
         readings = [1] * read_samples
         while any(readings):
