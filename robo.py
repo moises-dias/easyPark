@@ -215,7 +215,7 @@ class coneBot(Thread):
             self.motor.stop()
         # except Exception:
         #    print(f"You're not using a RPi. Continuing.")
-        # self.start()
+        self.start_bot()
 
     def run(self):
         dispatcher_thread.register_interest(self)
@@ -235,9 +235,6 @@ class coneBot(Thread):
         self.pspot_queue.put(message)
 
     def start_bot(self):
-        sleep(0.3)
-        #tcrt_values = self.tcrt.read()
-        #self.motor.moveProportional(tcrt_values)
 
         calibrate_colors = True
         if calibrate_colors:
