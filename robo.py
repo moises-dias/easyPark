@@ -239,7 +239,7 @@ class coneBot(Thread):
 
     def start_bot(self):
 
-        calibrate_colors = True
+        calibrate_colors = False
         if calibrate_colors:
             input("Calibrating black object, press RETURN to start")
             hz = self.color.get_hertz()
@@ -251,8 +251,8 @@ class coneBot(Thread):
             print(hz)
             self.color.set_white_level(hz)
         else:
-            self.color.set_black_level([239, 239, 314])
-            self.color.set_white_level([1523, 1576, 2041])
+            self.color.set_black_level([129, 132, 169])
+            self.color.set_white_level([1727, 1775, 2297])
 
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
