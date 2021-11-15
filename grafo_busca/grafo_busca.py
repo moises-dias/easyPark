@@ -63,32 +63,36 @@ class RobotLocationSystem:
             start in ["L", "R"] and end in ["L", "R"]
         ):
             print("\tTurn 180 degrees.")
+            return "180"
         elif (
             (start == "U" and end == "R")
             or (start == "R" and end == "D")
             or (start == "D" and end == "L")
             or (start == "L" and end == "U")
         ):
-            print("\tTurn 90 degrees right.")
+            print("\    tTurn 90 degrees right.")
+            return "R"
         else:
             print("\tTurn 90 degrees left.")
+            return "L"
 
-    def walk_path(self, start: int, face: str, end: int, end_dir: str) -> str:
-        """Walks a path from start to end, finishing facing direction end_dir. Returns the direction the robot is facing."""
-        # path = self._bfs(graph, start, end)
+    def get_path(self, start: int, face: str, end: int, end_dir: str) -> str:
+        """Walks a path from start to end, finishing facing direction end_dir."""
         path = self.paths[(start, end)]
+        operations = []
         if len(path) < 2:
             print("No path found")
         for i in range(len(path) - 1):
             if face != directions[path[i]][path[i + 1]]:
-                self._turn(face, directions[path[i]][path[i + 1]])
+                operations.append(self._turn(face, directions[path[i]][path[i + 1]]))
                 face = directions[path[i]][path[i + 1]]
             print(f"Moving from spot {path[i]} to spot {path[i+1]}")
+            operations.append("go")
         if face != end_dir:
-            self._turn(face, end_dir)
+            operations.append(self._turn(face, end_dir))
             face = end_dir
         self.face = face
-        return face
+        return face, operations
 
     def _get_all_paths(
         self, graph: Dict[int, List[int]]
@@ -100,19 +104,22 @@ class RobotLocationSystem:
                 paths[(start_node, end_node)] = self._bfs(graph, start_node, end_node)
         return paths
 
-    def get_distance_between_nodes(self, start, end):
+    def get_distance_between_nodes(self, trajectory: tuple):
+        start, end = trajectory
         return len(self.paths[(start, end)])
 
 
 if __name__ == "__main__":
     # start position
-    face = "U"
+    face = "R"
     spot = 6
     # esses valores virão do ultrasonico das vagas
     end = 0
     end_dir = "R"
     rls = RobotLocationSystem(graph, directions)
-    print(f"Initial spot = {spot}, destination = {end}, direction = {end_dir}")
-    face = rls.walk_path(spot, face, end, end_dir)
-    for key, value in rls._get_all_paths(graph).items():
-        print(f"Path from {key[0]} to {key[1]} : {value}")
+    # print(f"Initial spot = {spot}, destination = {end}, direction = {end_dir}")
+    # face, operations = rls.get_path(spot, face, end, end_dir)
+    # print(operations)
+    thing = [(8, 6), (0, 6), (6, 8), (2, 4)]
+    thing.sort(key=rls.get_distance_between_nodes)
+    print(thing)

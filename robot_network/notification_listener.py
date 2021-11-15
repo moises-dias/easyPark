@@ -1,43 +1,83 @@
-import socket
-import threading
-from typing import List
+from signalrcore.hub_connection_builder import HubConnectionBuilder
+import logging
+from threading import Thread
+from queue import Queue
+from time import sleep
 
-PORT = 6789
-SERVER = ""
-ADDR = (SERVER, PORT)
+SERVER_URL = "https://easy-park-iw.herokuapp.com/robotHub"
 
 
-class RobotNotificationListener:
-    def __init__(self) -> None:
-        self.pspot_list = []
+class RobotNotificationListener(Thread):
+    def __init__(self, *args, **kwargs) -> None:
+        super(RobotNotificationListener, self).__init__(*args, **kwargs)
+        self.interested_threads = []
+        self.last_message = ""
 
-    def _process_data(self) -> None:
-        print(f"New connection established.")
-        data = self.conn.recv(1024).decode("utf-8")
-        self.pspot_list.append(data)
-        self.conn.close()
+    def run(self):
+        hub_connection = (
+            HubConnectionBuilder()
+            .with_url(SERVER_URL)
+            # .configure_logging(logging.DEBUG, socket_trace=True)
+            .with_automatic_reconnect(
+                {
+                    "type": "raw",
+                    "keep_alive_interval": 10,
+                    "reconnect_interval": 5,
+                    "max_attempts": 5,
+                }
+            )
+            .build()
+        )
+        print("Starting hub connection.")
+        hub_connection.start()
+        print("Hub connection started.")
 
-    def __call__(self) -> None:
-        print(f"New connection in notif. server from {self.addr}")
-        self._process_data()
-        print(f"Notif. server disconnected from {self.addr}")
+        while True:
+            try:
+                # hub_connection.on("CarHasParked", self.dispatch_message)
+                # sleep(0.1)
+                # Uncomment the lines below to test (and comment the above ones).
+                hub_connection.on("Teste", self.dispatch_message)
+                sleep(0.1)  # EXTREMELY IMPORTANT:
+                #            this makes memory usage not blow up, and improves responsiveness
+            except Exception as e:
+                print(
+                    f"Exception ocurred in robot's notification listener. Exiting. Exception: {e}"
+                )
+                break
+        hub_connection.stop()
 
-    def get_parkspot_list(self) -> List[str]:
-        return self.pspot_list
+    def register_interest(self, thread):
+        self.interested_threads.append(thread)
 
-    def listen(self) -> None:
-        """Starts the robot's parking spot notification listener."""
-        print("Starting robot's notification listener.")
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-            server.bind(ADDR)
-            server.listen()
-            print(f"Notification server is listening")
-            while True:
-                self.conn, self.addr = server.accept()
-                thread = threading.Thread(target=RobotNotificationListener())
-                thread.start()
+    def dispatch_message(self, message):
+        if message[0] != self.last_message:
+            for thread in self.interested_threads:
+                self.last_message = message[0]
+                thread.put_message(message[0])
+
+
+class WorkerThread(Thread):
+    def __init__(self, *args, **kwargs):
+        super(WorkerThread, self).__init__(*args, **kwargs)
+        self.pspot_queue = Queue()
+
+    def run(self):
+        dispatcher_thread.register_interest(self)
+
+        while True:
+            message = self.pspot_queue.get()
+            print(f"Here's our message: {message}")
+
+    def put_message(self, message):
+        self.pspot_queue.put(message)
 
 
 if __name__ == "__main__":
-    rnl = RobotNotificationListener()
-    rnl.listen()
+    dispatcher_thread = RobotNotificationListener()
+    dispatcher_thread.start()
+
+    worker_thread = WorkerThread()
+    worker_thread.start()
+
+    dispatcher_thread.join()

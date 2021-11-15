@@ -7,18 +7,22 @@ import numpy as np
 import pigpio
 from threading import Thread
 
-from grafo_busca_v0 import get_path
+# from grafo_busca_v0 import get_path
 
 from grafo_busca.grafo_busca import RobotLocationSystem, graph, directions
-from robot_network.notification_listener_v2 import RobotNotificationListener
+from robot_network.notification_listener import RobotNotificationListener
+from queue import Queue
 
-TESTING_NETWORK = False
-TESTING_LOCATION_SYSTEM = False
-from TCS3200 import *
-from MPU6050 import *
+try:
+    from TCS3200 import *
+    from MPU6050 import *
+except ModuleNotFoundError:
+    print("Módulos do RPi não encontrados. Prosseguindo.")
 
 # pigpio documentation
 # http://abyz.me.uk/rpi/pigpio/python.html
+
+TESTING_LOCATION_SYSTEM = True
 
 
 class Motor:
@@ -162,45 +166,64 @@ class Ultrasonic:
         return distance
 
 
-class coneBot:
-    def __init__(self):
+class coneBot(Thread):
+    def __init__(self, *args, **kwargs):
         # Acho que vou criar uma classe para cada componente
         # Assim fica mais fácil setar, contorlar e ler coisas dos componentes
 
         # self.led = 12
 
+        super(coneBot, self).__init__(*args, **kwargs)
+        self.pspot_queue = Queue()
+        self.pspot_list = []
+
         self.buz = 9
 
-        self.rpi = pigpio.pi()
+        try:
+            self.rpi = pigpio.pi()
 
-        self.motor = Motor(
-            self.rpi, 13, 16, 20, 21
-        )  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
-        self.tcrt = Tcrt5000(
-            self.rpi, 4, 18, 17, 27, 23
-        )  # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
-        self.color = ColorSensor(
-            self.rpi,
-            6,
-            12,
-            5,
-            11,
-            7,
-        )  # RPi pins for OUT, S2, S3, S0, S1
-        self.ultra = Ultrasonic(self.rpi, 24, 10)  # RPi pins for trig and echo
-        self.gyro = Gyroscope(self.rpi)
+            self.motor = Motor(
+                self.rpi, 13, 16, 20, 21
+            )  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
+            self.tcrt = Tcrt5000(
+                self.rpi, 4, 18, 17, 27, 23
+            )  # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
+            self.color = ColorSensor(
+                self.rpi,
+                6,
+                12,
+                5,
+                11,
+                7,
+            )  # RPi pins for OUT, S2, S3, S0, S1
+            self.ultra = Ultrasonic(self.rpi, 24, 10)  # RPi pins for trig and echo
+            self.gyro = Gyroscope(self.rpi)
 
-        if TESTING_LOCATION_SYSTEM:
-            self.location_system = RobotLocationSystem(graph, directions)
-        if TESTING_NETWORK:
-            self.notification_listener = RobotNotificationListener()
-            thread = Thread(target=self.notification_listener.run)
-            thread.start()
+            if TESTING_LOCATION_SYSTEM:
+                self.location_system = RobotLocationSystem(graph, directions)
 
-        self.motor.stop()
+            self.motor.stop()
+        except Exception:
+            print(f"You're not using a RPi. Continuing.")
         # self.start()
 
-    def start(self):
+    def run(self):
+        dispatcher_thread.register_interest(self)
+        # robot initialization logic goes here
+        # self.start_bot()
+
+        while True:
+            message = self.pspot_queue.get()
+            self.pspot_list.append(message)
+            print(f"Received message {message} from notification server.")
+            # robot logic goes here
+            # self.moveOnParkingLot()
+            break  # This is here just for testing purposes
+
+    def put_message(self, message):
+        self.pspot_queue.put(message)
+
+    def start_bot(self):
         sleep(0.3)
         tcrt_values = self.tcrt.read()
         self.motor.moveProportional(tcrt_values)
@@ -521,7 +544,7 @@ class coneBot:
         end = 0
         end_dir = "R"
 
-        face, operations = get_path(spot, face, end, end_dir)
+        face, operations = self.location_system.get_path(spot, face, end, end_dir)
         # print(operations) # se quiser ver o trajeto retornado
 
         # operations = ['R', 'go']
@@ -535,16 +558,24 @@ class coneBot:
         # tira foto
 
 
-c = coneBot()
+if __name__ == "__main__":
+    dispatcher_thread = RobotNotificationListener()
+    dispatcher_thread.start()
 
-# c.start()
-# c.test_motor()    # ok
-# c.test_tcrt()     # ok
-# c.test_color()    # ok
-c.test_buzzer()  # ok
-# c.test_ultrassom() # ok
-# c.test_gyro()     # ok
-# c.followLineDumb()
-# c.start()
+    c = coneBot()
+    c.start()
 
-# c.moveOnParkingLot() # para testar o movimento no estacionamento
+    dispatcher_thread.join()
+    # c.start_bot()
+
+    # c.start()
+    # c.test_motor()    # ok
+    # c.test_tcrt()     # ok
+    # c.test_color()    # ok
+    # c.test_buzzer()  # ok
+    # c.test_ultrassom() # ok
+    # c.test_gyro()     # ok
+    # c.followLineDumb()
+    # c.start()
+
+    # c.moveOnParkingLot() # para testar o movimento no estacionamento
