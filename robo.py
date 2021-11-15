@@ -176,6 +176,8 @@ class coneBot:
         self.motor = Motor(
             self.rpi, 13, 16, 20, 21
         )  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
+        self.motor.setVelMax(0.4)
+
         self.tcrt = Tcrt5000(
             self.rpi, 4, 18, 17, 27, 23
         )  # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
@@ -187,6 +189,10 @@ class coneBot:
             11,
             7,
         )  # RPi pins for OUT, S2, S3, S0, S1
+        self.color.set_update_interval(0.1)
+        self.color.set_black_level([239, 239, 314])
+        self.color.set_white_level([1523, 1576, 2041])
+
         self.ultra = Ultrasonic(self.rpi, 24, 10)  # RPi pins for trig and echo
         self.gyro = Gyroscope(self.rpi)
 
@@ -250,15 +256,15 @@ class coneBot:
 
         input("Calibrating black object, press RETURN to start")
         hz = self.color.get_hertz()
-        # hz = [268.256, 247.957, 302.885]
+        # hz = [239, 239, 314]
         print(hz)
-        self.color.set_black_level(hz)
+        self.color.set_black_level([239, 239, 314])
 
         input("Calibrating white object, press RETURN to start")
         hz = self.color.get_hertz()
-        # hz = [652.742, 633.967, 789.036]
+        # hz = [1523, 1576, 2041]
         print(hz)
-        self.color.set_white_level(hz)
+        self.color.set_white_level([1523, 1576, 2041])
 
         while 1:
             print(np.round(list(self.color.get_rgb()), 4), self.color.color())
@@ -514,7 +520,7 @@ class coneBot:
         self.motor.stop()
 
     def moveOnParkingLot(self):
-        sleep(13)  # isso tava no follow line dumb, deve precisar por algum motivo
+        sleep(13)
         face = "R"
         spot = 6
 
