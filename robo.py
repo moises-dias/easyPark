@@ -226,8 +226,10 @@ class coneBot(Thread):
             message = self.pspot_queue.get()
             self.pspot_list.append(message)
             print(f"Received message {message} from notification server.")
+
             # robot logic goes here
             # self.moveOnParkingLot()
+            print(self.tcrt.read())
             break  # This is here just for testing purposes
 
     def put_message(self, message):
@@ -235,8 +237,8 @@ class coneBot(Thread):
 
     def start_bot(self):
         sleep(0.3)
-        tcrt_values = self.tcrt.read()
-        self.motor.moveProportional(tcrt_values)
+        #tcrt_values = self.tcrt.read()
+        #self.motor.moveProportional(tcrt_values)
 
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
@@ -593,4 +595,4 @@ if __name__ == "__main__":
     # c.followLineDumb()
     # c.start()
 
-    c.moveOnParkingLot()  # para testar o movimento no estacionamento
+    #c.moveOnParkingLot()  # para testar o movimento no estacionamento
