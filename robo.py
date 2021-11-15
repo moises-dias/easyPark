@@ -469,7 +469,7 @@ class coneBot:
             self.motor.go()
 
     def turn(self, direction):
-        read_samples = 5  # colocar isso la no começo, n fiz isso pq podemos mudar
+        read_samples = 2  # colocar isso la no começo, n fiz isso pq podemos mudar
         threshold = 80  # limite para considerar uma cor como preto ou não
 
         # manda o robo fazer a curva
