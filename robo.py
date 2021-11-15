@@ -176,7 +176,7 @@ class coneBot:
         self.motor = Motor(
             self.rpi, 13, 16, 20, 21
         )  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
-        self.motor.setVelMax(0.4)
+        self.motor.setVelMax(0.45)
 
         self.tcrt = Tcrt5000(
             self.rpi, 4, 18, 17, 27, 23
