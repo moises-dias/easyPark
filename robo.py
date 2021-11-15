@@ -239,6 +239,21 @@ class coneBot(Thread):
         #tcrt_values = self.tcrt.read()
         #self.motor.moveProportional(tcrt_values)
 
+        calibrate_colors = True
+        if calibrate_colors:
+            input("Calibrating black object, press RETURN to start")
+            hz = self.color.get_hertz()
+            print(hz)
+            self.color.set_black_level(hz)
+
+            input("Calibrating white object, press RETURN to start")
+            hz = self.color.get_hertz()
+            print(hz)
+            self.color.set_white_level(hz)
+        else:
+            self.color.set_black_level([239, 239, 314])
+            self.color.set_white_level([1523, 1576, 2041])
+
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
 
@@ -498,7 +513,7 @@ class coneBot(Thread):
 
     def turn(self, direction):
         read_samples = 1  # colocar isso la no começo, n fiz isso pq podemos mudar
-        threshold = 80  # limite para considerar uma cor como preto ou não
+        threshold = 125  # limite para considerar uma cor como preto ou não
 
         # manda o robo fazer a curva
         if direction == "L":
@@ -529,7 +544,7 @@ class coneBot(Thread):
 
     def moveStraight(self):
         read_samples = 1
-        threshold = 80
+        threshold = 125
         readings = [1] * read_samples
         while any(readings):
             self.followLineDumbSemWhileTrue()  # follow line
