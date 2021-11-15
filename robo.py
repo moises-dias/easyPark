@@ -223,13 +223,12 @@ class coneBot(Thread):
         # self.start_bot()
 
         while True:
-            message = self.pspot_queue.get()
-            self.pspot_list.append(message)
-            print(f"Received message {message} from notification server.")
+            #message = self.pspot_queue.get()
+            #self.pspot_list.append(message)
+            #print(f"Received message {message} from notification server.")
 
             # robot logic goes here
-            # self.moveOnParkingLot()
-            print(self.tcrt.read())
+            self.moveOnParkingLot()
             break  # This is here just for testing purposes
 
     def put_message(self, message):
