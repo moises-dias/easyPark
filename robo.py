@@ -497,7 +497,7 @@ class coneBot(Thread):
             self.motor.go()
 
     def turn(self, direction):
-        read_samples = 2  # colocar isso la no começo, n fiz isso pq podemos mudar
+        read_samples = 1  # colocar isso la no começo, n fiz isso pq podemos mudar
         threshold = 80  # limite para considerar uma cor como preto ou não
 
         # manda o robo fazer a curva
@@ -528,7 +528,7 @@ class coneBot(Thread):
         self.motor.stop()  # ou brake?
 
     def moveStraight(self):
-        read_samples = 2
+        read_samples = 1
         threshold = 80
         readings = [1] * read_samples
         while any(readings):
@@ -549,7 +549,7 @@ class coneBot(Thread):
 
     def moveOnParkingLot(self):
         self.motor.stop()
-        sleep(20)
+        sleep(13)
         face = "R"
         spot = 6
 
@@ -563,7 +563,7 @@ class coneBot(Thread):
 
         print("--------- ROBOT ON ---------")
         for action in operations:
-            sleep(2.5)
+            sleep(2)
             if action in ["R", "L"]:
                 print("Turning " + action)
                 self.turn(action)
