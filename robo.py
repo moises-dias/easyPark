@@ -526,10 +526,13 @@ class coneBot:
 
         # operations = ['R', 'go']
 
+        print("--------- ROBOT ON ---------")
         for action in operations:
             if action in ["R", "L"]:
+                print("Turning " + action)
                 self.turn(action)
             else:
+                print('Move straight')
                 self.moveStraight()
 
         # tira foto
@@ -540,7 +543,7 @@ c = coneBot()
 # c.start()
 # c.test_motor()    # ok
 # c.test_tcrt()     # ok
-# c.test_color()    # ok
+c.test_color()    # ok
 # c.test_buzzer()  # ok
 # c.test_ultrassom() # ok
 # c.test_gyro()     # ok
