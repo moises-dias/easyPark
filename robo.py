@@ -535,7 +535,7 @@ class coneBot:
 
         print("--------- ROBOT ON ---------")
         for action in operations:
-            sleep(1.5)
+            sleep(2.5)
             if action in ["R", "L"]:
                 print("Turning " + action)
                 self.turn(action)
