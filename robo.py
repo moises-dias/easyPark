@@ -22,9 +22,6 @@ except ModuleNotFoundError:
 # pigpio documentation
 # http://abyz.me.uk/rpi/pigpio/python.html
 
-TESTING_LOCATION_SYSTEM = True
-TESTING_NETWORK = False
-
 
 class Motor:
     """IN1     IN2 | Motor right (top view with front facing up)
@@ -176,7 +173,9 @@ class coneBot(Thread):
 
         super(coneBot, self).__init__(*args, **kwargs)
         self.pspot_queue = Queue()
-        self.pspot_list = []
+        self.pspot_list: list[
+            tuple(int, str)
+        ] = []  # int is for node id, str is for direction
 
         self.buz = 9
 
@@ -205,14 +204,11 @@ class coneBot(Thread):
         self.ultra = Ultrasonic(self.rpi, 24, 10)  # RPi pins for trig and echo
         self.gyro = Gyroscope(self.rpi)
 
-        if TESTING_LOCATION_SYSTEM:
-            self.location_system = RobotLocationSystem(graph, directions)
-        if TESTING_NETWORK:
-            self.notification_listener = RobotNotificationListener()
-            thread = Thread(target=self.notification_listener.run)
-            thread.start()
+        self.location_system = RobotLocationSystem(graph, directions)
+        self.node_pos = 6  # Depois isso vai virar uma string tipo "A1"
+        self.face = "R"
 
-            self.motor.stop()
+        self.motor.stop()
         # except Exception:
         #    print(f"You're not using a RPi. Continuing.")
         # self.start()
@@ -224,11 +220,17 @@ class coneBot(Thread):
 
         while True:
             message = self.pspot_queue.get()
-            self.pspot_list.append(message)
             print(f"Received message {message} from notification server.")
+            # this assumes that message is just a string containing the name of a parking spot, like "A1"
+            # TODO: build a mapping between nodes and spots, remembering to include direction.
+            message_node = self.get_node_from_spot(message)
+            message_dir = self.get_dir_from_spot(message)
 
-            # robot logic goes here
-            # self.moveOnParkingLot()
+            self.pspot_list.append((message_node, message_dir))
+
+            next_node, next_face = self.get_next_serviced_spot()
+            self.move_on_parking_lot_from_message(next_node, next_face)
+
             print(self.tcrt.read())
             break  # This is here just for testing purposes
 
@@ -237,8 +239,8 @@ class coneBot(Thread):
 
     def start_bot(self):
         sleep(0.3)
-        #tcrt_values = self.tcrt.read()
-        #self.motor.moveProportional(tcrt_values)
+        # tcrt_values = self.tcrt.read()
+        # self.motor.moveProportional(tcrt_values)
 
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
@@ -574,6 +576,53 @@ class coneBot(Thread):
 
         # tira foto
 
+    def move_on_parking_lot_from_message(
+        self, destination_node: int, destination_face: str
+    ):
+        """Not-hardcoded version of moveOnParkingLot"""
+        self.motor.stop()
+        sleep(20)
+
+        face, operations = self.location_system.get_path(
+            self.node_pos, self.face, destination_node, destination_face
+        )
+        print(f"Operations needed to get to destination: {operations}")
+
+        print("--------- ROBOT ON ---------")
+        for action in operations:
+            sleep(2.5)
+            if action in ["R", "L"]:
+                print("Turning " + action)
+                self.turn(action)
+            else:
+                print("Move straight")
+                self.moveStraight()
+        self.send_plate_info_to_server()
+
+        self.node_pos = destination_node
+        self.face = destination_face
+
+    def get_node_from_spot(self, destination_spot: str) -> int:
+        return 0  # Implementar depois, vamos ter que acrescentar informação de vagas em cada nó no grafo
+
+    def get_dir_from_spot(self, destination_spot: str) -> str:
+        return "R"  # Implementar depois, vamos ter que acrescentar informação de em que direção está a vaga recebida no grafo
+
+    def send_plate_info_to_server(self):
+        pass
+
+    def get_next_serviced_spot(self) -> tuple[int, str]:
+        distance = np.infty
+        for spot_node, face in self.pspot_list:
+            next_dist = self.location_system.get_distance_between_nodes(
+                (self.node_pos, spot_node)
+            )
+            if distance > next_dist:
+                distance = next_dist
+                spot_node_ret, face_ret = spot_node, face
+        self.pspot_list.remove((spot_node_ret, face_ret))
+        return spot_node_ret, face_ret
+
 
 if __name__ == "__main__":
     dispatcher_thread = RobotNotificationListener()
@@ -595,4 +644,4 @@ if __name__ == "__main__":
     # c.followLineDumb()
     # c.start()
 
-    #c.moveOnParkingLot()  # para testar o movimento no estacionamento
+    # c.moveOnParkingLot()  # para testar o movimento no estacionamento

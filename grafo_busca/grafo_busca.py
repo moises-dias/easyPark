@@ -76,23 +76,22 @@ class RobotLocationSystem:
             print("\tTurn 90 degrees left.")
             return "L"
 
-    def get_path(self, start: int, face: str, end: int, end_dir: str) -> str:
+    def get_path(self, start: int, curr_face: str, end: int, end_dir: str) -> str:
         """Walks a path from start to end, finishing facing direction end_dir."""
         path = self.paths[(start, end)]
         operations = []
         if len(path) < 2:
             print("No path found")
         for i in range(len(path) - 1):
-            if face != directions[path[i]][path[i + 1]]:
-                operations.append(self._turn(face, directions[path[i]][path[i + 1]]))
-                face = directions[path[i]][path[i + 1]]
+            if curr_face != directions[path[i]][path[i + 1]]:
+                operations.append(self._turn(curr_face, directions[path[i]][path[i + 1]]))
+                curr_face = directions[path[i]][path[i + 1]]
             print(f"Moving from spot {path[i]} to spot {path[i+1]}")
             operations.append("go")
-        if face != end_dir:
-            operations.append(self._turn(face, end_dir))
-            face = end_dir
-        self.face = face
-        return face, operations
+        if curr_face != end_dir:
+            operations.append(self._turn(curr_face, end_dir))
+            curr_face = end_dir
+        return curr_face, operations
 
     def _get_all_paths(
         self, graph: Dict[int, List[int]]
@@ -117,9 +116,9 @@ if __name__ == "__main__":
     end = 0
     end_dir = "R"
     rls = RobotLocationSystem(graph, directions)
-    # print(f"Initial spot = {spot}, destination = {end}, direction = {end_dir}")
-    # face, operations = rls.get_path(spot, face, end, end_dir)
-    # print(operations)
+    print(f"Initial spot = {spot}, destination = {end}, direction = {end_dir}")
+    face, operations = rls.get_path(spot, face, end, end_dir)
+    print(operations)
     thing = [(8, 6), (0, 6), (6, 8), (2, 4)]
     thing.sort(key=rls.get_distance_between_nodes)
     print(thing)
