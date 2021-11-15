@@ -522,7 +522,7 @@ class coneBot:
         end_dir = "R"
 
         face, operations = get_path(spot, face, end, end_dir)
-        # print(operations) # se quiser ver o trajeto retornado
+        print(operations) # se quiser ver o trajeto retornado
 
         # operations = ['R', 'go']
 
