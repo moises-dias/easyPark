@@ -23,6 +23,7 @@ except ModuleNotFoundError:
 # http://abyz.me.uk/rpi/pigpio/python.html
 
 TESTING_LOCATION_SYSTEM = True
+TESTING_NETWORK = False
 
 
 class Motor:
@@ -179,32 +180,41 @@ class coneBot(Thread):
 
         self.buz = 9
 
-        try:
-            self.rpi = pigpio.pi()
+        self.rpi = pigpio.pi()
 
-            self.motor = Motor(
-                self.rpi, 13, 16, 20, 21
-            )  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
-            self.tcrt = Tcrt5000(
-                self.rpi, 4, 18, 17, 27, 23
-            )  # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
-            self.color = ColorSensor(
-                self.rpi,
-                6,
-                12,
-                5,
-                11,
-                7,
-            )  # RPi pins for OUT, S2, S3, S0, S1
-            self.ultra = Ultrasonic(self.rpi, 24, 10)  # RPi pins for trig and echo
-            self.gyro = Gyroscope(self.rpi)
+        self.motor = Motor(
+            self.rpi, 13, 16, 20, 21
+        )  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
+        self.motor.setVelMax(0.45)
 
-            if TESTING_LOCATION_SYSTEM:
-                self.location_system = RobotLocationSystem(graph, directions)
+        self.tcrt = Tcrt5000(
+            self.rpi, 4, 18, 17, 27, 23
+        )  # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
+        self.color = ColorSensor(
+            self.rpi,
+            6,
+            12,
+            5,
+            11,
+            7,
+        )  # RPi pins for OUT, S2, S3, S0, S1
+        self.color.set_update_interval(0.1)
+        self.color.set_black_level([239, 239, 314])
+        self.color.set_white_level([1523, 1576, 2041])
+
+        self.ultra = Ultrasonic(self.rpi, 24, 10)  # RPi pins for trig and echo
+        self.gyro = Gyroscope(self.rpi)
+
+        if TESTING_LOCATION_SYSTEM:
+            self.location_system = RobotLocationSystem(graph, directions)
+        if TESTING_NETWORK:
+            self.notification_listener = RobotNotificationListener()
+            thread = Thread(target=self.notification_listener.run)
+            thread.start()
 
             self.motor.stop()
-        except Exception:
-            print(f"You're not using a RPi. Continuing.")
+        # except Exception:
+        #    print(f"You're not using a RPi. Continuing.")
         # self.start()
 
     def run(self):
@@ -273,15 +283,15 @@ class coneBot(Thread):
 
         input("Calibrating black object, press RETURN to start")
         hz = self.color.get_hertz()
-        # hz = [268.256, 247.957, 302.885]
+        # hz = [239, 239, 314]
         print(hz)
-        self.color.set_black_level(hz)
+        self.color.set_black_level([239, 239, 314])
 
         input("Calibrating white object, press RETURN to start")
         hz = self.color.get_hertz()
-        # hz = [652.742, 633.967, 789.036]
+        # hz = [1523, 1576, 2041]
         print(hz)
-        self.color.set_white_level(hz)
+        self.color.set_white_level([1523, 1576, 2041])
 
         while 1:
             print(np.round(list(self.color.get_rgb()), 4), self.color.color())
@@ -486,7 +496,7 @@ class coneBot(Thread):
             self.motor.go()
 
     def turn(self, direction):
-        read_samples = 5  # colocar isso la no começo, n fiz isso pq podemos mudar
+        read_samples = 2  # colocar isso la no começo, n fiz isso pq podemos mudar
         threshold = 80  # limite para considerar uma cor como preto ou não
 
         # manda o robo fazer a curva
@@ -517,7 +527,7 @@ class coneBot(Thread):
         self.motor.stop()  # ou brake?
 
     def moveStraight(self):
-        read_samples = 5
+        read_samples = 2
         threshold = 80
         readings = [1] * read_samples
         while any(readings):
@@ -537,7 +547,8 @@ class coneBot(Thread):
         self.motor.stop()
 
     def moveOnParkingLot(self):
-        sleep(13)  # isso tava no follow line dumb, deve precisar por algum motivo
+        self.motor.stop()
+        sleep(20)
         face = "R"
         spot = 6
 
@@ -545,14 +556,18 @@ class coneBot(Thread):
         end_dir = "R"
 
         face, operations = self.location_system.get_path(spot, face, end, end_dir)
-        # print(operations) # se quiser ver o trajeto retornado
+        print(operations)  # se quiser ver o trajeto retornado
 
         # operations = ['R', 'go']
 
+        print("--------- ROBOT ON ---------")
         for action in operations:
+            sleep(2.5)
             if action in ["R", "L"]:
+                print("Turning " + action)
                 self.turn(action)
             else:
+                print("Move straight")
                 self.moveStraight()
 
         # tira foto
@@ -578,4 +593,4 @@ if __name__ == "__main__":
     # c.followLineDumb()
     # c.start()
 
-    # c.moveOnParkingLot() # para testar o movimento no estacionamento
+    c.moveOnParkingLot()  # para testar o movimento no estacionamento
