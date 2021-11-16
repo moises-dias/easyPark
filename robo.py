@@ -613,7 +613,7 @@ class coneBot(Thread):
 
         self.node_pos = destination_node
         self.face = destination_face
-
+'''
     def get_node_from_spot(self, destination_spot: str) -> int:
         return 0  # Implementar depois, vamos ter que acrescentar informação de vagas em cada nó no grafo
 
@@ -634,7 +634,7 @@ class coneBot(Thread):
                 spot_node_ret, face_ret = spot_node, face
         self.pspot_list.remove((spot_node_ret, face_ret))
         return spot_node_ret, face_ret
-
+'''
 
 if __name__ == "__main__":
     dispatcher_thread = RobotNotificationListener()
