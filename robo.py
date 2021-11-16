@@ -223,15 +223,15 @@ class coneBot(Thread):
             print(f"Received message {message} from notification server.")
             # this assumes that message is just a string containing the name of a parking spot, like "A1"
             # TODO: build a mapping between nodes and spots, remembering to include direction.
-            message_node = self.get_node_from_spot(message)
-            message_dir = self.get_dir_from_spot(message)
+            #message_node = self.get_node_from_spot(message)
+            #message_dir = self.get_dir_from_spot(message)
 
-            self.pspot_list.append((message_node, message_dir))
+            #self.pspot_list.append((message_node, message_dir))
 
-            next_node, next_face = self.get_next_serviced_spot()
-            self.move_on_parking_lot_from_message(next_node, next_face)
+            #next_node, next_face = self.get_next_serviced_spot()
+            #self.move_on_parking_lot_from_message(next_node, next_face)
 
-            print(self.tcrt.read())
+            self.moveOnParkingLot()
             break  # This is here just for testing purposes
 
     def put_message(self, message):
