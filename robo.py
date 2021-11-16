@@ -43,28 +43,29 @@ class Motor:
         self.stop()  # garantir, vai q pino começa em high sei la
 
     def go(self):
-        self.spike('go')
+
+        #self.spike('go')
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnLeft(self):
-        self.spike('left')
+        #self.spike('left')
         self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * 0.74 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
         self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * 0.74 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnRight(self):
-        self.spike('right')
+        #self.spike('right')
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * 0.74 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * 0.74 * self.vel_max)
 
     def stop(self):
-        self.spike('stop')
+        #self.spike('stop')
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
@@ -72,14 +73,14 @@ class Motor:
 
 
     def brake(self):
-        self.spike('brake')
+        #self.spike('brake')
         self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * self.vel_max)
 
     def goBack(self):
-        self.spike('back')
+        #self.spike('back')
         self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
@@ -97,6 +98,30 @@ class Motor:
                 self.rpi.set_PWM_dutycycle(self.input[4], 255 * 0.8)
             self.dir = dir_now
             sleep(0.070)
+
+    def turnLeftSpike(self):
+        self.rpi.set_PWM_dutycycle(self.input[1], 255 * 0.7)
+        self.rpi.set_PWM_dutycycle(self.input[2], 0)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255 * 0.7)
+        self.rpi.set_PWM_dutycycle(self.input[4], 0)
+        sleep(0.07)
+        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[2], 0)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[4], 0)
+
+    def turnRightSpike(self):
+        #self.spike('right')
+        self.rpi.set_PWM_dutycycle(self.input[1], 0)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255 * 0.7)
+        self.rpi.set_PWM_dutycycle(self.input[3], 0)
+        self.rpi.set_PWM_dutycycle(self.input[4], 255 * 0.7)
+        sleep(0.07)
+        self.rpi.set_PWM_dutycycle(self.input[1], 0)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[3], 0)
+        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * 0.74 * self.vel_max)
+
 
     def setVelLeft(self, vel):
         if vel > 1:
@@ -531,9 +556,11 @@ class coneBot(Thread):
 
         # manda o robo fazer a curva
         if direction == "L":
-            self.motor.turnLeft()
+            self.motor.turnLeftSpike()
+            #self.motor.turnLeft()
         else:
-            self.motor.turnRight()
+            self.motor.turnRightSpike()
+            #self.motor.turnRight()
 
         readings = [1] * read_samples
         # readings são as leituras para saber se eu estou ou não na faixa, inicia em 1 pq o sensor de cor ta na faixa inicialmente
