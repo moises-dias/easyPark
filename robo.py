@@ -40,64 +40,64 @@ class Motor:
         self.vel_l = 1
         self.vel_max = 0.4
         self.stop()  # garantir, vai q pino começa em high sei la
+        self.dir = 'back'
 
     def go(self):
+        self.spike('go')
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnLeft(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * 0.74 * self.vel_max)
-        self.rpi.set_PWM_dutycycle(self.input[2], 0)
-        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * 0.74 * self.vel_max)
-        self.rpi.set_PWM_dutycycle(self.input[4], 0)
-
-    def turnLeftSpike(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 255 * 0.7)
-        self.rpi.set_PWM_dutycycle(self.input[2], 0)
-        self.rpi.set_PWM_dutycycle(self.input[3], 255 * 0.7)
-        self.rpi.set_PWM_dutycycle(self.input[4], 0)
-        sleep(0.050)
+        self.spike('left')
         self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * 0.74 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
         self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * 0.74 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnRight(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 0)
-        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * 0.74 * self.vel_max)
-        self.rpi.set_PWM_dutycycle(self.input[3], 0)
-        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * 0.74 * self.vel_max)
-    
-    def turnRightSpike(self):
-        self.rpi.set_PWM_dutycycle(self.input[1], 0)
-        self.rpi.set_PWM_dutycycle(self.input[2], 255 * 0.7)
-        self.rpi.set_PWM_dutycycle(self.input[3], 0)
-        self.rpi.set_PWM_dutycycle(self.input[4], 255 * 0.7)
-        sleep(0.050)
+        self.spike('right')
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * 0.74 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * 0.74 * self.vel_max)
 
     def stop(self):
+        self.spike('stop')
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
+
     def brake(self):
+        self.spike('brake')
         self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * self.vel_max)
 
     def goBack(self):
+        self.spike('back')
         self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * self.vel_max)
+
+    def spike(self, dir_now):
+        if self.dir != dir_now:
+            if  dir_now == 'left' or dir_now == 'back':
+                self.rpi.set_PWM_dutycycle(self.input[1], 255 * 0.8)
+            if  dir_now == 'go' or dir_now == 'right':
+                self.rpi.set_PWM_dutycycle(self.input[2], 255 * 0.8)
+            if  dir_now == 'go' or dir_now == 'left':
+                self.rpi.set_PWM_dutycycle(self.input[3], 255 * 0.8)
+            if  dir_now == 'right' or dir_now == 'back':
+                self.rpi.set_PWM_dutycycle(self.input[4], 255 * 0.8)
+            self.dir = dir_now
+            sleep(0.070)
+        
 
     def setVelLeft(self, vel):
         if vel > 1:
@@ -532,9 +532,9 @@ class coneBot(Thread):
 
         # manda o robo fazer a curva
         if direction == "L":
-            self.motor.turnLeftSpike()
+            self.motor.turnLeft()
         else:
-            self.motor.turnRightSpike()
+            self.motor.turnRight()
 
         readings = [1] * read_samples
         # readings são as leituras para saber se eu estou ou não na faixa, inicia em 1 pq o sensor de cor ta na faixa inicialmente
