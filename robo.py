@@ -43,16 +43,17 @@ class Motor:
 
     def go(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
-        self.rpi.set_PWM_dutycycle(self.input[2], 255 * 0.7)
-        self.rpi.set_PWM_dutycycle(self.input[3], 255 * 0.7)
-        self.rpi.set_PWM_dutycycle(self.input[4], 0)
-        sleep(0.050)
-        self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnLeft(self):
+        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[2], 0)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[4], 0)
+
+    def turnLeftSpike(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 255 * 0.7)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
         self.rpi.set_PWM_dutycycle(self.input[3], 255 * 0.7)
@@ -64,6 +65,12 @@ class Motor:
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnRight(self):
+        self.rpi.set_PWM_dutycycle(self.input[1], 0)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[3], 0)
+        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * 0.74 * self.vel_max)
+    
+    def turnRightSpike(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * 0.7)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
@@ -525,9 +532,9 @@ class coneBot(Thread):
 
         # manda o robo fazer a curva
         if direction == "L":
-            self.motor.turnLeft()
+            self.motor.turnLeftSpike()
         else:
-            self.motor.turnRight()
+            self.motor.turnRightSpike()
 
         readings = [1] * read_samples
         # readings são as leituras para saber se eu estou ou não na faixa, inicia em 1 pq o sensor de cor ta na faixa inicialmente
