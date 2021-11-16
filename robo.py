@@ -39,8 +39,8 @@ class Motor:
         self.vel_r = 1  # it ranges from 0 to 1
         self.vel_l = 1
         self.vel_max = 0.4
-        self.stop()  # garantir, vai q pino começa em high sei la
         self.dir = 'stop'
+        self.stop()  # garantir, vai q pino começa em high sei la
 
     def go(self):
         self.spike('go')
@@ -97,9 +97,6 @@ class Motor:
                 self.rpi.set_PWM_dutycycle(self.input[4], 255 * 0.8)
             self.dir = dir_now
             sleep(0.070)
-        
-    def setDir(self, where):
-        self.dir = where
 
     def setVelLeft(self, vel):
         if vel > 1:
@@ -255,7 +252,6 @@ class coneBot(Thread):
     def start_bot(self):
 
         self.motor.setVelMax(0.35)
-        self.motor.setDir('back')
 
         calibrate_colors = False
         if calibrate_colors:
