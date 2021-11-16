@@ -219,8 +219,8 @@ class coneBot(Thread):
         # self.start_bot()
 
         while True:
-            message = self.pspot_queue.get()
-            print(f"Received message {message} from notification server.")
+            #message = self.pspot_queue.get()
+            #print(f"Received message {message} from notification server.")
             # this assumes that message is just a string containing the name of a parking spot, like "A1"
             # TODO: build a mapping between nodes and spots, remembering to include direction.
             #message_node = self.get_node_from_spot(message)
