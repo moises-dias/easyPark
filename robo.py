@@ -40,7 +40,7 @@ class Motor:
         self.vel_l = 1
         self.vel_max = 0.4
         self.stop()  # garantir, vai q pino começa em high sei la
-        self.dir_before = 'back'
+        self.dir = 'back'
 
     def go(self):
         self.spike('go')
@@ -86,7 +86,7 @@ class Motor:
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * self.vel_max)
 
     def spike(self, dir_now):
-        if self.dir_before != dir_now:
+        if self.dir != dir_now:
             if  dir_now == 'left' or dir_now == 'back':
                 self.rpi.set_PWM_dutycycle(self.input[1], 255 * 0.8)
             if  dir_now == 'go' or dir_now == 'right':
@@ -95,7 +95,7 @@ class Motor:
                 self.rpi.set_PWM_dutycycle(self.input[3], 255 * 0.8)
             if  dir_now == 'right' or dir_now == 'back':
                 self.rpi.set_PWM_dutycycle(self.input[4], 255 * 0.8)
-            self.dir_before = dir_now
+            self.dir = dir_now
             sleep(0.070)
         
 
