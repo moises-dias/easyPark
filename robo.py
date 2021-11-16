@@ -86,7 +86,8 @@ class Motor:
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * self.vel_max)
 
     def spike(self, dir_now):
-        if self.vel_max != dir_now:
+        print(self.dir)
+        if ((self.dir) != dir_now):
             if  dir_now == 'left' or dir_now == 'back':
                 self.rpi.set_PWM_dutycycle(self.input[1], 255 * 0.8)
             if  dir_now == 'go' or dir_now == 'right':
