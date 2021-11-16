@@ -43,29 +43,36 @@ class Motor:
 
     def go(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255)
+        self.rpi.set_PWM_dutycycle(self.input[4], 0)
+        sleep(0.080)
+        self.rpi.set_PWM_dutycycle(self.input[1], 0)
         self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnLeft(self):
-        self.rpi.set_PWM_dutycycle(
-            self.input[1], 255 * self.vel_l * 0.74 * self.vel_max
-        )
+        self.rpi.set_PWM_dutycycle(self.input[1], 255)
         self.rpi.set_PWM_dutycycle(self.input[2], 0)
-        self.rpi.set_PWM_dutycycle(
-            self.input[3], 255 * self.vel_r * 0.74 * self.vel_max
-        )
+        self.rpi.set_PWM_dutycycle(self.input[3], 255)
+        self.rpi.set_PWM_dutycycle(self.input[4], 0)
+        sleep(0.08)
+        self.rpi.set_PWM_dutycycle(self.input[1], 255 * self.vel_l * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[2], 0)
+        self.rpi.set_PWM_dutycycle(self.input[3], 255 * self.vel_r * 0.74 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[4], 0)
 
     def turnRight(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
-        self.rpi.set_PWM_dutycycle(
-            self.input[2], 255 * self.vel_l * 0.74 * self.vel_max
-        )
+        self.rpi.set_PWM_dutycycle(self.input[2], 255)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
-        self.rpi.set_PWM_dutycycle(
-            self.input[4], 255 * self.vel_r * 0.74 * self.vel_max
-        )
+        self.rpi.set_PWM_dutycycle(self.input[4], 255)
+        sleep(0.080)
+        self.rpi.set_PWM_dutycycle(self.input[1], 0)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[3], 0)
+        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * 0.74 * self.vel_max)
 
     def stop(self):
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
@@ -184,7 +191,6 @@ class coneBot(Thread):
         self.motor = Motor(
             self.rpi, 13, 16, 20, 21
         )  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
-        self.motor.setVelMax(0.45)
 
         self.tcrt = Tcrt5000(
             self.rpi, 4, 18, 17, 27, 23
@@ -238,6 +244,8 @@ class coneBot(Thread):
         self.pspot_queue.put(message)
 
     def start_bot(self):
+
+        self.motor.setVelMax(0.35)
 
         calibrate_colors = False
         if calibrate_colors:
