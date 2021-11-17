@@ -543,8 +543,8 @@ class coneBot(Thread):
         elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
             self.motor.turnRight()
 
-        elif any(tcrt_read[0:2]) and any(
-            tcrt_read[3:5]
+        elif any([not i for i in tcrt_read[0:2]]) and any(
+            [not i for i in tcrt_read[3:5]]
         ):  # detectou sensor dos dois lados, tcrt deve ta em cima da interseção, manda reto
             self.motor.setVelLeft(1)
             self.motor.setVelRight(1)
@@ -567,7 +567,7 @@ class coneBot(Thread):
         # podemos fazer com 5, 10, qnts leituras for melhor
 
         while any(readings):  # enquanto eu estiver vendo a faixa
-            rgb_values = self.color.get_rgb()  # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            rgb_values = self.color.get_rgb() 
             readings.append(
                 int(all(color < threshold for color in rgb_values))
             )  # se o R, G e B for menor que threshold = preto
@@ -576,7 +576,7 @@ class coneBot(Thread):
         # agr vamo tentar achar uma faixa dvolta
 
         while not all(readings):  # enqnt as ultimas leituras nao acharam a faixa
-            rgb_values = self.color.get_rgb()  # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            rgb_values = self.color.get_rgb()  
             readings.append(int(all(color < threshold for color in rgb_values)))
             readings = readings[-read_samples:]
         # se saiu do while é pq as ultimas 'samples' leituras identificaram preto
@@ -588,15 +588,15 @@ class coneBot(Thread):
         threshold = 125
         readings = [1] * read_samples
         while any(readings):
-            self.followLineDumbSemWhileTrue()  # follow line
-            rgb_values = self.color.get_rgb()  # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            self.followLineDumbSemWhileTrue()
+            rgb_values = self.color.get_rgb()  
             readings.append(
                 int(all(color < threshold for color in rgb_values))
             )  # se o R, G e B for menor que threshold = preto
             readings = readings[-read_samples:]
         while not all(readings):
-            self.followLineDumbSemWhileTrue()  # follow line
-            rgb_values = self.color.get_rgb()  # TEM Q INSTANCIAR A CLASSE DO TCS3200
+            self.followLineDumbSemWhileTrue()
+            rgb_values = self.color.get_rgb()  
             readings.append(
                 int(all(color < threshold for color in rgb_values))
             )  # se o R, G e B for menor que threshold = preto
