@@ -26,11 +26,22 @@ directions = {
     9: {7: "D", 6: "U", 5: "L"},
 }
 
+vagas = {
+    0: {"R": "A1", "L": "A2"},
+    1: {"R": "A3", "L": "A4"},
+    2: {"R": "A5", "L": "A6"},
+    3: {"R": "A7", "L": "A8"},
+    4: {"R": "A9", "L": "A10"},
+    5: {"R": "A11", "L": "A12"},
+    6: {"R": "A13", "L": "A14"},
+    7: {"R": "A15", "L": "A16"},
+    8: {"R": "A17", "L": "A18"},
+    9: {"R": "A19", "L": "A20"},
+}
+
 
 class RobotLocationSystem:
-    def __init__(
-        self, graph: Dict[int, List[int]], directions: Dict[int, Dict[int, str]]
-    ) -> None:
+    def __init__(self, graph: Dict[int, List[int]], directions: Dict[int, Dict[int, str]]) -> None:
         "Takes in a graph and its respective directions"
         self.graph = graph
         self.directions = directions
@@ -59,17 +70,10 @@ class RobotLocationSystem:
 
     def _turn(self, start, end):
         print(f"\tTurning from {start} to {end}")
-        if (start in ["U", "D"] and end in ["U", "D"]) or (
-            start in ["L", "R"] and end in ["L", "R"]
-        ):
+        if (start in ["U", "D"] and end in ["U", "D"]) or (start in ["L", "R"] and end in ["L", "R"]):
             print("\tTurn 180 degrees.")
             return "180"
-        elif (
-            (start == "U" and end == "R")
-            or (start == "R" and end == "D")
-            or (start == "D" and end == "L")
-            or (start == "L" and end == "U")
-        ):
+        elif (start == "U" and end == "R") or (start == "R" and end == "D") or (start == "D" and end == "L") or (start == "L" and end == "U"):
             print("\    tTurn 90 degrees right.")
             return "R"
         else:
@@ -93,9 +97,7 @@ class RobotLocationSystem:
             curr_face = end_dir
         return curr_face, operations
 
-    def _get_all_paths(
-        self, graph: Dict[int, List[int]]
-    ) -> Dict[Tuple[int, int], List[int]]:
+    def _get_all_paths(self, graph: Dict[int, List[int]]) -> Dict[Tuple[int, int], List[int]]:
         """Returns a Dict with all paths between every pair of nodes"""
         paths: Dict[Tuple[int, int], List[int]] = {}
         for start_node in graph:

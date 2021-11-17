@@ -1,10 +1,13 @@
+from requests.api import request
 from signalrcore.hub_connection_builder import HubConnectionBuilder
 import logging
 from threading import Thread
 from queue import Queue
 from time import sleep
+import requests
 
 SERVER_URL = "https://easy-park-iw.herokuapp.com/robotHub"
+ADDRESS = "https://easy-park-iw.herokuapp.com/establishment/setSpotStatus"
 
 
 class RobotNotificationListener(Thread):
@@ -34,16 +37,14 @@ class RobotNotificationListener(Thread):
 
         while True:
             try:
-                # hub_connection.on("CarHasParked", self.dispatch_message)
-                # sleep(0.1)
-                # Uncomment the lines below to test (and comment the above ones).
-                hub_connection.on("Teste", self.dispatch_message)
+                # response = requests.post(ADDRESS, json={"spotId": "A1", "establishmentId": "616e177497e39946b8d6c2fa", "occupied": True})
+                hub_connection.on("CarHasParked", self.dispatch_message)
+                # Uncomment the line below to test (and comment the above ones).
+                # hub_connection.on("Teste", self.dispatch_message)
                 sleep(0.1)  # EXTREMELY IMPORTANT:
                 #            this makes memory usage not blow up, and improves responsiveness
             except Exception as e:
-                print(
-                    f"Exception ocurred in robot's notification listener. Exiting. Exception: {e}"
-                )
+                print(f"Exception ocurred in robot's notification listener. Exiting. Exception: {e}")
                 break
         hub_connection.stop()
 
