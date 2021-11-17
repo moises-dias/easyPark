@@ -71,7 +71,7 @@ class ColorSensor(threading.Thread):
 
       self.set_sample_size(20)
 
-      self.set_update_interval(1.0) # One reading per second.
+      self.set_update_interval(0.1) # One reading per second.
 
       self.set_frequency(1) # 2%
 
@@ -218,7 +218,7 @@ class ColorSensor(threading.Thread):
       """
       Set the interval between RGB updates.
       """
-      if (t >= 0.1) and (t < 2.0):
+      if (t >= 0.05) and (t < 2.0):
          self._interval = t
 
    def get_update_interval(self):

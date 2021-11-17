@@ -234,9 +234,6 @@ class coneBot(Thread):
             11,
             7,
         )  # RPi pins for OUT, S2, S3, S0, S1
-        self.color.set_update_interval(0.1)
-        self.color.set_black_level([239, 239, 314])
-        self.color.set_white_level([1523, 1576, 2041])
 
         self.ultra = Ultrasonic(self.rpi, 24, 10)  # RPi pins for trig and echo
         self.gyro = Gyroscope(self.rpi)
@@ -278,6 +275,11 @@ class coneBot(Thread):
 
         self.motor.setVelMax(0.32)
 
+        
+        
+        
+
+        self.color.set_update_interval(0.8)
         calibrate_colors = False
         if calibrate_colors:
             input("Calibrating black object, press RETURN to start")
@@ -291,7 +293,9 @@ class coneBot(Thread):
             self.color.set_white_level(hz)
         else:
             self.color.set_black_level([129, 132, 169])
+            #self.color.set_black_level([239, 239, 314])
             self.color.set_white_level([1727, 1775, 2297])
+            #self.color.set_white_level([1523, 1576, 2041])
 
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
