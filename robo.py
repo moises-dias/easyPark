@@ -591,7 +591,7 @@ class coneBot(Thread):
             self.motor.turnRightSpike()
         else:
             self.motor.turnLeftSpike()
-        sleep(0.2)
+        sleep(0.08)
         self.motor.brake()
 
     def moveStraight(self):
@@ -617,7 +617,7 @@ class coneBot(Thread):
         self.motor.setVelRight(1)   # com um dos motores em velocidade menor
 
         self.motor.goBack()
-        sleep(0.2)
+        sleep(0.08)
         self.motor.brake()
 
     def moveOnParkingLot(self):
