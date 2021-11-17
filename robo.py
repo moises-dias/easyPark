@@ -560,9 +560,14 @@ class coneBot(Thread):
             if action in ["R", "L"]:
                 print("Turning " + action)
                 self.turn(action)
+            elif action in ["180"]:
+                print("Turning " + "R")
+                self.turn(action)
             else:
                 print("Move straight")
                 self.moveStraight()
+
+        print("--------- FINISH ---------")
 
         # tira foto
 
