@@ -279,7 +279,7 @@ class coneBot(Thread):
         
         
 
-        self.color.set_update_interval(0.08)
+        self.color.set_update_interval(0.07)
         calibrate_colors = False
         if calibrate_colors:
             input("Calibrating black object, press RETURN to start")
