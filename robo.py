@@ -586,12 +586,12 @@ class coneBot(Thread):
         # se saiu do while é pq as ultimas 'samples' leituras identificaram preto
 
 
-        # manda o robo fazer a curva
-        if direction == "L":
-            self.motor.turnRightSpike()
-        else:
-            self.motor.turnLeftSpike()
-        sleep(0.08)
+
+        # if direction == "L":
+        #     self.motor.turnRightSpike()
+        # else:
+        #     self.motor.turnLeftSpike()
+        # sleep(0.08)
         self.motor.brake()
 
     def moveStraight(self):
@@ -616,8 +616,8 @@ class coneBot(Thread):
         self.motor.setVelLeft(1)    # preciso resetar, pq de vez em quando ele chega de revesgueio
         self.motor.setVelRight(1)   # com um dos motores em velocidade menor
 
-        self.motor.goBack()
-        sleep(0.08)
+        # self.motor.goBack()
+        # sleep(0.08)
         self.motor.brake()
 
     def moveOnParkingLot(self):
