@@ -275,7 +275,7 @@ class coneBot(Thread):
 
         self.motor.setVelMax(0.32)
 
-        
+
         
         
 
@@ -628,6 +628,9 @@ class coneBot(Thread):
 
         end = 0
         end_dir = "R"
+
+        self.motor.go()
+        sleep(5)
 
         face, operations = self.location_system.get_path(spot, face, end, end_dir)
         print(operations)  # se quiser ver o trajeto retornado
