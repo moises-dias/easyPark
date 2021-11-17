@@ -581,7 +581,7 @@ class coneBot(Thread):
             readings = readings[-read_samples:]
         # se saiu do while é pq as ultimas 'samples' leituras identificaram preto
 
-        self.motor.stop()  # ou brake?
+        self.motor.brake()  # ou brake?
 
     def moveStraight(self):
         read_samples = 1
@@ -608,7 +608,7 @@ class coneBot(Thread):
 
         self.motor.setVelLeft(1)    # preciso resetar, pq de vez em quando ele chega de revesgueio
         self.motor.setVelRight(1)   # com um dos motores em velocidade menor
-        self.motor.stop()
+        self.motor.brake()
 
     def moveOnParkingLot(self):
         self.motor.stop()
