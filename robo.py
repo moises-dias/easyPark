@@ -594,6 +594,10 @@ class coneBot(Thread):
                 int(all(color < threshold for color in rgb_values))
             )  # se o R, G e B for menor que threshold = preto
             readings = readings[-read_samples:]
+
+        self.motor.setVelLeft(1)    # preciso resetar, pq de vez em quando ele chega de revesgueio
+        self.motor.setVelRight(1)   # com um dos motores em velocidade menor
+
         while not all(readings):
             self.followLineDumbSemWhileTrue()
             rgb_values = self.color.get_rgb()  
@@ -601,6 +605,9 @@ class coneBot(Thread):
                 int(all(color < threshold for color in rgb_values))
             )  # se o R, G e B for menor que threshold = preto
             readings = readings[-read_samples:]
+
+        self.motor.setVelLeft(1)    # preciso resetar, pq de vez em quando ele chega de revesgueio
+        self.motor.setVelRight(1)   # com um dos motores em velocidade menor
         self.motor.stop()
 
     def moveOnParkingLot(self):
