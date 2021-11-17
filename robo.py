@@ -118,9 +118,9 @@ class Motor:
         self.rpi.set_PWM_dutycycle(self.input[4], 255 * 0.7)
         sleep(0.07)
         self.rpi.set_PWM_dutycycle(self.input[1], 0)
-        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[2], 255 * self.vel_l * 0.5 * self.vel_max)
         self.rpi.set_PWM_dutycycle(self.input[3], 0)
-        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * 0.74 * self.vel_max)
+        self.rpi.set_PWM_dutycycle(self.input[4], 255 * self.vel_r * 0.5 * self.vel_max)
 
 
     def setVelLeft(self, vel):
