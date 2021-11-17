@@ -276,7 +276,7 @@ class coneBot(Thread):
 
     def start_bot(self):
 
-        self.motor.setVelMax(0.3)
+        self.motor.setVelMax(0.32)
 
         calibrate_colors = False
         if calibrate_colors:
