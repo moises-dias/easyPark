@@ -287,64 +287,6 @@ class coneBot(Thread):
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
 
-    def test_motor(self):
-        sleep(5)
-        self.motor.setVelMax(0.4)
-        while 1:
-            print("\ngo")
-            self.motor.go()
-            sleep(3)
-            print("\n--- stop ---\n")
-            self.motor.stop()
-            sleep(3)
-
-            print("\nturn left")
-            self.motor.turnLeft()
-            sleep(3)
-            print("\n--- stop ---\n")
-            self.motor.stop()
-            sleep(3)
-
-            print("\nturn right")
-            self.motor.turnRight()
-            sleep(3)
-            print("\n--- stop ---\n")
-            self.motor.stop()
-            sleep(3)
-
-            print("\nback")
-            self.motor.goBack()
-            sleep(3)
-            print("\n--- stop ---\n")
-            self.motor.stop()
-            sleep(10)
-
-    def test_tcrt(self):
-        while 1:
-            print(self.tcrt.read())
-
-    def test_color(self):
-
-        self.color.set_update_interval(0.1)
-
-        input("Calibrating black object, press RETURN to start")
-        hz = self.color.get_hertz()
-        # hz = [239, 239, 314]
-        print(hz)
-        self.color.set_black_level([239, 239, 314])
-
-        input("Calibrating white object, press RETURN to start")
-        hz = self.color.get_hertz()
-        # hz = [1523, 1576, 2041]
-        print(hz)
-        self.color.set_white_level([1523, 1576, 2041])
-
-        while 1:
-            print(np.round(list(self.color.get_rgb()), 4), self.color.color())
-
-        self.color.cancel()
-        self.pi.stop()
-
     def test_led(self):
         flag = True
         while 1:
@@ -662,7 +604,7 @@ class coneBot(Thread):
     def send_plate_info_to_server(self):
         pass
 
-    def get_next_serviced_spot(self) -> tuple[int, str]:
+    def get_next_serviced_spot(self):  # -> tuple[int, str]:
         distance = np.infty
         for spot_node, face in self.pspot_list:
             next_dist = self.location_system.get_distance_between_nodes((self.node_pos, spot_node))
