@@ -245,13 +245,15 @@ class coneBot(Thread):
         # self.start_bot()
 
         while True:
-            while not self.pspot_queue.empty():
+            while True:
                 message = self.pspot_queue.get()
                 print(f"Received message {message} from notification server.")
                 # this assumes that message is just a string containing the name of a parking spot, like "A1"
                 message_node = self.get_node_from_spot(message)
                 message_dir = self.get_dir_from_spot(message)
                 self.pspot_list.append((message_node, message_dir))
+                if self.pspot_queue.empty():
+                    break
 
             next_node, next_face = self.get_next_serviced_spot()
             print(f"Going to {next_node}, {next_face}")
