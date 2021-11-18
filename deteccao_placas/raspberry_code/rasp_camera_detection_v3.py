@@ -168,7 +168,7 @@ while True:
         print('making a POST request...')
 
         #REMOVER!! MOCK PARA TESTAR CODIGO NO RASP
-        final_string = 'ABC1234y'
+        # final_string = 'ABC1234y'
 
         url = f'https://easy-park-iw.herokuapp.com/user/{operation}'
         myobj = {'establishment': '616e177497e39946b8d6c2fa', 'plate': final_string}
