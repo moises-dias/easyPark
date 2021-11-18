@@ -593,6 +593,9 @@ class coneBot(Thread):
                 print("Turning " + "R")
                 sleep(2)
                 #self.turn(action)
+                print("Turning " + "R")
+                sleep(2)
+                #self.turn(action)
             else:
                 print("Move straight")
                 sleep(2)

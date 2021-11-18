@@ -84,8 +84,8 @@ class RobotLocationSystem:
         """Walks a path from start to end, finishing facing direction end_dir."""
         path = self.paths[(start, end)]
         operations = []
-        if len(path) < 2:
-            print("No path found")
+        #if len(path) < 2:
+            # print("No path found")
         for i in range(len(path) - 1):
             if curr_face != directions[path[i]][path[i + 1]]:
                 operations.append(self._turn(curr_face, directions[path[i]][path[i + 1]]))
