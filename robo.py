@@ -587,13 +587,16 @@ class coneBot(Thread):
             sleep(2.5)
             if action in ["R", "L"]:
                 print("Turning " + action)
-                self.turn(action)
+                sleep(2)
+                #self.turn(action)
             elif action in ["180"]:
                 print("Turning " + "R")
-                self.turn(action)
+                sleep(2)
+                #self.turn(action)
             else:
                 print("Move straight")
-                self.moveStraight()
+                sleep(2)
+                #self.moveStraight()
         print("Getting foto! smile :)")
         self.send_plate_info_to_server()
 
