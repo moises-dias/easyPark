@@ -254,6 +254,7 @@ class coneBot(Thread):
             self.pspot_list.append((message_node, message_dir))
 
             next_node, next_face = self.get_next_serviced_spot()
+            print(f"Going to {next_node}, {next_face}")
             self.move_on_parking_lot_from_message(next_node, next_face)
 
             # self.moveOnParkingLot()
@@ -585,13 +586,19 @@ class coneBot(Thread):
             if action in ["R", "L"]:
                 print("Turning " + action)
                 self.turn(action)
+            elif action in ["180"]:
+                print("Turning " + "R")
+                self.turn(action)
             else:
                 print("Move straight")
                 self.moveStraight()
+        print("Getting foto! smile :)")
         self.send_plate_info_to_server()
 
         self.node_pos = destination_node
         self.face = destination_face
+        print("--------- FINISH ---------")
+        
 
     def get_node_from_spot(self, destination_spot: str) -> int:
         for key, value in vagas.items():
