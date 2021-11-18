@@ -592,11 +592,7 @@ class coneBot(Thread):
             else:
                 print("Move straight")
                 self.moveStraight()
-<<<<<<< HEAD
         print("Getting foto! smile :)")
-=======
-        print("--------- FINISH ---------")
->>>>>>> f36aea84577e4890c7a18b565e1cb2bb12b41dfe
         self.send_plate_info_to_server()
 
         self.node_pos = destination_node
