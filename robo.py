@@ -245,13 +245,13 @@ class coneBot(Thread):
         # self.start_bot()
 
         while True:
-            message = self.pspot_queue.get()
-            print(f"Received message {message} from notification server.")
-            # this assumes that message is just a string containing the name of a parking spot, like "A1"
-            message_node = self.get_node_from_spot(message)
-            message_dir = self.get_dir_from_spot(message)
-
-            self.pspot_list.append((message_node, message_dir))
+            while not self.pspot_queue.empty():
+                message = self.pspot_queue.get()
+                print(f"Received message {message} from notification server.")
+                # this assumes that message is just a string containing the name of a parking spot, like "A1"
+                message_node = self.get_node_from_spot(message)
+                message_dir = self.get_dir_from_spot(message)
+                self.pspot_list.append((message_node, message_dir))
 
             next_node, next_face = self.get_next_serviced_spot()
             print(f"Going to {next_node}, {next_face}")
@@ -592,7 +592,11 @@ class coneBot(Thread):
             else:
                 print("Move straight")
                 self.moveStraight()
+<<<<<<< HEAD
         print("Getting foto! smile :)")
+=======
+        print("--------- FINISH ---------")
+>>>>>>> f36aea84577e4890c7a18b565e1cb2bb12b41dfe
         self.send_plate_info_to_server()
 
         self.node_pos = destination_node
