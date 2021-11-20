@@ -564,9 +564,10 @@ class coneBot(Thread):
             # self.motor.turnRight()
 
         while not self.tcrt_side.read():  # enquanto black
+            self.tcrt_side.read()
             pass
 
-        while self.tcrt_side_read():  # enquanto white
+        while self.tcrt_side.read():  # enquanto white
             pass
 
         # if direction == "L":
@@ -607,8 +608,6 @@ class coneBot(Thread):
 
         face, operations = self.location_system.get_path(spot, face, end, end_dir)
         print(operations)  # se quiser ver o trajeto retornado
-
-        # operations = ['R', 'go']
 
         print("--------- ROBOT ON ---------")
         for action in operations:
