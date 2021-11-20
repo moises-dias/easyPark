@@ -279,7 +279,7 @@ class coneBot(Thread):
 
     def start_bot(self):
 
-        self.motor.setVelMax(0.32)
+        self.motor.setVelMax(0.37)
 
         # self.color.set_update_interval(0.07)
         # calibrate_colors = False
