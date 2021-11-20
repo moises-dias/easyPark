@@ -168,7 +168,7 @@ class Tcrt50001Channel:
 
     def read(self):
 
-        return self.rpi.read(self.sensors)
+        return 0 if self.rpi.read(self.sensors) == 1 else 1
 
 
 class Ultrasonic:
