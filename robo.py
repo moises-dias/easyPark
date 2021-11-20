@@ -143,7 +143,7 @@ class Motor:
         self.vel_max = vel
 
 
-class Tcrt5000:
+class Tcrt50005Channel:
     # https://thepihut.com/blogs/raspberry-pi-tutorials/how-to-use-the-tcrt5000-ir-line-follower-sensor-with-the-raspberry-pi
     # código baseado no tutorial acima
     def __init__(self, rpi, s1, s2, s3, s4, s5):
@@ -157,6 +157,18 @@ class Tcrt5000:
         for s in self.sensors[:]:
             sensor_values.append(self.rpi.read(s))
         return sensor_values
+
+
+class Tcrt50001Channel:
+    def __init__(self, rpi, digital, analog=None):
+        self.sensors = digital
+        self.rpi = rpi
+        
+        self.rpi.set_mode(self.sensors, pigpio.INPUT)
+
+    def read(self):
+
+        return self.rpi.read(self.sensors)
 
 
 class Ultrasonic:
@@ -215,17 +227,17 @@ class coneBot(Thread):
 
         self.rpi = pigpio.pi()
 
-        self.motor = Motor(self.rpi, 13, 16, 20, 21)  # RPi pins for [IN1, IN2, IN3, IN4] motor driver
+        # RPi pins for [IN1, IN2, IN3, IN4] motor driver
+        self.motor = Motor(self.rpi, 13, 16, 20, 21)  
 
-        self.tcrt = Tcrt5000(self.rpi, 4, 18, 17, 27, 23)  # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
-        self.color = ColorSensor(
-            self.rpi,
-            6,
-            12,
-            5,
-            11,
-            7,
-        )  # RPi pins for OUT, S2, S3, S0, S1
+        # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
+        self.tcrt = Tcrt50005Channel(self.rpi, 4, 18, 17, 27, 23)  
+
+        # RPi pins for 
+        self.tcrt_side = Tcrt50001Channel(self.rpi, 11)
+
+        # RPi pins for OUT, S2, S3, S0, S1
+        #self.color = ColorSensor(self.rpi, 6, 12, 5, 11, 7)  
 
         self.ultra = Ultrasonic(self.rpi, 24, 10)  # RPi pins for trig and echo
         self.gyro = Gyroscope(self.rpi)
@@ -245,21 +257,22 @@ class coneBot(Thread):
         # self.start_bot()
 
         while True:
-            while True:
-                message = self.pspot_queue.get()
-                print(f"Received message {message} from notification server.")
-                # this assumes that message is just a string containing the name of a parking spot, like "A1"
-                message_node = self.get_node_from_spot(message)
-                message_dir = self.get_dir_from_spot(message)
-                self.pspot_list.append((message_node, message_dir))
-                if self.pspot_queue.empty():
-                    break
+            # while True:
+            #     message = self.pspot_queue.get()
+            #     print(f"Received message {message} from notification server.")
+            #     # this assumes that message is just a string containing the name of a parking spot, like "A1"
+            #     message_node = self.get_node_from_spot(message)
+            #     message_dir = self.get_dir_from_spot(message)
+            #     self.pspot_list.append((message_node, message_dir))
+            #     if self.pspot_queue.empty():
+            #         break
 
-            next_node, next_face = self.get_next_serviced_spot()
-            print(f"Going to {next_node}, {next_face}")
-            self.move_on_parking_lot_from_message(next_node, next_face)
+            #next_node, next_face = self.get_next_serviced_spot()
+            #print(f"Going to {next_node}, {next_face}")
+            #self.move_on_parking_lot_from_message(next_node, next_face)
 
-            # self.moveOnParkingLot()
+            self.test_tcrt()
+            #self.moveOnParkingLot()
             # break  # This is here just for testing purposes
 
     def put_message(self, message):
@@ -289,6 +302,10 @@ class coneBot(Thread):
 
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
+
+    def test_tcrt(self):
+        while True:
+            print(self.tcrt_side.read())
 
     def test_led(self):
         flag = True
@@ -643,16 +660,4 @@ if __name__ == "__main__":
     c.start()
 
     dispatcher_thread.join()
-    # c.start_bot()
 
-    # c.start()
-    # c.test_motor()    # ok
-    # c.test_tcrt()     # ok
-    # c.test_color()    # ok
-    # c.test_buzzer()  # ok
-    # c.test_ultrassom() # ok
-    # c.test_gyro()     # ok
-    # c.followLineDumb()
-    # c.start()
-
-    # c.moveOnParkingLot()  # para testar o movimento no estacionamento
