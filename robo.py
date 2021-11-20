@@ -563,6 +563,7 @@ class coneBot(Thread):
             self.motor.turnRightSpike()
             # self.motor.turnRight()
 
+        print(self.tcrt_side.read())
         while not self.tcrt_side.read():  # enquanto black
             pass
 
