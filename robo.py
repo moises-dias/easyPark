@@ -560,6 +560,7 @@ class coneBot(Thread):
             self.motor.turnLeftSpike()
             # self.motor.turnLeft()
         else:
+            print('turning right spike')
             self.motor.turnRightSpike()
             # self.motor.turnRight()
 
