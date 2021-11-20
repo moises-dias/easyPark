@@ -555,12 +555,14 @@ class coneBot(Thread):
 
     def turn_2(self, direction):
 
+        self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
+        self.motor.setVelRight(1)  # com um dos motores em velocidade menor
+
         # manda o robo fazer a curva
         if direction == "L":
             self.motor.turnLeftSpike()
             # self.motor.turnLeft()
         else:
-            print('turning right spike')
             self.motor.turnRightSpike()
             # self.motor.turnRight()
 
@@ -601,7 +603,7 @@ class coneBot(Thread):
         face = "R"
         spot = 6
 
-        end = 0
+        end = 1
         end_dir = "R"
 
         self.motor.go()
