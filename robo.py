@@ -271,8 +271,7 @@ class coneBot(Thread):
             #print(f"Going to {next_node}, {next_face}")
             #self.move_on_parking_lot_from_message(next_node, next_face)
 
-            self.test_tcrt()
-            #self.moveOnParkingLot()
+            self.moveOnParkingLot()
             # break  # This is here just for testing purposes
 
     def put_message(self, message):
@@ -303,9 +302,6 @@ class coneBot(Thread):
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
 
-    def test_tcrt(self):
-        while True:
-            print(self.tcrt_side.read())
 
     def test_led(self):
         flag = True
@@ -572,7 +568,7 @@ class coneBot(Thread):
 
         while self.tcrt_side_read():  # enquanto white
             pass
-        
+
         # if direction == "L":
         #     self.motor.turnRightSpike()
         # else:
