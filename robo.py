@@ -282,23 +282,23 @@ class coneBot(Thread):
 
         self.motor.setVelMax(0.32)
 
-        self.color.set_update_interval(0.07)
-        calibrate_colors = False
-        if calibrate_colors:
-            input("Calibrating black object, press RETURN to start")
-            hz = self.color.get_hertz()
-            print(hz)
-            self.color.set_black_level(hz)
+        # self.color.set_update_interval(0.07)
+        # calibrate_colors = False
+        # if calibrate_colors:
+        #     input("Calibrating black object, press RETURN to start")
+        #     hz = self.color.get_hertz()
+        #     print(hz)
+        #     self.color.set_black_level(hz)
 
-            input("Calibrating white object, press RETURN to start")
-            hz = self.color.get_hertz()
-            print(hz)
-            self.color.set_white_level(hz)
-        else:
-            self.color.set_black_level([129, 132, 169])
-            # self.color.set_black_level([239, 239, 314])
-            self.color.set_white_level([1727, 1775, 2297])
-            # self.color.set_white_level([1523, 1576, 2041])
+        #     input("Calibrating white object, press RETURN to start")
+        #     hz = self.color.get_hertz()
+        #     print(hz)
+        #     self.color.set_white_level(hz)
+        # else:
+        #     self.color.set_black_level([129, 132, 169])
+        #     # self.color.set_black_level([239, 239, 314])
+        #     self.color.set_white_level([1727, 1775, 2297])
+        #     # self.color.set_white_level([1523, 1576, 2041])
 
         # fazer um while ultrasonico detectou fica parado
         # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
