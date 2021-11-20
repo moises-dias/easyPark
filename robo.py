@@ -567,10 +567,11 @@ class coneBot(Thread):
         while not self.tcrt_side.read():  # enquanto black
             pass
 
+        print(self.tcrt_side.read())
         while self.tcrt_side.read():  # enquanto white
-            self.tcrt_side.read()
             pass
 
+        print(self.tcrt_side.read())
         # if direction == "L":
         #     self.motor.turnRightSpike()
         # else:
