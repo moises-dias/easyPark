@@ -557,6 +557,46 @@ class coneBot(Thread):
         # sleep(0.08)
         self.motor.brake()
 
+    def turn_2(self, direction):
+
+        # manda o robo fazer a curva
+        if direction == "L":
+            self.motor.turnLeftSpike()
+            # self.motor.turnLeft()
+        else:
+            self.motor.turnRightSpike()
+            # self.motor.turnRight()
+
+        while not self.tcrt_side.read():  # enquanto black
+            pass
+
+        while self.tcrt_side_read():  # enquanto white
+            pass
+        
+        # if direction == "L":
+        #     self.motor.turnRightSpike()
+        # else:
+        #     self.motor.turnLeftSpike()
+        # sleep(0.08)
+        self.motor.brake()
+
+    def moveStraight_2(self):
+        while not self.tcrt_side.read():    # Enquanto black
+                self.followLineDumbSemWhileTrue()
+
+        self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
+        self.motor.setVelRight(1)  # com um dos motores em velocidade menor
+
+        while self.tcrt_side.read():    # Enquanto white
+            self.followLineDumbSemWhileTrue()
+
+        self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
+        self.motor.setVelRight(1)  # com um dos motores em velocidade menor
+
+        # self.motor.goBack()
+        # sleep(0.08)
+        self.motor.brake()
+
     def moveOnParkingLot(self):
         self.motor.stop()
         sleep(13)
@@ -579,13 +619,15 @@ class coneBot(Thread):
             sleep(2)
             if action in ["R", "L"]:
                 print("Turning " + action)
-                self.turn(action)
+                self.turn_2(action)
             elif action in ["180"]:
                 print("Turning " + "R")
-                self.turn(action)
+                self.turn_2(action)
+                print("Turning " + "R")
+                self.turn_2(action)
             else:
                 print("Move straight")
-                self.moveStraight()
+                self.moveStraight_2()
 
         print("--------- FINISH ---------")
 
