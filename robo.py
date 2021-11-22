@@ -509,12 +509,16 @@ class coneBot(Thread):
         while self.tcrt_side.read():    # Enquanto white
             self.followLineDumbSemWhileTrue()
 
+        
+        self.motor.brake()
+        sleep(0.08)
+        self.motor.goBack()
+        sleep(0.08)
+        self.motor.brake()
+
+
         self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
         self.motor.setVelRight(1)  # com um dos motores em velocidade menor
-
-        # self.motor.goBack()
-        # sleep(0.08)
-        self.motor.brake()
 
     def moveOnParkingLot(self):
         self.motor.stop()
