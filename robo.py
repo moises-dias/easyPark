@@ -496,13 +496,13 @@ class coneBot(Thread):
             tf = time.time()
             pass
 
-        self.motor.brake()
-        sleep(0.08)
-        if direction == "L":
-            self.motor.turnRightSpike()
-        else:
-            self.motor.turnLeftSpike()
-        sleep(0.08)
+        # self.motor.brake()
+        # sleep(0.08)
+        # if direction == "L":
+        #     self.motor.turnRightSpike()
+        # else:
+        #     self.motor.turnLeftSpike()
+        # sleep(0.08)
         self.motor.brake()
 
     def moveStraight_2(self):
