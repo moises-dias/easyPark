@@ -491,7 +491,7 @@ class coneBot(Thread):
             pass
 
         self.motor.brake()
-        self.sleep(0.08)
+        sleep(0.08)
         if direction == "L":
             self.motor.turnRightSpike()
         else:
