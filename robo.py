@@ -221,7 +221,7 @@ class coneBot(Thread):
 
         super(coneBot, self).__init__(*args, **kwargs)
         self.pspot_queue = Queue()
-        self.pspot_list = []  # int is for node id, str is for direction
+        self.pspot_list: list[tuple(int, str)] = []  # int is for node id, str is for direction
 
         self.buz = 9
 
@@ -631,13 +631,13 @@ class coneBot(Thread):
 
         # tira foto
 
-    def move_on_parking_lot_from_message(self, destination_node, destination_face):
+    def move_on_parking_lot_from_message(self, destination_node: int, destination_face: str):
         """Not-hardcoded version of moveOnParkingLot"""
         self.motor.stop()
         sleep(20)
 
         face, operations = self.location_system.get_path(self.node_pos, self.face, destination_node, destination_face)
-        print("Operations needed to get to destination: " + str(operations))
+        print(f"Operations needed to get to destination: {operations}")
 
         print("--------- ROBOT ON ---------")
         for action in operations:
@@ -665,13 +665,13 @@ class coneBot(Thread):
         print("--------- FINISH ---------")
         
 
-    def get_node_from_spot(self, destination_spot):
+    def get_node_from_spot(self, destination_spot: str) -> int:
         for key, value in vagas.items():
             if destination_spot in value.values():
                 return key
         raise Exception("Em get_node_from_spot: Vaga não encontrada no grafo.")
 
-    def get_dir_from_spot(self, destination_spot):
+    def get_dir_from_spot(self, destination_spot: str) -> str:
         for key, value in vagas.items():
             for inner_key, inner_value in value.items():
                 if inner_value == destination_spot:
