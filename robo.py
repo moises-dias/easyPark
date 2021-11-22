@@ -665,13 +665,13 @@ class coneBot(Thread):
         print("--------- FINISH ---------")
         
 
-    def get_node_from_spot(self, destination_spot: str) -> int:
+    def get_node_from_spot(self, destination_spot):
         for key, value in vagas.items():
             if destination_spot in value.values():
                 return key
         raise Exception("Em get_node_from_spot: Vaga não encontrada no grafo.")
 
-    def get_dir_from_spot(self, destination_spot: str) -> str:
+    def get_dir_from_spot(self, destination_spot):
         for key, value in vagas.items():
             for inner_key, inner_value in value.items():
                 if inner_value == destination_spot:
