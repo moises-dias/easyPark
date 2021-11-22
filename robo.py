@@ -488,11 +488,11 @@ class coneBot(Thread):
         ti = time.time()
         tf = time.time()
 
-        while not self.tcrt_side.read() and (tf - ti) < 1.5:  # enquanto black
+        while not self.tcrt_side.read() or (tf - ti) < 1.5:  # enquanto black
             tf = time.time()
             pass
 
-        while self.tcrt_side.read() and (tf - ti) < 1.5:  # enquanto white
+        while self.tcrt_side.read() or (tf - ti) < 1.5:  # enquanto white
             tf = time.time()
             pass
 
@@ -509,14 +509,14 @@ class coneBot(Thread):
         ti = time.time()
         tf = time.time()
 
-        while not self.tcrt_side.read() and (tf - ti) < 1.5:    # Enquanto black
+        while not self.tcrt_side.read() or (tf - ti) < 1.5:    # Enquanto black
             tf = time.time()
             self.followLineDumbSemWhileTrue()
 
         self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
         self.motor.setVelRight(1)  # com um dos motores em velocidade menor
 
-        while self.tcrt_side.read() and (tf - ti) < 1.5:    # Enquanto white
+        while self.tcrt_side.read() or (tf - ti) < 1.5:    # Enquanto white
             tf = time.time()
             self.followLineDumbSemWhileTrue()
 
