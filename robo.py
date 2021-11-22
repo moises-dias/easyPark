@@ -488,7 +488,7 @@ class coneBot(Thread):
         ti = time.time()
         tf = time.time()
 
-        while (tf - ti) < 1.5:
+        while (tf - ti) < 1:
             tf = time.time()
 
         while not self.tcrt_side.read():  # enquanto black
@@ -510,7 +510,7 @@ class coneBot(Thread):
         ti = time.time()
         tf = time.time()
 
-        while (tf - ti) < 1.5:
+        while (tf - ti) < 1:
             tf = time.time()
             self.followLineDumbSemWhileTrue()
 
