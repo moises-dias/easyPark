@@ -393,7 +393,7 @@ class coneBot(Thread):
             self.motor.go()
 
         elif tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
-            self.motor.turnLeftSpike()
+            self.motor.turnLeft()
 
         elif tcrt_read == [1, 1, 0, 0, 1] or tcrt_read == [1, 1, 1, 0, 1]:
             self.motor.setVelLeft(0.8)
@@ -401,7 +401,7 @@ class coneBot(Thread):
             self.motor.go()
 
         elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
-            self.motor.turnRightSpike()
+            self.motor.turnRight()
 
         # elif any([not i for i in tcrt_read[0:1]]) and any(
         #    [not i for i in tcrt_read[4:5]]):  # detectou sensor dos dois lados, tcrt deve ta em cima da interseção, manda reto
