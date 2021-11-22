@@ -611,8 +611,6 @@ class coneBot(Thread):
         end = 1
         end_dir = "R"
 
-        self.motor.go()
-        sleep(5)
 
         face, operations = self.location_system.get_path(spot, face, end, end_dir)
         print(operations)  # se quiser ver o trajeto retornado
