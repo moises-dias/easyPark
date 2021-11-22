@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from time import sleep, time
+from datetime import datetime
 import math
 import json
 import numpy as np
@@ -483,11 +484,14 @@ class coneBot(Thread):
         else:
             self.motor.turnRightSpike()
             # self.motor.turnRight()
+        
+        ti = time.time()
+        tf = time.time()
 
-        while not self.tcrt_side.read():  # enquanto black
+        while not self.tcrt_side.read() and (tf - ti) < 1.5:  # enquanto black
             pass
 
-        while self.tcrt_side.read():  # enquanto white
+        while self.tcrt_side.read() and (tf - ti) < 1.5:  # enquanto white
             pass
 
         self.motor.brake()
