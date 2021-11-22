@@ -631,7 +631,7 @@ class coneBot(Thread):
 
         # tira foto
 
-    def move_on_parking_lot_from_message(self, destination_node: int, destination_face: str):
+    def move_on_parking_lot_from_message(self, destination_node, destination_face):
         """Not-hardcoded version of moveOnParkingLot"""
         self.motor.stop()
         sleep(20)
