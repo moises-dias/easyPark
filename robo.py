@@ -221,7 +221,7 @@ class coneBot(Thread):
 
         super(coneBot, self).__init__(*args, **kwargs)
         self.pspot_queue = Queue()
-        self.pspot_list: list[tuple(int, str)] = []  # int is for node id, str is for direction
+        self.pspot_list = []  # int is for node id, str is for direction
 
         self.buz = 9
 
