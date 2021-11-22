@@ -637,7 +637,7 @@ class coneBot(Thread):
         sleep(20)
 
         face, operations = self.location_system.get_path(self.node_pos, self.face, destination_node, destination_face)
-        print(f"Operations needed to get to destination: {operations}")
+        print("Operations needed to get to destination: " + str(operations))
 
         print("--------- ROBOT ON ---------")
         for action in operations:
