@@ -376,88 +376,6 @@ class coneBot(Thread):
 
         # podemos dar um break/stop se não identificar nada, podemos testar isso
 
-    def followLineTest(self):
-        sleep(13)
-
-        # precisamos guardar o estado pq se ele perdeu todos os sensores vamos recorrer a isso para saber o que ele estava fazendo antes
-        state = "straight"
-
-        while 1:
-            tcrt_read = self.tcrt.read()
-
-            # estou assumindo que a posição 0 do tcrt_read seja a mais a esquerda do modulo, e a posição 4 a mais a direita
-
-            # da forma como estava sendo feita, como você mesmo falou, nós só pegavamos essas combinações:
-            # [1, 1, 0, 1, 1], [1, 0, 1, 1, 1], [1, 1, 1, 0, 1], [0, 1, 1, 1, 1], [1, 1, 1, 1, 0]
-            # com esse código nós resolvemos os casos onde for detectado mais de um sensor
-
-            if tcrt_read[0] == 0:  # se o mais a esquerda detectou linha
-                state = "turning_left"
-
-            elif tcrt_read[1] == 0:  # ELIF, pq se eu ja peguei o sensor da extremidade posso ignorar esse pq tenho que virar bastante
-                state = "soft_turning_left"
-
-            elif tcrt_read[4] == 0:  # se o mais a direita detectou linha
-                state = "turning_right"
-
-            elif tcrt_read[3] == 0:  # se o sensor entre o central e o extremo da direita (extrema direita bolsonaro kkk)
-                state = "soft_turning_right"
-
-            elif tcrt_read[2] == 0:  # se pegou APENAS o sensor central pode pisar fundo
-                state = "straight"
-
-            if state == "straight":
-                print("1, 1")
-                self.motor.setVelLeft(1)
-                self.motor.setVelRight(1)
-            elif state == "soft_turning_right":
-                print("0.8, 1")
-                self.motor.setVelLeft(0.8)
-                self.motor.setVelRight(1)
-            elif state == "turning_right":
-                print("0.9, 0.4")
-                self.motor.setVelLeft(0.9)  # como a curva ta bem fechada acho interessante diminuir um pouco, pelo menos no primeiro teste
-                self.motor.setVelRight(0.4)
-            elif state == "soft_turning_left":
-                print("1, 0.8")
-                self.motor.setVelLeft(1)
-                self.motor.setVelRight(0.8)
-            elif state == "turning_left":
-                print("0.4, 0.9")
-                self.motor.setVelLeft(0.4)
-                self.motor.setVelRight(0.9)  # como a curva ta bem fechada acho interessante diminuir um pouco, pelo menos no primeiro teste
-
-            self.motor.go()
-
-        # podemos dar um break/stop se não identificar nada, podemos testar isso
-
-    def followLineDumb(self):
-        sleep(13)
-        self.motor.go()
-        while 1:
-            tcrt_read = self.tcrt.read()
-
-            if tcrt_read == [1, 1, 0, 1, 1]:
-                self.motor.setVelLeft(1)
-                self.motor.setVelRight(1)
-                self.motor.go()
-
-            elif tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 0, 1, 1, 1]:
-                self.motor.setVelLeft(1)
-                self.motor.setVelRight(0.8)
-                self.motor.go()
-
-            elif tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
-                self.motor.turnLeft()
-
-            elif tcrt_read == [1, 1, 0, 0, 1] or tcrt_read == [1, 1, 1, 0, 1]:
-                self.motor.setVelLeft(0.8)
-                self.motor.setVelRight(1)
-                self.motor.go()
-
-            elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
-                self.motor.turnRight()
-
     # as próximas funções (followLineDumbSemWhileTrue, turn, moveStraight e moveOnParkingLot) são referentes a movimentação no estacionamento
 
     def followLineDumbSemWhileTrue(self):
@@ -469,26 +387,22 @@ class coneBot(Thread):
             self.motor.go()
 
         elif tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 0, 1, 1, 1]:
-            self.motor.setVelLeft(1)
-            self.motor.setVelRight(0.8)
-            self.motor.go()
+            #self.motor.setVelLeft(1)
+            #self.motor.setVelRight(0.8)
+            #self.motor.go()
+            self.motor.turnLeft()
 
         elif tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
-            #self.motor.turnLeft()
-            self.motor.setVelLeft(0)
-            self.motor.setVelRight(1)
-            self.motor.go()
+            self.motor.turnLeft()
 
         elif tcrt_read == [1, 1, 0, 0, 1] or tcrt_read == [1, 1, 1, 0, 1]:
-            self.motor.setVelLeft(0.8)
-            self.motor.setVelRight(1)
-            self.motor.go()
+            #self.motor.setVelLeft(0.8)
+            #self.motor.setVelRight(1)
+            #self.motor.go()
+            self.motor.turnRight()
 
         elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
-            self.motor.setVelLeft(1)
-            self.motor.setVelRight(0)
-            self.motor.go()
-            #self.motor.turnRight()
+            self.motor.turnRight()
 
         # elif any([not i for i in tcrt_read[0:1]]) and any(
         #    [not i for i in tcrt_read[4:5]]):  # detectou sensor dos dois lados, tcrt deve ta em cima da interseção, manda reto
@@ -587,7 +501,7 @@ class coneBot(Thread):
 
     def moveStraight_2(self):
         while not self.tcrt_side.read():    # Enquanto black
-                self.followLineDumbSemWhileTrue()
+            self.followLineDumbSemWhileTrue()
 
         self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
         self.motor.setVelRight(1)  # com um dos motores em velocidade menor
