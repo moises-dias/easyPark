@@ -14,15 +14,15 @@ graph = {
 }
 
 directions = {
-    0: {1: "U"},
-    1: {0: "D", 8: "U"},
+    0: {1: "D"},
+    1: {0: "U", 8: "D"},
     2: {8: "R"},
-    3: {8: "D"},
+    3: {8: "U"},
     4: {8: "L", 5: "R"},
     5: {4: "L", 9: "R"},
     6: {9: "D"},
     7: {9: "U"},
-    8: {1: "D", 3: "U", 2: "L", 4: "R"},
+    8: {1: "U", 3: "D", 2: "L", 4: "R"},
     9: {7: "D", 6: "U", 5: "L"},
 }
 
@@ -84,8 +84,8 @@ class RobotLocationSystem:
         """Walks a path from start to end, finishing facing direction end_dir."""
         path = self.paths[(start, end)]
         operations = []
-        #if len(path) < 2:
-            # print("No path found")
+        # if len(path) < 2:
+        # print("No path found")
         for i in range(len(path) - 1):
             if curr_face != directions[path[i]][path[i + 1]]:
                 operations.append(self._turn(curr_face, directions[path[i]][path[i + 1]]))
