@@ -489,9 +489,11 @@ class coneBot(Thread):
         tf = time.time()
 
         while not self.tcrt_side.read() and (tf - ti) < 1.5:  # enquanto black
+            tf = time.time()
             pass
 
         while self.tcrt_side.read() and (tf - ti) < 1.5:  # enquanto white
+            tf = time.time()
             pass
 
         self.motor.brake()
