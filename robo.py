@@ -506,13 +506,18 @@ class coneBot(Thread):
         self.motor.brake()
 
     def moveStraight_2(self):
-        while not self.tcrt_side.read():    # Enquanto black
+        ti = time.time()
+        tf = time.time()
+
+        while not self.tcrt_side.read() and (tf - ti) < 1.5:    # Enquanto black
+            tf = time.time()
             self.followLineDumbSemWhileTrue()
 
         self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
         self.motor.setVelRight(1)  # com um dos motores em velocidade menor
 
-        while self.tcrt_side.read():    # Enquanto white
+        while self.tcrt_side.read() and (tf - ti) < 1.5:    # Enquanto white
+            tf = time.time()
             self.followLineDumbSemWhileTrue()
 
         
