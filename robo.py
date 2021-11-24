@@ -430,6 +430,9 @@ class coneBot(Thread):
             print("Getting foto! smile :)")
             sleep(4)
 
+            spot = end
+            face = end_dir
+
             end = 5
             end_dir = "R"
 
