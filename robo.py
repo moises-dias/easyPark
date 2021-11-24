@@ -24,7 +24,7 @@ try:
 except ModuleNotFoundError:
     print("Módulos do RPi não encontrados. Prosseguindo.")
 
-#TESTING_PLATE_RECOGNITION = False
+TESTING_PLATE_RECOGNITION = True
 PLATE_SERVER_URL = "https://easy-park-iw.herokuapp.com/user/linkUserToSpot"
 BEGIN_SESSION_URL = "https://easy-park-iw.herokuapp.com/user/beginSession"
 
@@ -262,33 +262,30 @@ class coneBot(Thread):
         # except Exception:
         #    print(f"You're not using a RPi. Continuing.")
 
-        # if TESTING_PLATE_RECOGNITION:
-        #     self.model, self.labels = setup()
+        if TESTING_PLATE_RECOGNITION:
+            self.model, self.labels = setup()
 
         self.start_bot()
 
     def run(self):
         dispatcher_thread.register_interest(self)
 
-        # robot initialization logic goes here
-        # self.start_bot()
-
         while True:
-            # while True:
-            #     message = self.pspot_queue.get()
-            #     print(f"Received message {message} from notification server.")
-            #     # this assumes that message is just a string containing the name of a parking spot, like "A1"
-            #     message_node = self.get_node_from_spot(message)
-            #     message_dir = self.get_dir_from_spot(message)
-            #     self.pspot_list.append((message_node, message_dir))
-            #     if self.pspot_queue.empty():
-            #         break
+            while True:
+                message = self.pspot_queue.get()
+                print(f"Received message {message} from notification server.")
+                # this assumes that message is just a string containing the name of a parking spot, like "A1"
+                message_node = self.get_node_from_spot(message)
+                message_dir = self.get_dir_from_spot(message)
+                self.pspot_list.append((message_node, message_dir))
+                if self.pspot_queue.empty():
+                    break
 
-            # next_node, next_face = self.get_next_serviced_spot()
-            # print(f"Going to {next_node}, {next_face}")
-            # self.move_on_parking_lot_from_message(next_node, next_face)
+            next_node, next_face = self.get_next_serviced_spot()
+            print(f"Going to {next_node}, {next_face}")
+            self.move_on_parking_lot_from_message(next_node, next_face)
 
-            self.moveOnParkingLot()
+            #self.moveOnParkingLot()
             # break  # This is here just for testing purposes
 
     def put_message(self, message):
@@ -298,7 +295,6 @@ class coneBot(Thread):
 
         self.motor.setVelMax(0.38)
 
-        # fazer um while ultrasonico detectou fica parado
 
     def test_buzzer(self):
         i = 0
@@ -324,17 +320,14 @@ class coneBot(Thread):
             )
             sleep(0.05)
 
-    # as próximas funções (followLine, turn, moveStraight e moveOnParkingLot) são referentes a movimentação no estacionamento
+
 
     def followLine(self):
         tcrt_read = self.tcrt.read()
 
-
         while self.ultra.measure_distance() < 10.0:    # Se entrar algo na frente, espera (pooling)
-            print(self.ultra.measure_distance())
-            sleep(0.16)
             self.motor.brake()
-
+            sleep(0.16)
 
         if tcrt_read == [1, 1, 0, 1, 1]:
             self.motor.setVelLeft(1)
@@ -357,8 +350,6 @@ class coneBot(Thread):
         elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
             self.motor.turnRight()
 
-        # elif any([not i for i in tcrt_read[0:1]]) and any(
-        #    [not i for i in tcrt_read[4:5]]):  # detectou sensor dos dois lados, tcrt deve ta em cima da interseção, manda reto
         else:
             self.motor.setVelLeft(1)
             self.motor.setVelRight(0.98)
@@ -461,7 +452,8 @@ class coneBot(Thread):
         self.motor.stop()
         sleep(20)
 
-        face, operations = self.location_system.get_path(self.node_pos, self.face, destination_node, destination_face)
+        #face, operations = self.location_system.get_path(self.node_pos, self.face, destination_node, destination_face)
+        operations = ['go']
         print(f"Operations needed to get to destination: {operations}")
 
         print("--------- ROBOT ON ---------")
@@ -486,8 +478,8 @@ class coneBot(Thread):
         self.node_pos = destination_node
         self.face = destination_face
         self.vaga = vagas[self.node_pos][self.face]
-        # if TESTING_PLATE_RECOGNITION:
-        #     self.send_plate_info_to_server()
+        if TESTING_PLATE_RECOGNITION:
+            self.send_plate_info_to_server()
 
         print("--------- FINISH ---------")
 
