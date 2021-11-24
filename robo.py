@@ -16,7 +16,7 @@ from grafo_busca.grafo_busca import RobotLocationSystem, graph, directions, vaga
 from robot_network.notification_listener import RobotNotificationListener
 from queue import Queue
 
-#from rasp_camera_detection_v4 import setup, get_plate_string
+# from rasp_camera_detection_v4 import setup, get_plate_string
 
 try:
     from TCS3200 import *
@@ -24,7 +24,7 @@ try:
 except ModuleNotFoundError:
     print("Módulos do RPi não encontrados. Prosseguindo.")
 
-#TESTING_PLATE_RECOGNITION = False
+TESTING_PLATE_RECOGNITION = False
 PLATE_SERVER_URL = "https://easy-park-iw.herokuapp.com/user/linkUserToSpot"
 BEGIN_SESSION_URL = "https://easy-park-iw.herokuapp.com/user/beginSession"
 

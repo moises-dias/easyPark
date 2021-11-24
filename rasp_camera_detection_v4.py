@@ -92,19 +92,20 @@ def filter_digits(cont):
 
 def setup():
     """This loads image recognition stuff. Should only be run once by the robot (takes a long time)"""
-    wpod_net_path = "wpod-net.json"
+    extra_file_path = "./deteccao_placas/raspberry_code/"
+    wpod_net_path = extra_file_path + "wpod-net.json"
     global wpod_net
     wpod_net = load_model(wpod_net_path)
 
     # Load model architecture, weight and labels
-    json_file = open("MobileNets_character_recognition.json", "r")
+    json_file = open(extra_file_path + "MobileNets_character_recognition.json", "r")
     loaded_model_json = json_file.read()
     json_file.close()
     model = model_from_json(loaded_model_json)
-    model.load_weights("License_character_recognition_weight.h5")
+    model.load_weights(extra_file_path + "License_character_recognition_weight.h5")
 
     labels = LabelEncoder()
-    labels.classes_ = np.load("license_character_classes.npy")
+    labels.classes_ = np.load(extra_file_path + "license_character_classes.npy")
 
     print("model was loaded!")
     return model, labels  # Will be stored in local variables, and passed on to get_plate_string
@@ -113,11 +114,12 @@ def setup():
 def get_plate_string(model, labels) -> str:
     camera.start_preview()
     time.sleep(3)
+    extra_file_path = "./deteccao_placas/raspberry_code/"
 
-    numfiles = len([f for f in listdir("./Plate_examples")])
-    camera.capture(f"./Plate_examples/img{numfiles}.jpg")
+    numfiles = len([f for f in listdir(extra_file_path + "Plate_examples")])
+    camera.capture(extra_file_path + f"./Plate_examples/img{numfiles}.jpg")
     camera.stop_preview()
-    test_image_path = f"Plate_examples/img{numfiles}.jpg"
+    test_image_path = extra_file_path + f"Plate_examples/img{numfiles}.jpg"
     vehicle, LpImg, cor = get_plate(test_image_path)
     global plate_image
     global thre_mor
@@ -149,7 +151,7 @@ def get_plate_string(model, labels) -> str:
         title = np.array2string(predict_from_model(character, model, labels))
         final_string += title.strip("'[]")
     print(f"img{numfiles}.jpg", final_string)
-    rename(f"Plate_examples/img{numfiles}.jpg", f"Plate_examples/img{numfiles}_{final_string}.jpg")
+    rename(extra_file_path + f"Plate_examples/img{numfiles}.jpg", extra_file_path + f"Plate_examples/img{numfiles}_{final_string}.jpg")
 
     return final_string
 
