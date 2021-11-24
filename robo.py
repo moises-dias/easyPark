@@ -409,6 +409,10 @@ class coneBot(Thread):
         self.motor.setVelLeft(1)  # preciso resetar, pq o followLine altera as velocidades dos motores
         self.motor.setVelRight(1)  # conforme necessidade, ai pode ter acabado o while com velocidades diferentes que 1
 
+        self.motor.goBack()
+        sleep(0.09)
+        self.motor.brake()
+
     def moveOnParkingLot(self):
         self.motor.stop()
         sleep(13)
