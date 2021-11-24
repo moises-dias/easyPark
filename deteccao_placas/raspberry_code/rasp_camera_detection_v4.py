@@ -97,6 +97,7 @@ time.sleep(1)
 while True:
     time.sleep(5)
     camera.start_preview()
+    print('detectando em 3 segundos')
     time.sleep(3)
 
     numfiles = len([f for f in listdir('./Plate_examples')])
@@ -126,6 +127,7 @@ while True:
 
     if len(crop_characters) != 7:
         print(f"img{numfiles}.jpg", 'not found 7 digits')
+        print(crop_characters)
         # raise ValueError(f'Identified {len(crop_characters)} digits, the correct should be 7.')
         continue
 
