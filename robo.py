@@ -280,36 +280,10 @@ class coneBot(Thread):
 
     def start_bot(self):
 
-        self.motor.setVelMax(0.33)
+        self.motor.setVelMax(0.38)
 
-        # self.color.set_update_interval(0.07)
-        # calibrate_colors = False
-        # if calibrate_colors:
-        #     input("Calibrating black object, press RETURN to start")
-        #     hz = self.color.get_hertz()
-        #     print(hz)
-        #     self.color.set_black_level(hz)
-
-        #     input("Calibrating white object, press RETURN to start")
-        #     hz = self.color.get_hertz()
-        #     print(hz)
-        #     self.color.set_white_level(hz)
-        # else:
-        #     self.color.set_black_level([129, 132, 169])
-        #     # self.color.set_black_level([239, 239, 314])
-        #     self.color.set_white_level([1727, 1775, 2297])
-        #     # self.color.set_white_level([1523, 1576, 2041])
 
         # fazer um while ultrasonico detectou fica parado
-        # ler o sensor de cor e saber onde eu estou, guardar o status (localização)
-
-
-    def test_led(self):
-        flag = True
-        while 1:
-            self.rpi.write(self.led, flag)
-            flag = not flag
-            sleep(1)
 
     def test_buzzer(self):
         i = 0
@@ -335,49 +309,8 @@ class coneBot(Thread):
             )
             sleep(0.05)
 
-    def followLine(self):
-        # podemos criar métodos para virar proporcionalmente dependendo do output do tcrt
-        # pelo que eu entendi:
-        # 1 = motor r frente
-        # 2 = motor r trás
-        # 3 = motor l frente
-        # 4 = motor l trás
-        # tcrt é uma lista de bool com 5 itens, referentes a leitura do tcrt
-        # indo da esquerda para a direita
-        sleep(13)
-        while 1:
-            tcrt_read = self.tcrt.read()
-
-            if tcrt_read == [1, 1, 0, 1, 1]:
-                print("1, 1")
-                self.motor.setVelLeft(1)
-                self.motor.setVelRight(1)
-
-            if tcrt_read == [1, 0, 1, 1, 1]:
-                print("0.7, 1")
-                self.motor.setVelLeft(0.7)
-                self.motor.setVelRight(1)
-
-            if tcrt_read == [1, 1, 1, 0, 1]:
-                print("1, 0.7")
-                self.motor.setVelLeft(1)
-                self.motor.setVelRight(0.7)
-
-            if tcrt_read == [0, 1, 1, 1, 1]:
-                print("0.4, 1")
-                self.motor.setVelLeft(0.4)
-                self.motor.setVelRight(1)
-
-            if tcrt_read == [1, 1, 1, 1, 0]:
-                print("1, 0.4")
-                self.motor.setVelLeft(1)
-                self.motor.setVelRight(0.4)
-
-            self.motor.go()
-
-        # podemos dar um break/stop se não identificar nada, podemos testar isso
-
     # as próximas funções (followLineDumbSemWhileTrue, turn, moveStraight e moveOnParkingLot) são referentes a movimentação no estacionamento
+
 
     def followLineDumbSemWhileTrue(self):
         tcrt_read = self.tcrt.read()
@@ -387,103 +320,30 @@ class coneBot(Thread):
             self.motor.setVelRight(0.98)
             self.motor.go()
 
-        # elif tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 0, 1, 1, 1]:
-        #     self.motor.setVelLeft(1)
-        #     self.motor.setVelRight(0.8)
-        #     self.motor.go()
-
-        # elif tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
-        #     self.motor.turnLeft()
-
-        # elif tcrt_read == [1, 1, 0, 0, 1] or tcrt_read == [1, 1, 1, 0, 1]:
-        #     self.motor.setVelLeft(0.8)
-        #     self.motor.setVelRight(1)
-        #     self.motor.go()
-
-        # elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
-        #     self.motor.turnRight()
-
-
-        elif tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 0, 1, 1, 1] or tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
+        elif tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 0, 1, 1, 1]:
             self.motor.setVelLeft(1)
-            self.motor.setVelRight(0)
+            self.motor.setVelRight(0.8)
             self.motor.go()
 
-        elif tcrt_read == [1, 1, 0, 0, 1] or tcrt_read == [1, 1, 1, 0, 1] or tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
-            self.motor.setVelLeft(0)
+        elif tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
+            self.motor.turnLeft()
+
+        elif tcrt_read == [1, 1, 0, 0, 1] or tcrt_read == [1, 1, 1, 0, 1]:
+            self.motor.setVelLeft(0.8)
             self.motor.setVelRight(1)
             self.motor.go()
 
+        elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
+            self.motor.turnRight()
 
-
+        # elif any([not i for i in tcrt_read[0:1]]) and any(
+        #    [not i for i in tcrt_read[4:5]]):  # detectou sensor dos dois lados, tcrt deve ta em cima da interseção, manda reto
         else:
             self.motor.setVelLeft(1)
             self.motor.setVelRight(0.98)
             self.motor.go()
 
     def turn(self, direction):
-        read_samples = 1  # colocar isso la no começo, n fiz isso pq podemos mudar
-        threshold = 125  # limite para considerar uma cor como preto ou não
-
-        # manda o robo fazer a curva
-        if direction == "L":
-            self.motor.turnLeftSpike()
-            # self.motor.turnLeft()
-        else:
-            self.motor.turnRightSpike()
-            # self.motor.turnRight()
-
-        readings = [1] * read_samples
-        # readings são as leituras para saber se eu estou ou não na faixa, inicia em 1 pq o sensor de cor ta na faixa inicialmente
-        # podemos fazer com 5, 10, qnts leituras for melhor
-
-        while any(readings):  # enquanto eu estiver vendo a faixa
-            rgb_values = self.color.get_rgb()
-            readings.append(int(all(color < threshold for color in rgb_values)))  # se o R, G e B for menor que threshold = preto
-            readings = readings[-read_samples:]
-        # se saiu do while é pq as ultimas 'samples' leituras NAO identificaram preto
-        # agr vamo tentar achar uma faixa dvolta
-
-        while not all(readings):  # enqnt as ultimas leituras nao acharam a faixa
-            rgb_values = self.color.get_rgb()
-            readings.append(int(all(color < threshold for color in rgb_values)))
-            readings = readings[-read_samples:]
-        # se saiu do while é pq as ultimas 'samples' leituras identificaram preto
-
-        # if direction == "L":
-        #     self.motor.turnRightSpike()
-        # else:
-        #     self.motor.turnLeftSpike()
-        # sleep(0.08)
-        self.motor.brake()
-
-    def moveStraight(self):
-        read_samples = 1
-        threshold = 125
-        readings = [1] * read_samples
-        while any(readings):
-            self.followLineDumbSemWhileTrue()
-            rgb_values = self.color.get_rgb()
-            readings.append(int(all(color < threshold for color in rgb_values)))
-            readings = readings[-read_samples:]
-
-        self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
-        self.motor.setVelRight(1)  # com um dos motores em velocidade menor
-
-        while not all(readings):
-            self.followLineDumbSemWhileTrue()
-            rgb_values = self.color.get_rgb()
-            readings.append(int(all(color < threshold for color in rgb_values)))
-            readings = readings[-read_samples:]
-
-        self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
-        self.motor.setVelRight(1)  # com um dos motores em velocidade menor
-
-        # self.motor.goBack()
-        # sleep(0.08)
-        self.motor.brake()
-
-    def turn_2(self, direction):
 
         self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
         self.motor.setVelRight(1)  # com um dos motores em velocidade menor
@@ -499,7 +359,7 @@ class coneBot(Thread):
         ti = time.time()
         tf = time.time()
 
-        while (tf - ti) < 1:
+        while (tf - ti) < 0.7:
             tf = time.time()
 
         while not self.tcrt_side.read():  # enquanto black
@@ -517,11 +377,11 @@ class coneBot(Thread):
         # sleep(0.08)
         self.motor.brake()
 
-    def moveStraight_2(self):
+    def moveStraight(self):
         ti = time.time()
         tf = time.time()
 
-        while (tf - ti) < 1:
+        while (tf - ti) < 0.7:
             tf = time.time()
             self.followLineDumbSemWhileTrue()
 
@@ -563,15 +423,15 @@ class coneBot(Thread):
             sleep(2)
             if action in ["R", "L"]:
                 print("Turning " + action)
-                self.turn_2(action)
+                self.turn(action)
             elif action in ["180"]:
                 print("Turning " + "R")
-                self.turn_2(action)
+                self.turn(action)
                 print("Turning " + "R")
-                self.turn_2(action)
+                self.turn(action)
             else:
                 print("Move straight")
-                self.moveStraight_2()
+                self.moveStraight()
 
         print("--------- FINISH ---------")
 
