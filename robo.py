@@ -451,8 +451,7 @@ class coneBot(Thread):
         self.motor.stop()
         sleep(20)
 
-        #face, operations = self.location_system.get_path(self.node_pos, self.face, destination_node, destination_face)
-        operations = ['go']
+        face, operations = self.location_system.get_path(self.node_pos, self.face, destination_node, destination_face)
         print(f"Operations needed to get to destination: {operations}")
 
         print("--------- ROBOT ON ---------")
