@@ -434,7 +434,7 @@ class coneBot(Thread):
             face = end_dir
 
             end = 5
-            end_dir = "R"
+            end_dir = "D"
 
 
     def move_on_parking_lot_from_message(self, destination_node: int, destination_face: str):
