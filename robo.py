@@ -8,17 +8,25 @@ import numpy as np
 import pigpio
 from threading import Thread
 
+import requests
+
 # from grafo_busca_v0 import get_path
 
 from grafo_busca.grafo_busca import RobotLocationSystem, graph, directions, vagas
 from robot_network.notification_listener import RobotNotificationListener
 from queue import Queue
 
+from rasp_camera_detection_v4 import setup, get_plate_string
+
 try:
     from TCS3200 import *
     from MPU6050 import *
 except ModuleNotFoundError:
     print("Módulos do RPi não encontrados. Prosseguindo.")
+
+TESTING_PLATE_RECOGNITION = False
+PLATE_SERVER_URL = "https://easy-park-iw.herokuapp.com/user/linkUserToSpot"
+BEGIN_SESSION_URL = "https://easy-park-iw.herokuapp.com/user/beginSession"
 
 # pigpio documentation
 # http://abyz.me.uk/rpi/pigpio/python.html
@@ -164,7 +172,7 @@ class Tcrt50001Channel:
     def __init__(self, rpi, digital, analog=None):
         self.sensors = digital
         self.rpi = rpi
-        
+
         self.rpi.set_mode(self.sensors, pigpio.INPUT)
 
     def read(self):
@@ -229,31 +237,39 @@ class coneBot(Thread):
         self.rpi = pigpio.pi()
 
         # RPi pins for [IN1, IN2, IN3, IN4] motor driver
-        self.motor = Motor(self.rpi, 13, 16, 20, 21)  
+        self.motor = Motor(self.rpi, 13, 16, 20, 21)
 
         # RPi pins for [S1, S2, S3, S4, S5] tcrt5000 module
-        self.tcrt = Tcrt50005Channel(self.rpi, 4, 18, 17, 27, 23)  
+        self.tcrt = Tcrt50005Channel(self.rpi, 4, 18, 17, 27, 23)
 
-        # RPi pins for 
+        # RPi pins for
         self.tcrt_side = Tcrt50001Channel(self.rpi, 11)
 
         # RPi pins for OUT, S2, S3, S0, S1
-        #self.color = ColorSensor(self.rpi, 6, 12, 5, 11, 7)  
+        # self.color = ColorSensor(self.rpi, 6, 12, 5, 11, 7)
 
         self.ultra = Ultrasonic(self.rpi, 24, 10)  # RPi pins for trig and echo
         self.gyro = Gyroscope(self.rpi)
 
         self.location_system = RobotLocationSystem(graph, directions)
-        self.node_pos = 6  # Depois isso vai virar uma string tipo "A1"
+        self.node_pos = 6
         self.face = "R"
+        self.spot = vagas[self.node_pos][self.face]
+        self.establishment = "616e177497e39946b8d6c2fa"
+        requests.post(BEGIN_SESSION_URL, json={"establishment": self.establishment, "plate": "BEE4R22"})
 
         self.motor.stop()
         # except Exception:
         #    print(f"You're not using a RPi. Continuing.")
+
+        if TESTING_PLATE_RECOGNITION:
+            self.model, self.labels = setup()
+
         self.start_bot()
 
     def run(self):
         dispatcher_thread.register_interest(self)
+
         # robot initialization logic goes here
         # self.start_bot()
 
@@ -268,9 +284,9 @@ class coneBot(Thread):
             #     if self.pspot_queue.empty():
             #         break
 
-            #next_node, next_face = self.get_next_serviced_spot()
-            #print(f"Going to {next_node}, {next_face}")
-            #self.move_on_parking_lot_from_message(next_node, next_face)
+            # next_node, next_face = self.get_next_serviced_spot()
+            # print(f"Going to {next_node}, {next_face}")
+            # self.move_on_parking_lot_from_message(next_node, next_face)
 
             self.moveOnParkingLot()
             # break  # This is here just for testing purposes
@@ -281,7 +297,6 @@ class coneBot(Thread):
     def start_bot(self):
 
         self.motor.setVelMax(0.38)
-
 
         # fazer um while ultrasonico detectou fica parado
 
@@ -311,11 +326,10 @@ class coneBot(Thread):
 
     # as próximas funções (followLineDumbSemWhileTrue, turn, moveStraight e moveOnParkingLot) são referentes a movimentação no estacionamento
 
-
     def followLineDumbSemWhileTrue(self):
         tcrt_read = self.tcrt.read()
 
-        if tcrt_read == [1, 1, 0, 1, 1] :
+        if tcrt_read == [1, 1, 0, 1, 1]:
             self.motor.setVelLeft(1)
             self.motor.setVelRight(0.98)
             self.motor.go()
@@ -355,7 +369,7 @@ class coneBot(Thread):
         else:
             self.motor.turnRightSpike()
             # self.motor.turnRight()
-        
+
         ti = time.time()
         tf = time.time()
 
@@ -385,22 +399,20 @@ class coneBot(Thread):
             tf = time.time()
             self.followLineDumbSemWhileTrue()
 
-        while not self.tcrt_side.read():    # Enquanto black
+        while not self.tcrt_side.read():  # Enquanto black
             self.followLineDumbSemWhileTrue()
 
         self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
         self.motor.setVelRight(1)  # com um dos motores em velocidade menor
 
-        while self.tcrt_side.read():    # Enquanto white
+        while self.tcrt_side.read():  # Enquanto white
             self.followLineDumbSemWhileTrue()
 
-        
         self.motor.brake()
         sleep(0.08)
         self.motor.goBack()
         sleep(0.08)
         self.motor.brake()
-
 
         self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
         self.motor.setVelRight(1)  # com um dos motores em velocidade menor
@@ -413,7 +425,6 @@ class coneBot(Thread):
 
         end = 1
         end_dir = "R"
-
 
         face, operations = self.location_system.get_path(spot, face, end, end_dir)
         print(operations)  # se quiser ver o trajeto retornado
@@ -451,25 +462,26 @@ class coneBot(Thread):
             if action in ["R", "L"]:
                 print("Turning " + action)
                 sleep(2)
-                #self.turn(action)
+                # self.turn(action)
             elif action in ["180"]:
                 print("Turning " + "R")
                 sleep(2)
-                #self.turn(action)
+                # self.turn(action)
                 print("Turning " + "R")
                 sleep(2)
-                #self.turn(action)
+                # self.turn(action)
             else:
                 print("Move straight")
                 sleep(2)
-                #self.moveStraight()
+                # self.moveStraight()
         print("Getting foto! smile :)")
-        self.send_plate_info_to_server()
-
         self.node_pos = destination_node
         self.face = destination_face
+        self.vaga = vagas[self.node_pos][self.face]
+        if TESTING_PLATE_RECOGNITION:
+            self.send_plate_info_to_server()
+
         print("--------- FINISH ---------")
-        
 
     def get_node_from_spot(self, destination_spot: str) -> int:
         for key, value in vagas.items():
@@ -485,9 +497,10 @@ class coneBot(Thread):
         raise Exception("Em get_dir_from_spot: Vaga não encontrada no grafo.")
 
     def send_plate_info_to_server(self):
-        pass
+        plate_string = get_plate_string(self.model, self.labels)
+        requests.post(PLATE_SERVER_URL, json={"plate": plate_string, "spot": self.vaga})
 
-    def get_next_serviced_spot(self):  # -> tuple[int, str]:
+    def get_next_serviced_spot(self):
         distance = np.infty
         for spot_node, face in self.pspot_list:
             next_dist = self.location_system.get_distance_between_nodes((self.node_pos, spot_node))
@@ -506,4 +519,3 @@ if __name__ == "__main__":
     c.start()
 
     dispatcher_thread.join()
-
