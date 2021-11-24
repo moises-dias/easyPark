@@ -23,6 +23,9 @@ import json
 camera = PiCamera()
 # camera.rotation = 180
 camera.resolution = (640, 480)
+wpod_net = None
+plate_image = None
+thre_mor = None
 
 
 def load_model(path):
@@ -90,6 +93,7 @@ def filter_digits(cont):
 def setup():
     """This loads image recognition stuff. Should only be run once by the robot (takes a long time)"""
     wpod_net_path = "wpod-net.json"
+    global wpod_net
     wpod_net = load_model(wpod_net_path)
 
     # Load model architecture, weight and labels
@@ -115,6 +119,8 @@ def get_plate_string(model, labels) -> str:
     camera.stop_preview()
     test_image_path = f"Plate_examples/img{numfiles}.jpg"
     vehicle, LpImg, cor = get_plate(test_image_path)
+    global plate_image
+    global thre_mor
 
     if len(LpImg):  # check if there is at least one license image
         # Scales, calculates absolute values, and converts the result to 8-bit.
