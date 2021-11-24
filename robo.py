@@ -284,7 +284,7 @@ class coneBot(Thread):
             print(f"Going to {next_node}, {next_face}")
             self.move_on_parking_lot_from_message(next_node, next_face)
 
-            #self.moveOnParkingLot()
+            # self.moveOnParkingLot()
             # break  # This is here just for testing purposes
 
     def put_message(self, message):
@@ -293,7 +293,6 @@ class coneBot(Thread):
     def start_bot(self):
 
         self.motor.setVelMax(0.38)
-
 
     def test_buzzer(self):
         i = 0
@@ -319,12 +318,10 @@ class coneBot(Thread):
             )
             sleep(0.05)
 
-
-
     def followLine(self):
         tcrt_read = self.tcrt.read()
 
-        while self.ultra.measure_distance() < 10.0:    # Se entrar algo na frente, espera (pooling)
+        while self.ultra.measure_distance() < 10.0:  # Se entrar algo na frente, espera (pooling)
             self.motor.brake()
             sleep(0.16)
 
