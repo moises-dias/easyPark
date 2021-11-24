@@ -24,7 +24,7 @@ try:
 except ModuleNotFoundError:
     print("Módulos do RPi não encontrados. Prosseguindo.")
 
-TESTING_PLATE_RECOGNITION = False
+#TESTING_PLATE_RECOGNITION = False
 PLATE_SERVER_URL = "https://easy-park-iw.herokuapp.com/user/linkUserToSpot"
 BEGIN_SESSION_URL = "https://easy-park-iw.herokuapp.com/user/beginSession"
 
@@ -262,8 +262,8 @@ class coneBot(Thread):
         # except Exception:
         #    print(f"You're not using a RPi. Continuing.")
 
-        if TESTING_PLATE_RECOGNITION:
-            self.model, self.labels = setup()
+        # if TESTING_PLATE_RECOGNITION:
+        #     self.model, self.labels = setup()
 
         self.start_bot()
 
@@ -478,8 +478,8 @@ class coneBot(Thread):
         self.node_pos = destination_node
         self.face = destination_face
         self.vaga = vagas[self.node_pos][self.face]
-        if TESTING_PLATE_RECOGNITION:
-            self.send_plate_info_to_server()
+        # if TESTING_PLATE_RECOGNITION:
+        #     self.send_plate_info_to_server()
 
         print("--------- FINISH ---------")
 
