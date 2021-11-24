@@ -118,6 +118,7 @@ while True:
     else:
         print(f"img{numfiles}.jpg", 'no plate found')
         # raise ValueError('No Plate Found!')
+        continue
 
     cont, _  = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -126,6 +127,7 @@ while True:
     if len(crop_characters) != 7:
         print(f"img{numfiles}.jpg", 'not found 7 digits')
         # raise ValueError(f'Identified {len(crop_characters)} digits, the correct should be 7.')
+        continue
 
     final_string = ''
     for i,character in enumerate(crop_characters):
