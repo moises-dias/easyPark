@@ -16,7 +16,7 @@ from grafo_busca.grafo_busca import RobotLocationSystem, graph, directions, vaga
 from robot_network.notification_listener import RobotNotificationListener
 from queue import Queue
 
-from rasp_camera_detection_v4 import setup, get_plate_string
+#from rasp_camera_detection_v4 import setup, get_plate_string
 
 try:
     from TCS3200 import *
