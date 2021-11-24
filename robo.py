@@ -501,8 +501,11 @@ class coneBot(Thread):
         raise Exception("Em get_dir_from_spot: Vaga não encontrada no grafo.")
 
     def send_plate_info_to_server(self):
-        plate_string = get_plate_string(self.model, self.labels)
-        requests.post(PLATE_SERVER_URL, json={"plate": plate_string, "spot": self.vaga})
+        if TESTING_PLATE_RECOGNITION:
+            plate_string = get_plate_string(self.model, self.labels)
+            requests.post(PLATE_SERVER_URL, json={"plate": plate_string, "spot": self.vaga})
+        else:
+            print("Não estamos testando reconhecimento de placas agora.")
 
     def get_next_serviced_spot(self):
         distance = np.infty
