@@ -315,7 +315,7 @@ class coneBot(Thread):
     def followLine(self):
         tcrt_read = self.tcrt.read()
 
-        while self.ultra.measure_distance() < 17.0:    # Se entrar algo na frente, espera (pooling)
+        while self.ultra.measure_distance() < 10.0:    # Se entrar algo na frente, espera (pooling)
             self.motor.brake()
 
         if tcrt_read == [1, 1, 0, 1, 1]:
