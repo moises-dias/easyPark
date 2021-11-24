@@ -16,7 +16,7 @@ from grafo_busca.grafo_busca import RobotLocationSystem, graph, directions, vaga
 from robot_network.notification_listener import RobotNotificationListener
 from queue import Queue
 
-from rasp_camera_detection_v4 import setup, get_plate_string
+#from rasp_camera_detection_v4 import setup, get_plate_string
 
 try:
     from TCS3200 import *
@@ -24,7 +24,7 @@ try:
 except ModuleNotFoundError:
     print("Módulos do RPi não encontrados. Prosseguindo.")
 
-TESTING_PLATE_RECOGNITION = False
+#TESTING_PLATE_RECOGNITION = False
 PLATE_SERVER_URL = "https://easy-park-iw.herokuapp.com/user/linkUserToSpot"
 BEGIN_SESSION_URL = "https://easy-park-iw.herokuapp.com/user/beginSession"
 
@@ -262,8 +262,8 @@ class coneBot(Thread):
         # except Exception:
         #    print(f"You're not using a RPi. Continuing.")
 
-        if TESTING_PLATE_RECOGNITION:
-            self.model, self.labels = setup()
+        # if TESTING_PLATE_RECOGNITION:
+        #     self.model, self.labels = setup()
 
         self.start_bot()
 
@@ -376,7 +376,7 @@ class coneBot(Thread):
         ti = time.time()
         tf = time.time()
 
-        while (tf - ti) < 0.7:
+        while (tf - ti) < 0.6:
             tf = time.time()
 
         while not self.tcrt_side.read():  # Enquanto black
@@ -391,7 +391,7 @@ class coneBot(Thread):
         ti = time.time()
         tf = time.time()
 
-        while (tf - ti) < 0.7:
+        while (tf - ti) < 0.6:
             tf = time.time()
             self.followLine()
 
@@ -408,6 +408,10 @@ class coneBot(Thread):
 
         self.motor.setVelLeft(1)  # preciso resetar, pq o followLine altera as velocidades dos motores
         self.motor.setVelRight(1)  # conforme necessidade, ai pode ter acabado o while com velocidades diferentes que 1
+
+        self.motor.goBack()
+        sleep(0.09)
+        self.motor.brake()
 
     def moveOnParkingLot(self):
         self.motor.stop()
@@ -478,8 +482,8 @@ class coneBot(Thread):
         self.node_pos = destination_node
         self.face = destination_face
         self.vaga = vagas[self.node_pos][self.face]
-        if TESTING_PLATE_RECOGNITION:
-            self.send_plate_info_to_server()
+        # if TESTING_PLATE_RECOGNITION:
+        #     self.send_plate_info_to_server()
 
         print("--------- FINISH ---------")
 
