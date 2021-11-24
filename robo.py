@@ -309,13 +309,16 @@ class coneBot(Thread):
             )
             sleep(0.05)
 
-    # as próximas funções (followLineDumbSemWhileTrue, turn, moveStraight e moveOnParkingLot) são referentes a movimentação no estacionamento
+    # as próximas funções (followLine, turn, moveStraight e moveOnParkingLot) são referentes a movimentação no estacionamento
 
 
-    def followLineDumbSemWhileTrue(self):
+    def followLine(self):
         tcrt_read = self.tcrt.read()
 
-        if tcrt_read == [1, 1, 0, 1, 1] :
+        if self.ultra.measure_distance() < 17.0:    # Se entrar algo na frente, para
+            self.motor.brake()
+
+        elif tcrt_read == [1, 1, 0, 1, 1] :
             self.motor.setVelLeft(1)
             self.motor.setVelRight(0.98)
             self.motor.go()
@@ -345,8 +348,8 @@ class coneBot(Thread):
 
     def turn(self, direction):
 
-        self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
-        self.motor.setVelRight(1)  # com um dos motores em velocidade menor
+        self.motor.setVelLeft(1)
+        self.motor.setVelRight(1)
 
         # manda o robo fazer a curva
         if direction == "L":
@@ -362,19 +365,12 @@ class coneBot(Thread):
         while (tf - ti) < 0.7:
             tf = time.time()
 
-        while not self.tcrt_side.read():  # enquanto black
+        while not self.tcrt_side.read():  # Enquanto black
             pass
 
-        while self.tcrt_side.read():  # enquanto white
+        while self.tcrt_side.read():  # Enquanto white
             pass
 
-        # self.motor.brake()
-        # sleep(0.08)
-        # if direction == "L":
-        #     self.motor.turnRightSpike()
-        # else:
-        #     self.motor.turnLeftSpike()
-        # sleep(0.08)
         self.motor.brake()
 
     def moveStraight(self):
@@ -383,27 +379,22 @@ class coneBot(Thread):
 
         while (tf - ti) < 0.7:
             tf = time.time()
-            self.followLineDumbSemWhileTrue()
+            self.followLine()
 
         while not self.tcrt_side.read():    # Enquanto black
-            self.followLineDumbSemWhileTrue()
+            self.followLine()
 
-        self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
-        self.motor.setVelRight(1)  # com um dos motores em velocidade menor
+        self.motor.setVelLeft(1)
+        self.motor.setVelRight(1) 
 
         while self.tcrt_side.read():    # Enquanto white
-            self.followLineDumbSemWhileTrue()
+            self.followLine()
 
-        
-        self.motor.brake()
-        sleep(0.08)
-        self.motor.goBack()
-        sleep(0.08)
         self.motor.brake()
 
+        self.motor.setVelLeft(1)  # preciso resetar, pq o followLine altera as velocidades dos motores
+        self.motor.setVelRight(1)  # conforme necessidade, ai pode ter acabado o while com velocidades diferentes que 1
 
-        self.motor.setVelLeft(1)  # preciso resetar, pq de vez em quando ele chega de revesgueio
-        self.motor.setVelRight(1)  # com um dos motores em velocidade menor
 
     def moveOnParkingLot(self):
         self.motor.stop()
@@ -415,27 +406,33 @@ class coneBot(Thread):
         end_dir = "R"
 
 
-        face, operations = self.location_system.get_path(spot, face, end, end_dir)
-        print(operations)  # se quiser ver o trajeto retornado
+        while True:
+            face, operations = self.location_system.get_path(spot, face, end, end_dir)
+            print(operations)  # se quiser ver o trajeto retornado
 
-        print("--------- ROBOT ON ---------")
-        for action in operations:
-            sleep(2)
-            if action in ["R", "L"]:
-                print("Turning " + action)
-                self.turn(action)
-            elif action in ["180"]:
-                print("Turning " + "R")
-                self.turn(action)
-                print("Turning " + "R")
-                self.turn(action)
-            else:
-                print("Move straight")
-                self.moveStraight()
+            print("--------- ROBOT ON ---------")
+            for action in operations:
+                sleep(2)
+                if action in ["R", "L"]:
+                    print("Turning " + action)
+                    self.turn(action)
+                elif action in ["180"]:
+                    print("Turning " + "R")
+                    self.turn(action)
+                    print("Turning " + "R")
+                    self.turn(action)
+                else:
+                    print("Move straight")
+                    self.moveStraight()
 
-        print("--------- FINISH ---------")
+            print("--------- FINISH ---------")
 
-        # tira foto
+            print("Getting foto! smile :)")
+            sleep(4)
+
+            end = 5
+            end_dir = "R"
+
 
     def move_on_parking_lot_from_message(self, destination_node: int, destination_face: str):
         """Not-hardcoded version of moveOnParkingLot"""
