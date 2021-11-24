@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# coding: utf-8
+
+# remove warning message
 import os
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
@@ -9,12 +13,16 @@ from local_utils import detect_lp
 from os.path import splitext
 from keras.models import model_from_json
 from sklearn.preprocessing import LabelEncoder
-import RPi.GPIO as GPIO
 import time
 from picamera import PiCamera
 from os import listdir, rename
 import requests
 import json
+
+
+camera = PiCamera()
+# camera.rotation = 180
+camera.resolution = (640, 480)
 
 
 def load_model(path):
@@ -79,61 +87,78 @@ def filter_digits(cont):
     return crop_characters
 
 
-if __name__ == "__main__":
-    camera = PiCamera()
-    camera.rotation = 180
-    camera.resolution = (640, 480)
-
+def setup():
+    """This loads image recognition stuff. Should only be run once by the robot (takes a long time)"""
     wpod_net_path = "wpod-net.json"
     wpod_net = load_model(wpod_net_path)
-    caminho = "./deteccao_placas/raspberry_code/"
 
     # Load model architecture, weight and labels
-    json_file = open(caminho + "MobileNets_character_recognition.json", "r")
+    json_file = open("MobileNets_character_recognition.json", "r")
     loaded_model_json = json_file.read()
     json_file.close()
     model = model_from_json(loaded_model_json)
-    model.load_weights(caminho + "License_character_recognition_weight.h5")
+    model.load_weights("License_character_recognition_weight.h5")
 
     labels = LabelEncoder()
-    labels.classes_ = np.load(caminho + "license_character_classes.npy")
+    labels.classes_ = np.load("license_character_classes.npy")
 
-    print("you can now identify plates!")
+    print("model was loaded!")
+    return model, labels  # Will be stored in local variables, and passed on to get_plate_string
 
-    while True:
-        time.sleep(1)
-        print("Detecting plate.")
-        camera.start_preview()
-        time.sleep(3)
-        numfiles = len([f for f in listdir(caminho + "Plate_examples")])
-        camera.capture(caminho + f"Plate_examples/img{numfiles}.jpg")
-        camera.stop_preview()
-        test_image_path = f"Plate_examples/img{numfiles}.jpg"
-        vehicle, LpImg, cor = get_plate(test_image_path)
 
-        if len(LpImg):  # check if there is at least one license image
-            # Scales, calculates absolute values, and converts the result to 8-bit.
-            plate_image = cv2.convertScaleAbs(LpImg[0], alpha=(255.0))
+def get_plate_string(model, labels) -> str:
+    camera.start_preview()
+    time.sleep(3)
 
-            # convert to grayscale and blur the image
-            gray = cv2.cvtColor(plate_image, cv2.COLOR_BGR2GRAY)
-            blur = cv2.GaussianBlur(gray, (7, 7), 0)
-            binary = cv2.threshold(blur, 180, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
-            kernel3 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-            thre_mor = cv2.morphologyEx(binary, cv2.MORPH_DILATE, kernel3)
-        else:
-            print(f"img{numfiles}.jpg", "no plate found")
-            continue
+    numfiles = len([f for f in listdir("./Plate_examples")])
+    camera.capture(f"./Plate_examples/img{numfiles}.jpg")
+    camera.stop_preview()
+    test_image_path = f"Plate_examples/img{numfiles}.jpg"
+    vehicle, LpImg, cor = get_plate(test_image_path)
 
-        cont, _ = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    if len(LpImg):  # check if there is at least one license image
+        # Scales, calculates absolute values, and converts the result to 8-bit.
+        plate_image = cv2.convertScaleAbs(LpImg[0], alpha=(255.0))
 
-        crop_characters = filter_digits(cont)
+        # convert to grayscale and blur the image
+        gray = cv2.cvtColor(plate_image, cv2.COLOR_BGR2GRAY)
+        blur = cv2.GaussianBlur(gray, (7, 7), 0)
+        binary = cv2.threshold(blur, 180, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+        kernel3 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+        thre_mor = cv2.morphologyEx(binary, cv2.MORPH_DILATE, kernel3)
+    else:
+        print(f"img{numfiles}.jpg", "no plate found")
+        # raise ValueError('No Plate Found!')
 
-        if len(crop_characters) != 7:
-            print(f"img{numfiles}.jpg", "not found 7 digits")
-            continue
+    cont, _ = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        final_string = ""
-        for i, character in enumerate(crop_characters):
-            title = np.array2string(predict_from_model(character, model, labels))
-            final_string += title.strip("'[]")
+    crop_characters = filter_digits(cont)
+
+    if len(crop_characters) != 7:
+        print(f"img{numfiles}.jpg", "not found 7 digits")
+        # raise ValueError(f'Identified {len(crop_characters)} digits, the correct should be 7.')
+
+    final_string = ""
+    for i, character in enumerate(crop_characters):
+        title = np.array2string(predict_from_model(character, model, labels))
+        final_string += title.strip("'[]")
+    print(f"img{numfiles}.jpg", final_string)
+    rename(f"Plate_examples/img{numfiles}.jpg", f"Plate_examples/img{numfiles}_{final_string}.jpg")
+
+    return final_string
+
+
+# print('making a POST request...')
+
+# url = f'https://easy-park-iw.herokuapp.com/user/{operation}'
+# myobj = {'establishment': '616e177497e39946b8d6c2fa', 'plate': final_string}
+# headers={'Content-type':'application/json'}
+
+# req = requests.post(url, json = myobj, headers=headers)
+
+# print(req.text)
+
+# if json.loads(req.text)['success']:
+#     print('request successful')
+# else:
+#     print(json.loads(req.text)['messages'])
