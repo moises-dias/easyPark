@@ -13,6 +13,7 @@ from local_utils import detect_lp
 from os.path import splitext
 from keras.models import model_from_json
 from sklearn.preprocessing import LabelEncoder
+import tensorflow as tf
 import time
 from picamera import PiCamera
 from os import listdir, rename
@@ -35,6 +36,9 @@ def load_model(path):
             model_json = json_file.read()
         model = model_from_json(model_json, custom_objects={})
         model.load_weights("%s.h5" % path)
+
+        global graph
+        graph = tf.get_default_graph() 
         return model
     except Exception as e:
         print(e)
