@@ -642,9 +642,7 @@ class coneBot(Thread):
 
             final_string = ''
             for i,character in enumerate(crop_characters):
-                with session.as_default():
-                    with session.graph.as_default():
-                        title = np.array2string(predict_from_model(character,model,labels))
+                title = np.array2string(predict_from_model(character,model,labels))
                 final_string+=title.strip("'[]")
 
             print(f"img{numfiles}.jpg", final_string)
