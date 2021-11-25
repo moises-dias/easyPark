@@ -59,6 +59,7 @@ if TESTING_PLATE_RECOGNITION:
                 model_json = json_file.read()
             model = model_from_json(model_json, custom_objects={})
             model.load_weights('%s.h5' % path)
+            model._make_predict_function()
             return model
         except Exception as e:
             print(e)
