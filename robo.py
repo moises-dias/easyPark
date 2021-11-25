@@ -47,6 +47,12 @@ if TESTING_PLATE_RECOGNITION:
     from picamera import PiCamera
     from os import listdir, rename
 
+    #test
+    import tensorflow as tf
+    from tensorflow import keras
+    session = tf.Session()
+    keras.backend.set_session(session)
+
 
     camera = PiCamera()
     # camera.rotation = 180
@@ -597,7 +603,9 @@ class coneBot(Thread):
             camera.capture(f'./Plate_examples/img{numfiles}.jpg')
             camera.stop_preview()
             test_image_path = f"Plate_examples/img{numfiles}.jpg"
-            vehicle, LpImg ,cor = get_plate(test_image_path)
+            with session.as_default():
+                with session.graph.as_default():
+                    vehicle, LpImg ,cor = get_plate(test_image_path)
 
             if (len(LpImg)): #check if there is at least one license image
                 # Scales, calculates absolute values, and converts the result to 8-bit.
