@@ -554,21 +554,21 @@ class coneBot(Thread):
 
         print("--------- ROBOT ON ---------")
         for action in operations:
-            sleep(2.5)
+            sleep(0.5)
             if action in ["R", "L"]:
                 print("Turning " + action)
-                sleep(2)
+                sleep(0.5)
                 # self.turn(action)
             elif action in ["180"]:
                 print("Turning " + "R")
-                sleep(2)
+                sleep(0.5)
                 # self.turn(action)
                 print("Turning " + "R")
-                sleep(2)
+                sleep(0.5)
                 # self.turn(action)
             else:
                 print("Move straight")
-                sleep(2)
+                sleep(0.5)
                 # self.moveStraight()
         print("Getting foto! smile :)")
         self.node_pos = destination_node
