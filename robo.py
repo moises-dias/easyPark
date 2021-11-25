@@ -603,6 +603,8 @@ class coneBot(Thread):
             camera.capture(f'./Plate_examples/img{numfiles}.jpg')
             camera.stop_preview()
             test_image_path = f"Plate_examples/img{numfiles}.jpg"
+            session = tf.Session()
+            keras.backend.set_session(session)
             with session.as_default():
                 with session.graph.as_default():
                     vehicle, LpImg ,cor = get_plate(test_image_path)
