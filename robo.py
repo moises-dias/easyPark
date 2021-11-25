@@ -49,7 +49,6 @@ if TESTING_PLATE_RECOGNITION:
 
     #test
     import tensorflow as tf
-    graph = tf.get_default_graph()
     from tensorflow import keras
     session = tf.Session()
     keras.backend.set_session(session)
