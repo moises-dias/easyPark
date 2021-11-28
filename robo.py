@@ -427,24 +427,24 @@ class coneBot(Thread):
     def followLine(self):
         tcrt_read = self.tcrt.read()
 
-        # teste moises
-        while self.ultra.measure_distance() < 10.0:  # Se entrar algo na frente, espera (pooling)
-            self.motor.brake()
-            sleep(0.16)
-        if not tcrt_read[2]:
-            self.motor.setVelLeft(1)
-            self.motor.setVelRight(0.98)
-            self.motor.go()
-        elif not tcrt_read[0]:
-            self.motor.turnRight()
-        elif not tcrt_read[4]:
-            self.motor.turnLeft()
-        else:
-            self.motor.setVelLeft(1)
-            self.motor.setVelRight(0.98)
-            self.motor.go()
-        return
-        # teste moises
+        # # teste moises
+        # while self.ultra.measure_distance() < 10.0:  # Se entrar algo na frente, espera (pooling)
+        #     self.motor.brake()
+        #     sleep(0.16)
+        # if not tcrt_read[2]:
+        #     self.motor.setVelLeft(1)
+        #     self.motor.setVelRight(0.98)
+        #     self.motor.go()
+        # elif not tcrt_read[0]:
+        #     self.motor.turnRight()
+        # elif not tcrt_read[4]:
+        #     self.motor.turnLeft()
+        # else:
+        #     self.motor.setVelLeft(1)
+        #     self.motor.setVelRight(0.98)
+        #     self.motor.go()
+        # return
+        # # teste moises
 
         while self.ultra.measure_distance() < 10.0:  # Se entrar algo na frente, espera (pooling)
             self.motor.brake()
@@ -525,8 +525,8 @@ class coneBot(Thread):
         self.motor.setVelLeft(1)  # preciso resetar, pq o followLine altera as velocidades dos motores
         self.motor.setVelRight(1)  # conforme necessidade, ai pode ter acabado o while com velocidades diferentes que 1
 
-        # self.motor.goBack()
-        # sleep(0.09)
+        self.motor.goBack()
+        sleep(0.09)
         self.motor.brake()
 
     def moveOnParkingLot(self):
