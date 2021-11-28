@@ -361,7 +361,7 @@ class coneBot(Thread):
         self.face = "R"
         self.spot = vagas[self.node_pos][self.face]
         self.establishment = "616e177497e39946b8d6c2fa"
-        requests.post(BEGIN_SESSION_URL, json={"establishment": self.establishment, "plate": "BEE4R22"})
+        #requests.post(BEGIN_SESSION_URL, json={"establishment": self.establishment, "plate": "BEE4R22"})
 
         self.motor.stop()
         # except Exception:
