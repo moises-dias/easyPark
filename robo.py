@@ -435,9 +435,9 @@ class coneBot(Thread):
             self.motor.setVelLeft(1)
             self.motor.setVelRight(0.98)
             self.motor.go()
-        elif not tcrt_read[0] or tcrt_read[1]:
+        elif not tcrt_read[0]:
             self.motor.turnRight()
-        elif not tcrt_read[3] or tcrt_read[4]:
+        elif not tcrt_read[4]:
             self.motor.turnLeft()
         else:
             self.motor.setVelLeft(1)
