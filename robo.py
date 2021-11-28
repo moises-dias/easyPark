@@ -398,7 +398,7 @@ class coneBot(Thread):
 
     def start_bot(self):
 
-        self.motor.setVelMax(0.34)
+        self.motor.setVelMax(0.36)
 
     def test_buzzer(self):
         i = 0
@@ -427,38 +427,29 @@ class coneBot(Thread):
     def followLine(self):
         tcrt_read = self.tcrt.read()
 
-        # # teste moises
-        # while self.ultra.measure_distance() < 10.0:  # Se entrar algo na frente, espera (pooling)
-        #     self.motor.brake()
-        #     sleep(0.16)
-        # if not tcrt_read[2]:
-        #     self.motor.setVelLeft(1)
-        #     self.motor.setVelRight(0.98)
-        #     self.motor.go()
-        # elif not tcrt_read[0]:
-        #     self.motor.turnRight()
-        # elif not tcrt_read[4]:
-        #     self.motor.turnLeft()
-        # else:
-        #     self.motor.setVelLeft(1)
-        #     self.motor.setVelRight(0.98)
-        #     self.motor.go()
-        # return
-        # # teste moises
-
         while self.ultra.measure_distance() < 10.0:  # Se entrar algo na frente, espera (pooling)
             self.motor.brake()
             sleep(0.16)
 
-        if tcrt_read == [1, 1, 0, 1, 1] or tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 1, 0, 0, 1] :
+        if tcrt_read == [1, 1, 0, 1, 1]:
             self.motor.setVelLeft(1)
             self.motor.setVelRight(0.98)
             self.motor.go()
 
-        elif tcrt_read == [1, 0, 1, 1, 1] or tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
+        elif tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 0, 1, 1, 1]:
+            self.motor.setVelLeft(1)
+            self.motor.setVelRight(0.8)
+            self.motor.go()
+
+        elif tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
             self.motor.turnLeft()
 
-        elif tcrt_read == [1, 1, 1, 0, 1] or tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
+        elif tcrt_read == [1, 1, 0, 0, 1] or tcrt_read == [1, 1, 1, 0, 1]:
+            self.motor.setVelLeft(0.8)
+            self.motor.setVelRight(1)
+            self.motor.go()
+
+        elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
             self.motor.turnRight()
 
         else:
