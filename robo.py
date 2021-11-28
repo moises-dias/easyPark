@@ -357,7 +357,7 @@ class coneBot(Thread):
         self.gyro = Gyroscope(self.rpi)
 
         self.location_system = RobotLocationSystem(graph, directions)
-        self.node_pos = 0
+        self.node_pos = 1
         self.face = "U"
         self.spot = vagas[self.node_pos][self.face]
         self.establishment = "61a3bd0da338eb4b5442dbaa"
