@@ -23,7 +23,7 @@ try:
 except ModuleNotFoundError:
     print("Módulos do RPi não encontrados. Prosseguindo.")
 
-TESTING_PLATE_RECOGNITION = False
+TESTING_PLATE_RECOGNITION = True
 PLATE_SERVER_URL = "https://easy-park-iw.herokuapp.com/user/linkUserToSpot"
 BEGIN_SESSION_URL = "https://easy-park-iw.herokuapp.com/user/beginSession"
 
