@@ -398,7 +398,7 @@ class coneBot(Thread):
 
     def start_bot(self):
 
-        self.motor.setVelMax(0.34)
+        self.motor.setVelMax(0.35)
 
     def test_buzzer(self):
         i = 0
