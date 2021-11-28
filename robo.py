@@ -482,14 +482,14 @@ class coneBot(Thread):
         while self.tcrt_side.read():  # Enquanto white
             pass
 
-        if direction == "L":
-            self.motor.turnRight()
-            sleep(0.09)
-            # self.motor.turnLeft()
-        else:
-            self.motor.turnLeft()
-            sleep(0.09)
-            # self.motor.turnRight()
+        # if direction == "L":
+        #     self.motor.turnRight()
+        #     sleep(0.09)
+        #     # self.motor.turnLeft()
+        # else:
+        #     self.motor.turnLeft()
+        #     sleep(0.09)
+        #     # self.motor.turnRight()
 
         self.motor.brake()
 
