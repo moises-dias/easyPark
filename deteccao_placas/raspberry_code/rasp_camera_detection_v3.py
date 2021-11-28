@@ -122,72 +122,79 @@ while True:
             operation = 'finishSession'
         print(f'detecting plate for {operation}')
         camera.start_preview()
-        time.sleep(3)
+        time.sleep(12)
+        print('opening gate')
+        GPIO.output(leds['B'], True)
+        GPIO.output(leds['G'], False)
+        time.sleep(5)
+        print('closing gate')
+        GPIO.output(leds['G'], True)
+        GPIO.output(leds['R'], False)
 
-        numfiles = len([f for f in listdir('./Plate_examples')])
-        camera.capture(f'./Plate_examples/img{numfiles}.jpg')
-        camera.stop_preview()
-        test_image_path = f"Plate_examples/img{numfiles}.jpg"
-        vehicle, LpImg ,cor = get_plate(test_image_path)
+        # numfiles = len([f for f in listdir('./Plate_examples')])
+        # camera.capture(f'./Plate_examples/img{numfiles}.jpg')
+        # camera.stop_preview()
+        # test_image_path = f"Plate_examples/img{numfiles}.jpg"
+        # vehicle, LpImg ,cor = get_plate(test_image_path)
 
-        if (len(LpImg)): #check if there is at least one license image
-            # Scales, calculates absolute values, and converts the result to 8-bit.
-            plate_image = cv2.convertScaleAbs(LpImg[0], alpha=(255.0))
+        # if (len(LpImg)): #check if there is at least one license image
+        #     # Scales, calculates absolute values, and converts the result to 8-bit.
+        #     plate_image = cv2.convertScaleAbs(LpImg[0], alpha=(255.0))
             
-            # convert to grayscale and blur the image
-            gray = cv2.cvtColor(plate_image, cv2.COLOR_BGR2GRAY)
-            blur = cv2.GaussianBlur(gray,(7,7),0) 
-            binary = cv2.threshold(blur, 180, 255,cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
-            kernel3 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-            thre_mor = cv2.morphologyEx(binary, cv2.MORPH_DILATE, kernel3)
-        else:
-            print(f"img{numfiles}.jpg", 'no plate found')
-            GPIO.output(leds['B'], True)
-            GPIO.output(leds['R'], False)
-            continue
-            # raise ValueError('No Plate Found!')
+        #     # convert to grayscale and blur the image
+        #     gray = cv2.cvtColor(plate_image, cv2.COLOR_BGR2GRAY)
+        #     blur = cv2.GaussianBlur(gray,(7,7),0) 
+        #     binary = cv2.threshold(blur, 180, 255,cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+        #     kernel3 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+        #     thre_mor = cv2.morphologyEx(binary, cv2.MORPH_DILATE, kernel3)
+        # else:
+        #     print(f"img{numfiles}.jpg", 'no plate found')
+        #     GPIO.output(leds['B'], True)
+        #     GPIO.output(leds['R'], False)
+        #     continue
+        #     # raise ValueError('No Plate Found!')
 
-        cont, _  = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        # cont, _  = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        crop_characters = filter_digits(cont)
+        # crop_characters = filter_digits(cont)
 
-        if len(crop_characters) != 7:
-            print(f"img{numfiles}.jpg", 'not found 7 digits')
-            GPIO.output(leds['B'], True)
-            GPIO.output(leds['R'], False)
-            continue
-            # raise ValueError(f'Identified {len(crop_characters)} digits, the correct should be 7.')
+        # if len(crop_characters) != 7:
+        #     print(f"img{numfiles}.jpg", 'not found 7 digits')
+        #     GPIO.output(leds['B'], True)
+        #     GPIO.output(leds['R'], False)
+        #     continue
+        #     # raise ValueError(f'Identified {len(crop_characters)} digits, the correct should be 7.')
 
-        final_string = ''
-        for i,character in enumerate(crop_characters):
-            title = np.array2string(predict_from_model(character,model,labels))
-            final_string+=title.strip("'[]")
+        # final_string = ''
+        # for i,character in enumerate(crop_characters):
+        #     title = np.array2string(predict_from_model(character,model,labels))
+        #     final_string+=title.strip("'[]")
 
-        print(f"img{numfiles}.jpg", final_string)
-        rename(f"Plate_examples/img{numfiles}.jpg", f"Plate_examples/img{numfiles}_{final_string}.jpg")
-        print('making a POST request...')
+        # print(f"img{numfiles}.jpg", final_string)
+        # rename(f"Plate_examples/img{numfiles}.jpg", f"Plate_examples/img{numfiles}_{final_string}.jpg")
+        # print('making a POST request...')
 
-        #REMOVER!! MOCK PARA TESTAR CODIGO NO RASP
-        # final_string = 'ABC1234y'
+        # #REMOVER!! MOCK PARA TESTAR CODIGO NO RASP
+        # # final_string = 'ABC1234y'
 
-        url = f'https://easy-park-iw.herokuapp.com/user/{operation}'
-        myobj = {'establishment': '616e177497e39946b8d6c2fa', 'plate': final_string}
-        headers={'Content-type':'application/json'}
+        # url = f'https://easy-park-iw.herokuapp.com/user/{operation}'
+        # myobj = {'establishment': '616e177497e39946b8d6c2fa', 'plate': final_string}
+        # headers={'Content-type':'application/json'}
 
-        req = requests.post(url, json = myobj, headers=headers)
+        # req = requests.post(url, json = myobj, headers=headers)
 
-        print(req.text)
+        # print(req.text)
 
-        if json.loads(req.text)['success']:
-            print('opening gate')
-            GPIO.output(leds['B'], True)
-            GPIO.output(leds['G'], False)
-            time.sleep(5)
-            print('closing gate')
-            GPIO.output(leds['G'], True)
-            GPIO.output(leds['R'], False)
-        else:
-            print(json.loads(req.text)['messages'])
-            # print('closing gate')
-            GPIO.output(leds['B'], True)
-            GPIO.output(leds['R'], False)
+        # if json.loads(req.text)['success']:
+        #     print('opening gate')
+        #     GPIO.output(leds['B'], True)
+        #     GPIO.output(leds['G'], False)
+        #     time.sleep(5)
+        #     print('closing gate')
+        #     GPIO.output(leds['G'], True)
+        #     GPIO.output(leds['R'], False)
+        # else:
+        #     print(json.loads(req.text)['messages'])
+        #     # print('closing gate')
+        #     GPIO.output(leds['B'], True)
+        #     GPIO.output(leds['R'], False)
