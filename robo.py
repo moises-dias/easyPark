@@ -450,25 +450,15 @@ class coneBot(Thread):
             self.motor.brake()
             sleep(0.16)
 
-        if tcrt_read == [1, 1, 0, 1, 1]:
+        if tcrt_read == [1, 1, 0, 1, 1] or tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 1, 0, 0, 1] :
             self.motor.setVelLeft(1)
             self.motor.setVelRight(0.98)
             self.motor.go()
 
-        elif tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 0, 1, 1, 1]:
-            self.motor.setVelLeft(1)
-            self.motor.setVelRight(0.8)
-            self.motor.go()
-
-        elif tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
+        elif tcrt_read == [1, 0, 1, 1, 1] or tcrt_read == [0, 0, 1, 1, 1] or tcrt_read == [0, 1, 1, 1, 1]:
             self.motor.turnLeft()
 
-        elif tcrt_read == [1, 1, 0, 0, 1] or tcrt_read == [1, 1, 1, 0, 1]:
-            self.motor.setVelLeft(0.8)
-            self.motor.setVelRight(1)
-            self.motor.go()
-
-        elif tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
+        elif tcrt_read == [1, 1, 1, 0, 1] or tcrt_read == [1, 1, 1, 0, 0] or tcrt_read == [1, 1, 1, 1, 0]:
             self.motor.turnRight()
 
         else:
