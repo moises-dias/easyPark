@@ -251,10 +251,10 @@ class coneBot(Thread):
         self.gyro = Gyroscope(self.rpi)
 
         self.location_system = RobotLocationSystem(graph, directions)
-        self.node_pos = 6
-        self.face = "R"
+        self.node_pos = 8
+        self.face = "U"
         self.spot = vagas[self.node_pos][self.face]
-        self.establishment = "616e177497e39946b8d6c2fa"
+        self.establishment = "61a3bd0da338eb4b5442dbaa"
         requests.post(BEGIN_SESSION_URL, json={"establishment": self.establishment, "plate": "BEE4R22"})
 
         self.motor.stop()
