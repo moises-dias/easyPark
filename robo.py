@@ -432,8 +432,8 @@ class coneBot(Thread):
             sleep(0.16)
 
         if tcrt_read == [1, 1, 0, 1, 1]:
-            self.motor.setVelLeft(0.8)
-            self.motor.setVelRight(0.79)
+            self.motor.setVelLeft(0.75)
+            self.motor.setVelRight(0.74)
             self.motor.go()
 
         elif tcrt_read == [1, 0, 0, 1, 1] or tcrt_read == [1, 0, 1, 1, 1]:
@@ -453,14 +453,14 @@ class coneBot(Thread):
             self.motor.turnRight()
 
         else:
-            self.motor.setVelLeft(1)
-            self.motor.setVelRight(0.98)
+            self.motor.setVelLeft(0.75)
+            self.motor.setVelRight(0.74)
             self.motor.go()
 
     def turn(self, direction):
 
-        self.motor.setVelLeft(1)
-        self.motor.setVelRight(1)
+        self.motor.setVelLeft(0.8)
+        self.motor.setVelRight(0.8)
 
         # manda o robo fazer a curva
         if direction == "L":
