@@ -431,9 +431,12 @@ class coneBot(Thread):
         print(abs(self.g[0]), abs(self.g[1]), self.dist)
         while self.dist < 10.0 or abs(self.g[0]) > 0.35 or abs(self.g[1] > 0.35):  # Se entrar algo na frente, espera (pooling)
             print(abs(self.g[0]), abs(self.g[1]), self.dist)
-            self.soundAlarm();
             self.motor.brake()
+            self.soundAlarm();
             sleep(0.20)
+            self.g = np.round(list(self.gyro.read_acc()), 4)
+            self.dist = self.ultra.measure_distance()
+
         self.sound = 0
         self.rpi.set_PWM_dutycycle(self.buz, 0)
 
