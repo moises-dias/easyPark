@@ -400,6 +400,7 @@ class coneBot(Thread):
     def start_bot(self):
 
         self.rpi.set_PWM_dutycycle(self.buz, 128)  #  50 %
+        self.rpi.set_PWM_frequency(self.buz, 0)
         self.motor.setVelMax(0.34)
 
     def soundAlarm(self):
