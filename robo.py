@@ -399,7 +399,7 @@ class coneBot(Thread):
 
     def start_bot(self):
 
-        self.rpi.set_PWM_dutycycle(self.buz, 128)  #  50 %
+        self.rpi.set_PWM_dutycycle(self.buz, 0)  #  50 %
         self.rpi.set_PWM_frequency(self.buz, 0)
         self.motor.setVelMax(0.34)
 
@@ -411,6 +411,7 @@ class coneBot(Thread):
         elif self.sound == 1500:
             self.sound = 800
 
+        self.rpi.set_PWM_dutycycle(self.buz, 128)
         self.rpi.set_PWM_frequency(self.buz, self.sound)
 
     def followLine(self):
@@ -425,6 +426,7 @@ class coneBot(Thread):
             self.motor.brake()
             sleep(0.20)
         self.sound = 0
+        self.rpi.set_PWM_dutycycle(self.buz, 0)
 
         if tcrt_read == [1, 1, 0, 1, 1]:
             self.motor.setVelLeft(0.8)
@@ -529,22 +531,18 @@ class coneBot(Thread):
 
             print("--------- ROBOT ON ---------")
             for action in operations:
-                sleep(2)
+                sleep(0.5)
                 if action in ["R", "L"]:
                     print("Turning " + action)
-                    #self.turn(action)
-                    sleep(3)
+                    self.turn(action)
                 elif action in ["180"]:
                     print("Turning " + "R")
                     self.turn(action)
-                    sleep(3)
                     print("Turning " + "R")
                     self.turn(action)
-                    sleep(3)
                 else:
                     print("Move straight")
                     self.moveStraight()
-                    sleep(3)
 
             print("--------- FINISH ---------")
 
