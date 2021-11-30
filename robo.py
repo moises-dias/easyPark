@@ -339,6 +339,7 @@ class coneBot(Thread):
 
         self.buz = 9
         self.sound = 0
+        self.rpi.set_PWM_dutycycle(self.buz, 128)  #  50 %
 
         self.rpi = pigpio.pi()
 
@@ -409,7 +410,6 @@ class coneBot(Thread):
         elif self.sound == 1500:
             self.sound = 800
 
-        self.rpi.set_PWM_dutycycle(self.buz, 128)  #  50 %
         self.rpi.set_PWM_frequency(self.buz, self.sound)
 
     def followLine(self):
