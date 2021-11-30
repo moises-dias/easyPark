@@ -414,7 +414,7 @@ class coneBot(Thread):
         tcrt_read = self.tcrt.read()
 
         g = np.round(list(self.gyro.read_acc()), 4)
-        print(abs(g[0]), abs(g[1]))
+        print(abs(g[0]), abs(g[1]), self.ultra.measure_distance())
         while self.ultra.measure_distance() < 10.0 or abs(g[0]) > 0.35 or abs(g[1] > 0.35):  # Se entrar algo na frente, espera (pooling)
             self.soundAlarm();
             self.motor.brake()
