@@ -410,7 +410,7 @@ class coneBot(Thread):
 
     def soundAlarm(self):
         if self.sound < 800:
-            self.sound == 800
+            self.sound = 800
         elif self.sound == 800:
             self.sound = 1500
         elif self.sound > 800:
