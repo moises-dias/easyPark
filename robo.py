@@ -428,8 +428,7 @@ class coneBot(Thread):
         tcrt_read = self.tcrt.read()
 
         g = np.round(list(self.gyro.read_acc()), 4)
-        
-        while self.ultra.measure_distance() < 10.0:  # Se entrar algo na frente, espera (pooling)
+        while self.ultra.measure_distance() < 10.0 or abs(g[0]) > 0.35 or abs(g[1] > 0.35):  # Se entrar algo na frente, espera (pooling)
             self.motor.brake()
             sleep(0.16)
 
@@ -678,7 +677,6 @@ if __name__ == "__main__":
     dispatcher_thread.start()
 
     c = coneBot()
-    c.test_gyro()
     c.start()
 
     dispatcher_thread.join()
