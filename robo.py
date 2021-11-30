@@ -409,11 +409,11 @@ class coneBot(Thread):
         self.motor.setVelMax(0.34)
 
     def soundAlarm(self):
-        if self.sound == 0:
+        if self.sound < 800:
             self.sound == 800
         elif self.sound == 800:
             self.sound = 1500
-        elif self.sound == 1500:
+        elif self.sound > 800:
             self.sound = 800
 
         self.rpi.set_PWM_dutycycle(self.buz, 128)
@@ -434,7 +434,7 @@ class coneBot(Thread):
             print(abs(self.g[0]), abs(self.g[1]), self.dist)
             self.motor.brake()
             self.soundAlarm();
-            sleep(0.20)
+            sleep(0.25)
             self.g = np.round(list(self.gyro.read_acc()), 4)
             self.dist = self.ultra.measure_distance()
 
