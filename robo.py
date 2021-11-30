@@ -338,6 +338,7 @@ class coneBot(Thread):
         self.pspot_list: list[tuple(int, str)] = []  # int is for node id, str is for direction
 
         self.buz = 9
+        self.sound = 800
 
         self.rpi = pigpio.pi()
 
@@ -376,22 +377,22 @@ class coneBot(Thread):
         dispatcher_thread.register_interest(self)
 
         while True:
-            while True:
-                message = self.pspot_queue.get()
-                print(f"Received message {message} from notification server.")
-                # this assumes that message is just a string containing the name of a parking spot, like "A1"
-                message_node = self.get_node_from_spot(message)
-                message_dir = self.get_dir_from_spot(message)
-                self.pspot_list.append((message_node, message_dir))
-                if self.pspot_queue.empty():
-                    break
+            # while True:
+            #     message = self.pspot_queue.get()
+            #     print(f"Received message {message} from notification server.")
+            #     # this assumes that message is just a string containing the name of a parking spot, like "A1"
+            #     message_node = self.get_node_from_spot(message)
+            #     message_dir = self.get_dir_from_spot(message)
+            #     self.pspot_list.append((message_node, message_dir))
+            #     if self.pspot_queue.empty():
+            #         break
 
-            next_node, next_face = self.get_next_serviced_spot()
-            print(f"Going to {next_node}, {next_face}")
-            self.move_on_parking_lot_from_message(next_node, next_face)
+            # next_node, next_face = self.get_next_serviced_spot()
+            # print(f"Going to {next_node}, {next_face}")
+            # self.move_on_parking_lot_from_message(next_node, next_face)
 
-            # self.moveOnParkingLot()
-            # break  # This is here just for testing purposes
+            self.moveOnParkingLot()
+            break  # This is here just for testing purposes
 
     def put_message(self, message):
         self.pspot_queue.put(message)
@@ -400,35 +401,21 @@ class coneBot(Thread):
 
         self.motor.setVelMax(0.34)
 
-    def test_buzzer(self):
-        i = 0
+    def soundAlarm(self):
+        if self.sound == 800:
+            self.sound = 1500
+        else:
+            self.sound = 800
+
         self.rpi.set_PWM_dutycycle(self.buz, 128)  #  50 %
-        while 1:
-            i = 800
-            self.rpi.set_PWM_frequency(self.buz, i)
-            sleep(0.3)
-            i = 1500
-            self.rpi.set_PWM_frequency(self.buz, i)
-            sleep(0.3)
-
-    def test_ultrassom(self):
-        while 1:
-            print(self.ultra.measure_distance())
-            sleep(0.1)
-
-    def test_gyro(self):
-        while 1:
-            print(
-                np.round(list(self.gyro.read_gyro()), 4),
-                np.round(list(self.gyro.read_acc()), 4),
-            )
-            sleep(0.05)
+        self.rpi.set_PWM_frequency(self.buz, self.sound)
 
     def followLine(self):
         tcrt_read = self.tcrt.read()
 
         g = np.round(list(self.gyro.read_acc()), 4)
         while self.ultra.measure_distance() < 10.0 or abs(g[0]) > 0.35 or abs(g[1] > 0.35):  # Se entrar algo na frente, espera (pooling)
+            self.soundAlarm();
             self.motor.brake()
             sleep(0.16)
 
@@ -538,15 +525,19 @@ class coneBot(Thread):
                 sleep(2)
                 if action in ["R", "L"]:
                     print("Turning " + action)
-                    self.turn(action)
+                    #self.turn(action)
+                    sleep(3)
                 elif action in ["180"]:
                     print("Turning " + "R")
                     self.turn(action)
+                    sleep(3)
                     print("Turning " + "R")
                     self.turn(action)
+                    sleep(3)
                 else:
                     print("Move straight")
                     self.moveStraight()
+                    sleep(3)
 
             print("--------- FINISH ---------")
 
