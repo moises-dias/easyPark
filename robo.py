@@ -399,6 +399,9 @@ class coneBot(Thread):
 
     def start_bot(self):
 
+        self.ti = time.time()
+        self.tf = time.time()
+
         self.rpi.set_PWM_dutycycle(self.buz, 0)  #  50 %
         self.rpi.set_PWM_frequency(self.buz, 0)
         self.motor.setVelMax(0.34)
@@ -417,8 +420,11 @@ class coneBot(Thread):
     def followLine(self):
         tcrt_read = self.tcrt.read()
 
-        self.sound = 0
-        g = np.round(list(self.gyro.read_acc()), 4)
+        self.tf = time.time()
+        if self.tf - self.ti > 0.18:
+            self.ti = self.tf
+            g = np.round(list(self.gyro.read_acc()), 4)
+
         print(abs(g[0]), abs(g[1]), self.ultra.measure_distance())
         while self.ultra.measure_distance() < 10.0: # or abs(g[0]) > 0.35 or abs(g[1] > 0.35):  # Se entrar algo na frente, espera (pooling)
             print(abs(g[0]), abs(g[1]), self.ultra.measure_distance())
