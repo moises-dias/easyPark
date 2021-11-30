@@ -338,7 +338,7 @@ class coneBot(Thread):
         self.pspot_list: list[tuple(int, str)] = []  # int is for node id, str is for direction
 
         self.buz = 9
-        self.sound = 800
+        self.sound = 0
 
         self.rpi = pigpio.pi()
 
@@ -402,9 +402,11 @@ class coneBot(Thread):
         self.motor.setVelMax(0.34)
 
     def soundAlarm(self):
-        if self.sound == 800:
+        if self.sound == 0:
+            self.sound == 800
+        elif self.sound == 800:
             self.sound = 1500
-        else:
+        elif self.sound == 1500:
             self.sound = 800
 
         self.rpi.set_PWM_dutycycle(self.buz, 128)  #  50 %
@@ -413,12 +415,14 @@ class coneBot(Thread):
     def followLine(self):
         tcrt_read = self.tcrt.read()
 
+        self.sound = 0
         g = np.round(list(self.gyro.read_acc()), 4)
         print(abs(g[0]), abs(g[1]), self.ultra.measure_distance())
         while self.ultra.measure_distance() < 10.0 or abs(g[0]) > 0.35 or abs(g[1] > 0.35):  # Se entrar algo na frente, espera (pooling)
             self.soundAlarm();
             self.motor.brake()
-            sleep(0.16)
+            sleep(0.20)
+        self.sound = 0
 
         if tcrt_read == [1, 1, 0, 1, 1]:
             self.motor.setVelLeft(0.8)
