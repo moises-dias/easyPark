@@ -538,6 +538,7 @@ class coneBot(Thread):
 
         while True:
             face, operations = self.location_system.get_path(spot, face, end, end_dir)
+            operations = ['L','go','R','go','R','go','R']
             print(operations)  # se quiser ver o trajeto retornado
 
             print("--------- ROBOT ON ---------")
