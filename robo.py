@@ -406,7 +406,7 @@ class coneBot(Thread):
 
         self.rpi.set_PWM_dutycycle(self.buz, 0)  #  50 %
         self.rpi.set_PWM_frequency(self.buz, 0)
-        self.motor.setVelMax(0.34)
+        self.motor.setVelMax(0.39)
 
     def soundAlarm(self):
         if self.sound < 800:
@@ -429,7 +429,7 @@ class coneBot(Thread):
             self.g = np.round(list(self.gyro.read_acc()), 4)
             self.dist = self.ultra.measure_distance()
 
-        while self.dist < 10.0 or abs(self.g[0]) > 0.35 or abs(self.g[1]) > 0.35:  # Se entrar algo na frente, espera (pooling)
+        while self.dist < 7 or abs(self.g[0]) > 0.35 or abs(self.g[1]) > 0.35:  # Se entrar algo na frente, espera (pooling)
             self.motor.brake()
             self.soundAlarm();
             sleep(0.30)
@@ -559,7 +559,7 @@ class coneBot(Thread):
             print("--------- FINISH ---------")
 
             print("Getting foto! smile :)")
-            sleep(4)
+            sleep(15)
 
             spot = end
             face = end_dir
