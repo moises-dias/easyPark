@@ -429,12 +429,10 @@ class coneBot(Thread):
             self.g = np.round(list(self.gyro.read_acc()), 4)
             self.dist = self.ultra.measure_distance()
 
-        print(abs(self.g[0]), abs(self.g[1]), self.dist)
         while self.dist < 10.0 or abs(self.g[0]) > 0.35 or abs(self.g[1]) > 0.35:  # Se entrar algo na frente, espera (pooling)
-            print(abs(self.g[0]), abs(self.g[1]), self.dist)
             self.motor.brake()
             self.soundAlarm();
-            sleep(0.25)
+            sleep(0.30)
             self.g = np.round(list(self.gyro.read_acc()), 4)
             self.dist = self.ultra.measure_distance()
 
@@ -532,11 +530,11 @@ class coneBot(Thread):
     def moveOnParkingLot(self):
         self.motor.stop()
         # sleep(13)
-        face = "L"
-        spot = 6
+        face = "R"
+        spot = 7
 
-        end = 1
-        end_dir = "R"
+        end = 3
+        end_dir = "L"
 
         while True:
             face, operations = self.location_system.get_path(spot, face, end, end_dir)
