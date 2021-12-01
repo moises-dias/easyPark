@@ -530,11 +530,11 @@ class coneBot(Thread):
     def moveOnParkingLot(self):
         self.motor.stop()
         # sleep(13)
-        face = "R"
-        spot = 7
+        face = "RS"
+        spot = 1
 
-        end = 4
-        end_dir = "U"
+        end = 7
+        end_dir = "L"
 
         while True:
             face, operations = self.location_system.get_path(spot, face, end, end_dir)
