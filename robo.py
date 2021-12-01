@@ -531,9 +531,9 @@ class coneBot(Thread):
         self.motor.stop()
         # sleep(13)
         face = "R"
-        spot = 7
+        spot = 3
 
-        end = 3
+        end = 7
         end_dir = "L"
 
         while True:
