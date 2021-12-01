@@ -426,7 +426,7 @@ class coneBot(Thread):
         self.tf = time.time()
         if self.tf - self.ti > 0.18:
             self.ti = self.tf
-            self.g = np.round(list(self.gyro.read_acc()), 4)
+            self.g = np.round(list(self.gyro.read_gyro()), 4)
             self.dist = self.ultra.measure_distance()
 
         while self.dist < 7 or abs(self.g[0]) > 0.35 or abs(self.g[1]) > 0.35:  # Se entrar algo na frente, espera (pooling)
@@ -434,7 +434,7 @@ class coneBot(Thread):
             self.motor.brake()
             self.soundAlarm();
             sleep(0.30)
-            self.g = np.round(list(self.gyro.read_acc()), 4)
+            self.g = np.round(list(self.gyro.read_gyro()), 4)
             self.dist = self.ultra.measure_distance()
 
         self.sound = 0
