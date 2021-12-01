@@ -432,7 +432,6 @@ class coneBot(Thread):
             self.dist = self.ultra.measure_distance()
 
         while self.dist < 10 or abs(np.mean(self.g_0[-3:])) > 0.4 or abs(np.mean(self.g_1[-3:])) > 0.4:  # Se entrar algo na frente, espera (pooling)
-            print(self.dist, self.g)
             self.motor.brake()
             self.soundAlarm();
             sleep(0.30)
