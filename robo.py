@@ -401,7 +401,8 @@ class coneBot(Thread):
 
         self.ti = time.time()
         self.tf = time.time()
-        self.g = np.round(list(self.gyro.read_acc()), 4)
+        self.g_0 = [0, 0, 0, 0]
+        self.g_1 = [0, 0, 0, 0]
         self.dist = self.ultra.measure_distance()
 
         self.rpi.set_PWM_dutycycle(self.buz, 0)  #  50 %
@@ -425,15 +426,19 @@ class coneBot(Thread):
         self.tf = time.time()
         if self.tf - self.ti > 0.18:
             self.ti = self.tf
-            self.g = np.round(list(self.gyro.read_acc()), 4)
+            g = np.round(list(self.gyro.read_acc()), 4)
+            self.g_0 = self.g_0.append(g[0])
+            self.g_1 = self.g_1.append(g[1])
             self.dist = self.ultra.measure_distance()
 
-        while self.dist < 10:  # Se entrar algo na frente, espera (pooling)
+        while self.dist < 10 or abs(np.mean(self.g_0[-4:])) > 0.4 or abs(np.mean(self.g_1[-4:])) > 0.4:  # Se entrar algo na frente, espera (pooling)
             print(self.dist, self.g)
             self.motor.brake()
             self.soundAlarm();
             sleep(0.30)
-            self.g = np.round(list(self.gyro.read_acc()), 4)
+            g = np.round(list(self.gyro.read_acc()), 4)
+            self.g_0 = self.g_0.append(g[0])
+            self.g_1 = self.g_1.append(g[1])
             self.dist = self.ultra.measure_distance()
 
         self.sound = 0
