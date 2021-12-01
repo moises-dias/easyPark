@@ -533,7 +533,7 @@ class coneBot(Thread):
 
     def moveOnParkingLot(self):
         self.motor.stop()
-        sleep(18)
+        sleep(22)
         face = "RS"
         spot = 1
 
