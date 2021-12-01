@@ -391,8 +391,8 @@ class coneBot(Thread):
             # print(f"Going to {next_node}, {next_face}")
             # self.move_on_parking_lot_from_message(next_node, next_face)
 
-            print(np.round(list(self.gyro.read_acc()), 4), np.round(list(self.gyro.read_gyro()),4))
-            #self.moveOnParkingLot()
+            #print(np.round(list(self.gyro.read_acc()), 4), np.round(list(self.gyro.read_gyro()),4))
+            self.moveOnParkingLot()
 
     def put_message(self, message):
         self.pspot_queue.put(message)
