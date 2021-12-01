@@ -391,7 +391,7 @@ class coneBot(Thread):
             # print(f"Going to {next_node}, {next_face}")
             # self.move_on_parking_lot_from_message(next_node, next_face)
 
-            print(self.gyro.read_acc(), self.gyro.read_gyro(), self.gyro.read_raw_data())
+            print(self.gyro.read_acc(), self.gyro.read_gyro())
             #self.moveOnParkingLot()
 
     def put_message(self, message):
