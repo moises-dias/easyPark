@@ -533,8 +533,8 @@ class coneBot(Thread):
         face = "R"
         spot = 7
 
-        end = 3
-        end_dir = "L"
+        end = 4
+        end_dir = "U"
 
         while True:
             face, operations = self.location_system.get_path(spot, face, end, end_dir)
