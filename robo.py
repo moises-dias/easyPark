@@ -391,8 +391,8 @@ class coneBot(Thread):
             # print(f"Going to {next_node}, {next_face}")
             # self.move_on_parking_lot_from_message(next_node, next_face)
 
-            self.moveOnParkingLot()
-            break  # This is here just for testing purposes
+            print(self.gyro.read_acc, self.gyro.read_gyro, self.gyro.read_raw_data)
+            #self.moveOnParkingLot()
 
     def put_message(self, message):
         self.pspot_queue.put(message)
@@ -418,7 +418,6 @@ class coneBot(Thread):
 
         self.rpi.set_PWM_dutycycle(self.buz, 128)
         self.rpi.set_PWM_frequency(self.buz, self.sound)
-        print(self.sound)
 
     def followLine(self):
         tcrt_read = self.tcrt.read()
@@ -429,7 +428,7 @@ class coneBot(Thread):
             self.g = np.round(list(self.gyro.read_acc()), 4)
             self.dist = self.ultra.measure_distance()
 
-        while self.dist < 7 or abs(self.g[0]) > 0.5 or abs(self.g[1]) > 0.5:  # Se entrar algo na frente, espera (pooling)
+        while self.dist < 10 or abs(self.g[0]) > 0.5 or abs(self.g[1]) > 0.5:  # Se entrar algo na frente, espera (pooling)
             print(self.dist, self.g)
             self.motor.brake()
             self.soundAlarm();
